@@ -1,9 +1,4 @@
-﻿根据你提供的实际目录结构，我来更新 README.md：
-
----
-
-## README.md
-
+﻿
 ```markdown
 # Industrial Config Engine - 工业配置引擎
 
@@ -13,22 +8,29 @@ Industrial Config Engine 是一个基于四层架构（L1-L4）的工业自动�
 
 ### 四层架构
 
-| 层级 | 目录 | 职责 | 维护者 |
-|------|------|------|--------|
-| **L1 原子操作层** | `L1_action/` | 单一设备操作模板，最小执行单元 | 设备专家/工程师 |
-| **L2 执行节点层** | `L2_node/` | 带状态机、重试和分支的执行单元 | 自动化工程师 |
-| **L3 执行组层** | `L3_group/` | 完整工序，支持控制流编排 | 工艺工程师 |
-| **L4 流程层** | `L4_flow/` | 完整产线流程编排 | 操作员/AI |
+| 层级 | 目录 | 职责 | AI生成 |
+|------|------|------|:---:|
+| **L1 Action** | `L1_action/` | 最小执行单元，无状态（如单次Modbus读） | 否 |
+| **L2 Node** | `L2_node/` | Action的状态封装（含超时、重试、成功/失败/超时三分支） | 否 |
+| **L3 Group** | `L3_group/` | 流程编排（顺序/循环/条件/并行，可嵌套） | 是 |
+| **L4 Flow** | `L4_flow/` | 顶层可执行配置，支持多运行模式 | 是 |
+
+### 设计原则
+
+- **L1/L2固化**：所有直接与硬件交互的层由工程师预定义，AI不参与生成。
+- **L3/L4声明式**：AI生成的配置仅描述"做什么"（流程编排），不描述"怎么做"（设备驱动细节）。
+- **接口契约**：L2 Node名称构成工艺师与技术人员之间的基础接口。技术人员负责L1/L2层实现，并可预先将常用流程组合封装为L3 Group（Group支持嵌套调用Node和其他Group），供工艺师在更高层流程编排中直接引用。各层之间通过统一的命名契约实现解耦。
 
 ### 核心特性
 
-- ✅ **L1 原子操作**：Modbus 读写、计算、日志、弹窗、等待等
+- ✅ **L1 原子操作**：Modbus读写、计算、日志、弹窗、等待等
 - ✅ **L2 执行节点**：重试机制、超时控制、成功/失败/超时分支
 - ✅ **L3 执行组**：支持 sequence、parallel、loop、if、switch 控制流
 - ✅ **L4 流程层**：编排 L3 Group，构建完整产线流程
 - ✅ **参数化**：支持 `${变量}` 占位符和参数传递
 - ✅ **聚合文件**：L1/L2 使用 bundle 聚合文件，减少文件数量
 - ✅ **JSON 配置**：所有配置为 JSON 格式，易于编辑和版本控制
+- ✅ **三维语义验证**：结构校验 + 语义映射 + 仿真运行
 
 ---
 
@@ -67,7 +69,7 @@ industrial_config_engine/
 │   │   ├── L2_node/iDM_nodes.json
 │   │   ├── L3_group/*.group.json
 │   │   └── L4_flow/main_flow.json
-│   ├── example1/                       # 示例1：真空控制
+│   ├── example1/                       # 示例1：真空控制流程
 │   │   ├── L1_action/                  # L1 原子操作（按目录分类）
 │   │   │   ├── control/all_actions.json
 │   │   │   ├── modbus/all_actions.json
@@ -86,10 +88,10 @@ industrial_config_engine/
 │   │   │       ├── hold_pressure.json
 │   │   │       ├── leak_test.json
 │   │   │       ├── open_valve.json
-│   │   │       └── pump_down..json
+│   │   │       └── pump_down.json
 │   │   └── L4_flow/production/
 │   │       └── vacuum_flow.json
-│   ├── example2/                       # 示例2： 电机上料
+│   ├── example2/                       # 示例2：电机上料流程
 │   │   ├── L1_action/                  # L1 聚合文件（扁平结构）
 │   │   │   ├── control_actions.json
 │   │   │   ├── data_actions.json
@@ -109,23 +111,21 @@ industrial_config_engine/
 │   │   ├── L3_group/                   # L3 执行组（扁平结构）
 │   │   │   ├── complete_feeding.group.json
 │   │   │   ├── emergency_stop.group.json
-│   │   │   ├── hold_pressure.group.json
 │   │   │   ├── jog_find_sensor.group.json
-│   │   │   ├── leak_test.group.json
-│   │   │   ├── log_result.group.json
-│   │   │   ├── open_valve.group.json
 │   │   │   ├── precise_positioning.group.json
-│   │   │   ├── pump_down.group.json
 │   │   │   ├── run_pr_with_wait.group.json
 │   │   │   ├── system_check.group.json
 │   │   │   └── write_pr_position.group.json
 │   │   └── L4_flow/
 │   │       └── main_flow.json
-│   └── example3/                       # 示例3：气密性检测
+│   └── example3/                       # 示例3：气密性检测流程
 │       ├── L1_action/leak_test/all_actions.json
 │       ├── L2_node/leak_test/all_nodes.json
-│       ├── L3_group/leak_test/*.group.json
-│       └── L4_flow/leak_test/production_flow.json
+│       ├── L3_group/leak_test/
+│       │   ├── leak_test.group.json
+│       │   └── pressure_hold.group.json
+│       └── L4_flow/leak_test/
+│           └── production_flow.json
 ├── CMakeLists.txt                       # 主构建文件
 └── demos/CMakeLists.txt                 # 演示程序构建文件
 ```
@@ -282,7 +282,7 @@ cmake --build out/build --target demo_l3_group_loader
 - 创建和显示嵌套 Group 结构
 - 演示 sequence + parallel 混合模式
 - 显示 Group 结构树
-- 验证嵌套深度和 max_nodes 限制
+- 验证嵌套深度限制
 
 ---
 
@@ -409,7 +409,7 @@ brew install nlohmann-json
 # 使用 example1（真空控制）
 ./demo_l3_group_loader D:/project/industrial_config_engine/examples/example1
 
-# 使用 example2（ 电机上料）
+# 使用 example2（电机上料）
 ./demo_l3_group_loader D:/project/industrial_config_engine/examples/example2
 ```
 
@@ -452,8 +452,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ---
 
-**特别声明**：本代码为论文《[论文标题]》的配套实验代码，
-仅供学术研究使用。如需商用，请联系作者获取授权。
+**特别声明**：本代码为论文《数据驱动的工业控制配置语言：面向LLM安全集成的语义验证框架》的配套实验代码，仅供学术研究使用。如需商用，请联系作者获取授权。
 
 ---
 
@@ -468,7 +467,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 - **角色**：项目负责人 & 核心开发者
 - **贡献**：
   - 四层架构（L1-L4）设计与实现
-  - L1 原子操作、L2 执行节点、L3 执行组核心模块开发
+  - L1 原子操作、L2 执行节点、L3 执行组、L4 流程层核心模块开发
   - 配置引擎与加载器实现
   - 论文撰写与实验验证
 
@@ -489,7 +488,7 @@ Liaoning, China
 
 ```bibtex
 @article{明楚晴2026工业配置引擎,
-  title   = {[论文标题]},
+  title   = {数据驱动的工业控制配置语言：面向LLM安全集成的语义验证框架},
   author  = {明楚晴},
   school  = {东北育才学校},
   year    = {2026},
@@ -501,8 +500,21 @@ Liaoning, China
 
 ## 📚 相关文档
 
-- [L1 原子操作手册](examples/docs/论文样例1：抽真空/)
-- [L2 执行节点手册](examples/docs/论文样例2：上料/)
-- [L3 执行组手册](examples/docs/论文样例3：气密性监测/)
 - [四层架构设计文档](examples/docs/)
 ```
+
+---
+
+**主要修改**：
+
+| 修改点 | 说明 |
+|--------|------|
+| 四层架构表格 | 增加"AI生成"列，与论文一致 |
+| 设计原则 | 新增完整的接口契约说明，体现技术人员可封装L3 Group |
+| 核心特性 | 新增"三维语义验证" |
+| 示例名称 | 与论文表格一致（真空控制流程/电机上料流程/气密性检测流程） |
+| example2 L3 | 精简为与论文T2对应的7个Group |
+| example3 L3 | 与论文T3对应（气密性检测） |
+| 特别声明 | 添加论文标题 |
+| 引用格式 | 添加论文标题 |
+| L3嵌套演示 | 移除"max_nodes"（论文未提及） |
