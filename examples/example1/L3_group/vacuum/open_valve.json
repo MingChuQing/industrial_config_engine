@@ -1,0 +1,26 @@
+﻿{
+    "type": "group",
+    "name": "开阀门工序",
+    "description": "完整的开阀门操作流程",
+    "mode": "sequence",
+    "max_nodes": 20,
+    "timeout_ms": 15000,
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/vacuum/all_nodes.json/open_valve.r_b_valve_open",
+            "params": []
+        }
+    ],
+    "on_timeout": [
+        {
+            "type": "log",
+            "message": "开阀门工序超时"
+        },
+        {
+            "type": "popup",
+            "message": "开阀门工序超时",
+            "level": "error"
+        }
+    ]
+}

@@ -1,0 +1,54 @@
+{
+    "type": "group",
+    "name": "完整上料流程",
+    "description": "写入PR坐标 → 回原点 → PR1精确定位 → PR2精确定位",
+    "mode": "sequence",
+    "max_nodes": 50,
+    "timeout_ms": 180000,
+    "args": [
+        { "index": 0, "name": "pr1_position", "type": "i32", "default": 50000, "desc": "PR1位置(脉冲)" },
+        { "index": 1, "name": "pr2_position", "type": "i32", "default": 100000, "desc": "PR2位置(脉冲)" },
+        { "index": 2, "name": "sensor_register", "type": "u8", "default": 512, "desc": "光电开关寄存器" }
+    ],
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/write_pr_position.group.json",
+            "params": [0, 0]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/write_pr_position.group.json",
+            "params": [1, "${pr1_position}"]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/write_pr_position.group.json",
+            "params": [2, "${pr2_position}"]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/run_pr_with_wait.group.json",
+            "params": [0, 10000]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/precise_positioning.group.json",
+            "params": [1, "${sensor_register}", "position_1", 30000]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/precise_positioning.group.json",
+            "params": [2, "${sensor_register}", "position_2", 30000]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/ui_nodes.json/popup.s_s",
+            "params": ["上料流程完成！位置1=${position_1}，位置2=${position_2}", "success"]
+        }
+    ],
+    "on_timeout": [
+        { "type": "log", "message": "完整上料流程超时" },
+        { "type": "popup", "message": "上料流程超时，请检查系统", "level": "error" }
+    ]
+}

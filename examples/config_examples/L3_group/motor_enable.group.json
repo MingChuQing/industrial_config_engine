@@ -1,0 +1,58 @@
+﻿{
+    "type": "group",
+    "name": "电机使能组",
+    "description": "使能指定的电机",
+    "mode": "sequence",
+    "max_nodes": 5,
+    "body": [
+        {
+            "type": "node",
+            "name": "使能电机",
+            "result_key": "enable_result",
+            "params": {
+                "instance_id": "${instance_id}"
+            },
+            "timeout_ms": 3000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/motor_enable.r_b_enable_result"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": true
+            },
+            "on_success": [
+                {
+                    "type": "log",
+                    "message": "电机 ${instance_id} 使能成功"
+                },
+                {
+                    "type": "popup",
+                    "message": "电机 ${instance_id} 已使能",
+                    "level": "info"
+                }
+            ],
+            "on_failure": [
+                {
+                    "type": "log",
+                    "message": "电机 ${instance_id} 使能失败"
+                },
+                {
+                    "type": "popup",
+                    "message": "电机 ${instance_id} 使能失败，请检查通信",
+                    "level": "error"
+                }
+            ]
+        }
+    ],
+    "args": [
+        {
+            "index": 0,
+            "name": "instance_id",
+            "type": "s",
+            "desc": "设备实例 ID"
+        }
+    ]
+}

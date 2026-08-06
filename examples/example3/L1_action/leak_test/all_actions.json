@@ -1,0 +1,296 @@
+{
+    "type": "action_bundle",
+    "description": "气密性检测系统 L1 原子操作集合",
+    "version": "1.0.0",
+    "actions": [
+        {
+            "filename": "digital_read.u8.r_b_digital_state",
+            "type": "modbus_read_cache",
+            "description": "读取数字量输入状态",
+            "protocol": "modbus",
+            "request": "02 ${register} 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 1,
+                "endian": "big",
+                "type": "uint8"
+            },
+            "timeout_ms": 1000,
+            "args": [
+                { "index": 0, "name": "register", "type": "u8", "min": 0, "max": 255, "desc": "寄存器地址" }
+            ]
+        },
+        {
+            "filename": "digital_write.u8_b.r_b_write_result",
+            "type": "modbus_write_verify",
+            "description": "写入数字量输出",
+            "protocol": "modbus",
+            "request": "05 ${register} ${value}",
+            "response": "05 ${register} ${value}",
+            "timeout_ms": 1000,
+            "args": [
+                { "index": 0, "name": "register", "type": "u8", "min": 0, "max": 255, "desc": "寄存器地址" },
+                { "index": 1, "name": "value", "type": "b", "desc": "true=ON(FF00), false=OFF(0000)" }
+            ]
+        },
+        {
+            "filename": "digital_write_on.u8.r_b_write_result",
+            "type": "modbus_write_verify",
+            "description": "数字量输出置ON",
+            "protocol": "modbus",
+            "request": "05 ${register} FF 00",
+            "response": "05 ${register} FF 00",
+            "timeout_ms": 1000,
+            "args": [
+                { "index": 0, "name": "register", "type": "u8", "min": 0, "max": 255, "desc": "寄存器地址" }
+            ]
+        },
+        {
+            "filename": "digital_write_off.u8.r_b_write_result",
+            "type": "modbus_write_verify",
+            "description": "数字量输出置OFF",
+            "protocol": "modbus",
+            "request": "05 ${register} 00 00",
+            "response": "05 ${register} 00 00",
+            "timeout_ms": 1000,
+            "args": [
+                { "index": 0, "name": "register", "type": "u8", "min": 0, "max": 255, "desc": "寄存器地址" }
+            ]
+        },
+        {
+            "filename": "read_analog.u8.r_f_analog_value",
+            "type": "modbus_read_cache",
+            "description": "读取模拟量通道值 (0-10V/4-20mA)",
+            "protocol": "modbus",
+            "request": "03 ${channel} 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": 1000,
+            "args": [
+                { "index": 0, "name": "channel", "type": "u8", "min": 0, "max": 255, "desc": "模拟量通道" }
+            ]
+        },
+        {
+            "filename": "read_pressure.u8.r_f_pressure",
+            "type": "modbus_read_cache",
+            "description": "读取压力传感器值 (kPa)",
+            "protocol": "modbus",
+            "request": "03 ${channel} 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": 1000,
+            "args": [
+                { "index": 0, "name": "channel", "type": "u8", "min": 0, "max": 255, "desc": "压力传感器通道" }
+            ]
+        },
+        {
+            "filename": "read_temperature.u8.r_f_temperature",
+            "type": "modbus_read_cache",
+            "description": "读取温度传感器值 (℃)",
+            "protocol": "modbus",
+            "request": "03 ${channel} 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": 1000,
+            "args": [
+                { "index": 0, "name": "channel", "type": "u8", "min": 0, "max": 255, "desc": "温度传感器通道" }
+            ]
+        },
+        {
+            "filename": "read_modbus_register.u8_u16.r_u16_register_value",
+            "type": "modbus_read_cache",
+            "description": "读取Modbus寄存器",
+            "protocol": "modbus",
+            "request": "03 ${addr} ${reg} 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": 1000,
+            "args": [
+                { "index": 0, "name": "addr", "type": "u8", "min": 0, "max": 255, "desc": "从站地址" },
+                { "index": 1, "name": "reg", "type": "u16", "min": 0, "max": 65535, "desc": "寄存器地址" }
+            ]
+        },
+        {
+            "filename": "write_modbus_register.u8_u16_u16.r_b_write_result",
+            "type": "modbus_write_verify",
+            "description": "写入Modbus寄存器",
+            "protocol": "modbus",
+            "request": "06 ${addr} ${reg} ${val_high} ${val_low}",
+            "response": "06 ${addr} ${reg} ${val_high} ${val_low}",
+            "timeout_ms": 1000,
+            "args": [
+                { "index": 0, "name": "addr", "type": "u8", "min": 0, "max": 255, "desc": "从站地址" },
+                { "index": 1, "name": "reg", "type": "u16", "min": 0, "max": 65535, "desc": "寄存器地址" },
+                { "index": 2, "name": "val", "type": "u16", "min": 0, "max": 65535, "desc": "写入值" }
+            ]
+        },
+        {
+            "filename": "open_fill_valve.r_b_valve_result",
+            "type": "modbus_write_verify",
+            "description": "打开充气阀",
+            "protocol": "modbus",
+            "request": "05 00 01 FF 00",
+            "response": "05 00 01 FF 00",
+            "timeout_ms": 1000
+        },
+        {
+            "filename": "close_fill_valve.r_b_valve_result",
+            "type": "modbus_write_verify",
+            "description": "关闭充气阀",
+            "protocol": "modbus",
+            "request": "05 00 01 00 00",
+            "response": "05 00 01 00 00",
+            "timeout_ms": 1000
+        },
+        {
+            "filename": "open_exhaust_valve.r_b_valve_result",
+            "type": "modbus_write_verify",
+            "description": "打开排气阀",
+            "protocol": "modbus",
+            "request": "05 00 02 FF 00",
+            "response": "05 00 02 FF 00",
+            "timeout_ms": 1000
+        },
+        {
+            "filename": "close_exhaust_valve.r_b_valve_result",
+            "type": "modbus_write_verify",
+            "description": "关闭排气阀",
+            "protocol": "modbus",
+            "request": "05 00 02 00 00",
+            "response": "05 00 02 00 00",
+            "timeout_ms": 1000
+        },
+        {
+            "filename": "clamp_close.r_b_clamp_result",
+            "type": "modbus_write_verify",
+            "description": "夹具闭合",
+            "protocol": "modbus",
+            "request": "05 00 03 FF 00",
+            "response": "05 00 03 FF 00",
+            "timeout_ms": 2000
+        },
+        {
+            "filename": "clamp_open.r_b_clamp_result",
+            "type": "modbus_write_verify",
+            "description": "夹具打开",
+            "protocol": "modbus",
+            "request": "05 00 03 00 00",
+            "response": "05 00 03 00 00",
+            "timeout_ms": 2000
+        },
+        {
+            "filename": "check_clamp_closed.r_b_clamp_closed",
+            "type": "modbus_read_cache",
+            "description": "检查夹具是否闭合到位",
+            "protocol": "modbus",
+            "request": "02 00 04 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 1,
+                "endian": "big",
+                "type": "uint8"
+            },
+            "timeout_ms": 1000
+        },
+        {
+            "filename": "calculate.f_f.r_f_calc_result",
+            "type": "calculate",
+            "description": "浮点数四则运算",
+            "expression": "${expression}",
+            "args": [
+                { "index": 0, "name": "expression", "type": "s", "desc": "算术表达式" }
+            ]
+        },
+        {
+            "filename": "calculate_pressure_drop.f_f.r_f_pressure_drop",
+            "type": "calculate",
+            "description": "计算压降 ΔP = P_start - P_end",
+            "expression": "${p_start} - ${p_end}",
+            "args": [
+                { "index": 0, "name": "p_start", "type": "f", "desc": "初始压力 (kPa)" },
+                { "index": 1, "name": "p_end", "type": "f", "desc": "最终压力 (kPa)" }
+            ]
+        },
+        {
+            "filename": "calculate_leak_rate.f_f.r_f_leak_rate",
+            "type": "calculate",
+            "description": "计算泄漏率 = ΔP / 时间 (kPa/min)",
+            "expression": "${delta_p} / (${duration} / 60.0)",
+            "args": [
+                { "index": 0, "name": "delta_p", "type": "f", "desc": "压降 (kPa)" },
+                { "index": 1, "name": "duration", "type": "f", "desc": "检测时间 (秒)" }
+            ]
+        },
+        {
+            "filename": "save_test_data.s_f_f_s_s.r_b_save_result",
+            "type": "script_exec",
+            "description": "保存测试数据到数据库/文件",
+            "script_type": "python",
+            "script_file": "save_test_data.py",
+            "args": [
+                { "index": 0, "name": "product_id", "type": "s", "desc": "产品ID" },
+                { "index": 1, "name": "leak_rate", "type": "f", "desc": "泄漏率" },
+                { "index": 2, "name": "result", "type": "s", "desc": "PASS/FAIL" },
+                { "index": 3, "name": "timestamp", "type": "s", "desc": "时间戳" }
+            ]
+        },
+        {
+            "filename": "log.s",
+            "type": "log",
+            "description": "写入日志",
+            "message": "${message}",
+            "args": [
+                { "index": 0, "name": "message", "type": "s", "desc": "日志内容" }
+            ]
+        },
+        {
+            "filename": "popup.s_s",
+            "type": "popup",
+            "description": "弹窗提示",
+            "message": "${message}",
+            "level": "${level}",
+            "args": [
+                { "index": 0, "name": "message", "type": "s", "desc": "提示内容" },
+                { "index": 1, "name": "level", "type": "s", "enum": ["info","warning","error","success"], "desc": "提示级别" }
+            ]
+        },
+        {
+            "filename": "beep.u8.r_b_beep_result",
+            "type": "script_exec",
+            "description": "蜂鸣器报警",
+            "script_type": "python",
+            "script_file": "beep.py",
+            "args": [
+                { "index": 0, "name": "duration", "type": "u8", "min": 1, "max": 10, "desc": "蜂鸣时长(秒)" }
+            ]
+        },
+        {
+            "filename": "led_set.s.r_b_led_result",
+            "type": "modbus_write_verify",
+            "description": "设置指示灯颜色",
+            "protocol": "modbus",
+            "request": "06 00 05 ${color} 00",
+            "response": "06 00 05 ${color} 00",
+            "timeout_ms": 500,
+            "args": [
+                { "index": 0, "name": "color", "type": "s", "enum": ["green", "yellow", "red"], "desc": "颜色" }
+            ]
+        }
+    ]
+}

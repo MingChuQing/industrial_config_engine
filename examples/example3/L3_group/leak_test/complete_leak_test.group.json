@@ -1,0 +1,54 @@
+{
+    "type": "group",
+    "name": "完整气密性检测流程",
+    "description": "从准备到结束的完整气密性检测流程",
+    "mode": "sequence",
+    "max_nodes": 30,
+    "delay_between": 0,
+    "confirm_between": false,
+    "body": [
+        {
+            "type": "group",
+            "name": "准备阶段",
+            "template": "L3_group/leak_test/prepare_stage.group",
+            "params": ["${pressure_channel}", "0x0101", "0x0201"]
+        },
+        {
+            "type": "group",
+            "name": "充气阶段",
+            "template": "L3_group/leak_test/fill_stage.group",
+            "params": ["${pressure_channel}", "${target_pressure}", 10000, 5.0]
+        },
+        {
+            "type": "group",
+            "name": "保压阶段",
+            "template": "L3_group/leak_test/dwell_stage.group",
+            "params": ["${pressure_channel}", 5000, 0.1]
+        },
+        {
+            "type": "group",
+            "name": "检测阶段",
+            "template": "L3_group/leak_test/test_stage.group",
+            "params": ["${pressure_channel}", "${test_duration}"]
+        },
+        {
+            "type": "group",
+            "name": "判断阶段",
+            "template": "L3_group/leak_test/judgment_stage.group",
+            "params": ["${leak_rate_standard}", "${product_id}"]
+        },
+        {
+            "type": "group",
+            "name": "结束阶段",
+            "template": "L3_group/leak_test/end_stage.group",
+            "params": ["${pressure_channel}", "0x0201"]
+        }
+    ],
+    "args": [
+        { "index": 0, "name": "product_id", "type": "s", "default": "UNKNOWN", "desc": "产品ID" },
+        { "index": 1, "name": "target_pressure", "type": "f", "default": 100.0, "desc": "目标压力(kPa)" },
+        { "index": 2, "name": "test_duration", "type": "u16", "default": 30000, "desc": "检测时间(ms)" },
+        { "index": 3, "name": "leak_rate_standard", "type": "f", "default": 0.5, "desc": "泄漏率标准(kPa/min)" },
+        { "index": 4, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" }
+    ]
+}

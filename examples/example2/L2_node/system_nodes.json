@@ -1,0 +1,50 @@
+{
+    "type": "node_bundle",
+    "description": "系统控制类执行节点集合（L1 Action包装）",
+    "version": "1.0.0",
+    "nodes": [
+        {
+            "filename": "log.s",
+            "type": "node",
+            "name": "日志记录",
+            "description": "记录日志信息",
+            "params": ["日志内容"],
+            "timeout_ms": 2000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "action": {
+                "template": "L1_action/system_actions.json/log.s"
+            },
+            "judge": {
+                "type": "exists"
+            },
+            "on_success": [],
+            "on_failure": [],
+            "on_timeout": []
+        },
+        {
+            "filename": "popup.s_s",
+            "type": "node",
+            "name": "弹窗提示",
+            "description": "显示弹窗消息",
+            "params": ["消息内容", "info"],
+            "timeout_ms": 5000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "action": {
+                "template": "L1_action/system_actions.json/popup.s_s"
+            },
+            "judge": {
+                "type": "exists"
+            },
+            "on_success": [],
+            "on_failure": [],
+            "on_timeout": [
+                {
+                    "type": "log",
+                    "message": "弹窗超时"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,18 @@
+{
+"type": "action_bundle",
+"description": "系统类原子操作集合",
+"version": "1.0.0",
+"actions": [
+{
+"filename": "log.s",
+"type": "log",
+"description": "写入日志",
+"message": "{message}", "args": [ { "index": 0, "name": "message", "type": "s", "desc": "日志内容" } ] }, { "filename": "popup.s_s", "type": "popup", "description": "弹框提示用户", "message": "{message}",
+"level": "${level}",
+"args": [
+{ "index": 0, "name": "message", "type": "s", "desc": "提示内容" },
+{ "index": 1, "name": "level", "type": "s", "enum": ["info", "warning", "error", "success"], "default": "info", "desc": "提示级别" }
+]
+}
+]
+}

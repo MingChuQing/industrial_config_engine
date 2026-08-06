@@ -1,0 +1,81 @@
+{
+    "type": "flow",
+    "name": "气密性检测生产流程",
+    "description": "完整的气密性检测生产流程",
+    "version": "1.0.0",
+    "max_depth": 10,
+    "body": [
+        {
+            "type": "group",
+            "name": "上料：取产品",
+            "template": "L3_group/positioning/precise_positioning.group",
+            "params": [1, 0x0200, "pick_position", 30000]
+        },
+        {
+            "type": "group",
+            "name": "上料：放置产品到测试工位",
+            "template": "L3_group/positioning/precise_positioning.group",
+            "params": [2, 0x0200, "place_position", 30000]
+        },
+        {
+            "type": "node",
+            "name": "通知开始检测",
+            "params": ["产品已放置到测试工位，开始气密性检测"],
+            "node": {
+                "template": "L2_node/log/print.s"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "group",
+            "name": "气密性检测",
+            "template": "L3_group/leak_test/complete_leak_test.group",
+            "params": ["${product_id}", 100.0, 30000, 0.5, 1]
+        },
+        {
+            "type": "if",
+            "name": "根据检测结果分拣",
+            "condition": {
+                "type": "expression",
+                "expression": "${test_result} == 'PASS'"
+            },
+            "then": [
+                {
+                    "type": "group",
+                    "name": "搬运到合格品区",
+                    "template": "L3_group/positioning/precise_positioning.group",
+                    "params": [3, 0x0200, "pass_position", 30000]
+                },
+                {
+                    "type": "node",
+                    "name": "记录合格品",
+                    "params": ["产品${product_id}合格，已放入合格品区"],
+                    "node": {
+                        "template": "L2_node/log/print.s"
+                    },
+                    "on_success": [],
+                    "on_failure": []
+                }
+            ],
+            "else": [
+                {
+                    "type": "group",
+                    "name": "搬运到不合格品区",
+                    "template": "L3_group/positioning/precise_positioning.group",
+                    "params": [4, 0x0200, "fail_position", 30000]
+                },
+                {
+                    "type": "node",
+                    "name": "记录不合格品",
+                    "params": ["产品${product_id}不合格，已放入不合格品区"],
+                    "node": {
+                        "template": "L2_node/log/print.s"
+                    },
+                    "on_success": [],
+                    "on_failure": []
+                }
+            ]
+        }
+    ]
+}

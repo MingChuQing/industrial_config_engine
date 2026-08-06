@@ -1,0 +1,20 @@
+{
+    "type": "group",
+    "name": "系统自检",
+    "description": "检查系统通讯和传感器状态",
+    "mode": "sequence",
+    "max_nodes": 20,
+    "timeout_ms": 0,
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/vacuum_nodes.json/read_pressure.r_u16_pressure",
+            "params": []
+        },
+        {
+            "type": "node",
+            "template": "L2_node/system_nodes.json/log.s",
+            "params": ["系统自检通过"]
+        }
+    ]
+}

@@ -1,0 +1,98 @@
+﻿{
+    "type": "group",
+    "name": "抽真空",
+    "description": "完整的抽真空流程：开V1 → 关V2 → 启泵 → 循环检测 → 停泵",
+    "mode": "sequence",
+    "max_nodes": 50,
+    "timeout_ms": 360000,
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/vacuum/all_nodes.json/open_valve.r_b_valve_open",
+            "params": []
+        },
+        {
+            "type": "node",
+            "template": "L2_node/vacuum/all_nodes.json/close_valve.r_b_valve_close",
+            "params": []
+        },
+        {
+            "type": "node",
+            "template": "L2_node/vacuum/all_nodes.json/start_pump.r_b_pump_start",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "循环检测压力",
+            "description": "do-while 循环：先执行一次，然后条件为真时继续",
+            "mode": "loop",
+            "max_nodes": 20,
+            "timeout_ms": 300000,
+            "loop": {
+                "type": "do-while",
+                "condition": "${pressure} > 5"
+            },
+            "body": [
+                {
+                    "type": "node",
+                    "template": "L2_node/vacuum/all_nodes.json/read_pressure.r_u16_pressure",
+                    "params": []
+                },
+                {
+                    "type": "node",
+                    "template": "L2_node/control/all_nodes.json/wait.u16_s.r_b_wait_done",
+                    "params": [ 500 ]
+                }
+            ],
+            "on_success": [
+                {
+                    "type": "log",
+                    "message": "抽真空完成，压力已达标"
+                }
+            ],
+            "on_failure": [
+                {
+                    "type": "log",
+                    "message": "抽真空循环检测失败"
+                }
+            ],
+            "on_timeout": [
+                {
+                    "type": "log",
+                    "message": "抽真空超时（5分钟）"
+                },
+                {
+                    "type": "node",
+                    "template": "L2_node/vacuum/all_nodes.json/stop_pump.r_b_pump_stop",
+                    "params": []
+                },
+                {
+                    "type": "node",
+                    "template": "L2_node/system/all_nodes.json/popup.s_s",
+                    "params": [ "抽真空超时（5分钟），已紧急停止", "error" ]
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/vacuum/all_nodes.json/stop_pump.r_b_pump_stop",
+            "params": []
+        }
+    ],
+    "on_timeout": [
+        {
+            "type": "log",
+            "message": "抽真空组整体超时（6分钟）"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/vacuum/all_nodes.json/stop_pump.r_b_pump_stop",
+            "params": []
+        },
+        {
+            "type": "popup",
+            "message": "抽真空流程整体超时",
+            "level": "error"
+        }
+    ]
+}

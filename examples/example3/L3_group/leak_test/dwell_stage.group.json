@@ -1,0 +1,44 @@
+{
+    "type": "group",
+    "name": "气密性检测保压阶段",
+    "description": "等待压力稳定，记录初始压力",
+    "mode": "sequence",
+    "max_nodes": 10,
+    "delay_between": 0,
+    "confirm_between": false,
+    "body": [
+        {
+            "type": "node",
+            "name": "等待压力稳定",
+            "params": ["${pressure_channel}", "${stable_threshold}", "${dwell_time}"],
+            "timeout_ms": "${dwell_time}",
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/check_pressure_stable.u8_f_u16.r_b_stable"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "记录稳定压力P_start",
+            "params": ["${pressure_channel}"],
+            "timeout_ms": 1000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/read_stable_pressure.u8.r_f_stable_pressure"
+            },
+            "on_success": [
+                { "type": "log", "message": "P_start = ${stable_pressure} kPa" }
+            ],
+            "on_failure": []
+        }
+    ],
+    "args": [
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
+        { "index": 1, "name": "dwell_time", "type": "u16", "default": 5000, "desc": "保压时间(ms)" },
+        { "index": 2, "name": "stable_threshold", "type": "f", "default": 0.1, "desc": "稳定阈值(kPa/s)" }
+    ]
+}

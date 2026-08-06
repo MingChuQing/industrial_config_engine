@@ -1,0 +1,29 @@
+{
+    "type": "node_bundle",
+    "description": "数据计算类执行节点集合",
+    "version": "1.0.0",
+    "nodes": [
+        {
+            "filename": "calculate.s.r_f_calc_result",
+            "type": "node",
+            "name": "计算表达式",
+            "description": "计算数学表达式并返回浮点结果",
+            "params": ["expression"],
+            "timeout_ms": 5000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "action": {
+                "template": "L1_action/data/all_actions.json/calculate.s.r_f_calc_result"
+            },
+            "judge": {
+                "type": "exists"
+            },
+            "on_success": [],
+            "on_failure": [],
+            "on_timeout": [
+                { "type": "log", "message": "计算表达式超时" },
+                { "type": "popup", "message": "计算表达式超时，请检查数据", "level": "error" }
+            ]
+        }
+    ]
+}

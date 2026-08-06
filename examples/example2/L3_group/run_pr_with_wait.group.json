@@ -1,0 +1,53 @@
+{
+    "type": "group",
+    "name": "运行PR并等待完成",
+    "description": "启动PR运行，然后循环检测直到运动完成",
+    "mode": "sequence",
+    "max_nodes": 50,
+    "timeout_ms": 60000,
+    "args": [
+        { "index": 0, "name": "pr_number", "type": "u8", "desc": "PR点位号" },
+        { "index": 1, "name": "timeout", "type": "u16", "default": 30000, "desc": "超时(毫秒)" }
+    ],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/leadshine_nodes.json/start_pr_run.u8.r_b_start_result",
+            "params": ["${pr_number}"]
+        },
+        {
+            "type": "group",
+            "name": "循环等待运动完成",
+            "mode": "loop",
+            "max_nodes": 20,
+            "timeout_ms": "${timeout}",
+            "loop": {
+                "type": "while",
+                "condition": "${motion_done} != true"
+            },
+            "body": [
+                {
+                    "type": "node",
+                    "template": "L2_node/leadshine_nodes.json/check_motion_done.r_b_motion_done",
+                    "params": []
+                },
+                {
+                    "type": "node",
+                    "template": "L2_node/wait_nodes.json/wait_ms.u16.r_b_wait_done",
+                    "params": [100]
+                }
+            ],
+            "on_success": [
+                { "type": "log", "message": "PR${pr_number}运行完成" }
+            ],
+            "on_timeout": [
+                { "type": "log", "message": "PR${pr_number}运行超时" },
+                { "type": "popup", "message": "PR${pr_number}运行超时，请检查电机", "level": "error" }
+            ]
+        }
+    ],
+    "on_timeout": [
+        { "type": "log", "message": "PR${pr_number}运行组超时" },
+        { "type": "popup", "message": "PR${pr_number}运行组超时", "level": "error" }
+    ]
+}

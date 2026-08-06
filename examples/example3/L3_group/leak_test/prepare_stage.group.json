@@ -1,0 +1,94 @@
+{
+    "type": "group",
+    "name": "气密性检测准备阶段",
+    "description": "检查气源、密封圈，闭合夹具，启动气泵",
+    "mode": "sequence",
+    "max_nodes": 20,
+    "delay_between": 500,
+    "confirm_between": false,
+    "body": [
+        {
+            "type": "node",
+            "name": "检查气源压力",
+            "params": ["${pressure_channel}"],
+            "timeout_ms": 2000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/check_air_pressure.u8.r_b_air_ok"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "检查夹具是否打开",
+            "params": [],
+            "timeout_ms": 1000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/check_clamp_open.r_b_clamp_open_ok"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "检查密封圈是否在位",
+            "params": ["${seal_sensor_register}"],
+            "timeout_ms": 1000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/check_seal_ring.u8.r_b_seal_ok"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "启动气泵",
+            "params": ["${pump_output_register}"],
+            "timeout_ms": 3000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/start_air_pump.r_b_pump_start_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "闭合夹具",
+            "params": [],
+            "timeout_ms": 2000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/clamp_workpiece.r_b_clamp_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "确认夹具闭合到位",
+            "params": [],
+            "timeout_ms": 1000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/check_clamp_closed.r_b_clamp_closed"
+            },
+            "on_success": [],
+            "on_failure": []
+        }
+    ],
+    "args": [
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
+        { "index": 1, "name": "seal_sensor_register", "type": "u8", "default": "0x0101", "desc": "密封圈传感器寄存器" },
+        { "index": 2, "name": "pump_output_register", "type": "u8", "default": "0x0201", "desc": "气泵控制输出" }
+    ]
+}

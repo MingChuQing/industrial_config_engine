@@ -1,0 +1,73 @@
+{
+    "type": "group",
+    "name": "气密性检测检测阶段",
+    "description": "检测时间计时，读取最终压力，计算泄漏率",
+    "mode": "sequence",
+    "max_nodes": 10,
+    "delay_between": 0,
+    "confirm_between": false,
+    "body": [
+        {
+            "type": "node",
+            "name": "检测计时等待",
+            "params": ["${test_duration}"],
+            "timeout_ms": "${test_duration} + 2000",
+            "max_retries": 0,
+            "retry_interval": 0,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/wait_test_duration.u16.r_b_wait_done"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "读取最终压力P_end",
+            "params": ["${pressure_channel}"],
+            "timeout_ms": 1000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/read_final_pressure.u8.r_f_final_pressure"
+            },
+            "on_success": [
+                { "type": "log", "message": "P_end = ${final_pressure} kPa" }
+            ],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "计算压降ΔP",
+            "params": ["${p_start}", "${final_pressure}"],
+            "timeout_ms": 1000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/calculate_delta_p.f_f.r_f_delta_p"
+            },
+            "on_success": [
+                { "type": "log", "message": "ΔP = ${delta_p} kPa" }
+            ],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "计算泄漏率",
+            "params": ["${delta_p}", "${test_duration}"],
+            "timeout_ms": 1000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/calculate_leak_rate.f_f.r_f_leak_rate"
+            },
+            "on_success": [
+                { "type": "log", "message": "泄漏率 = ${leak_rate} kPa/min" }
+            ],
+            "on_failure": []
+        }
+    ],
+    "args": [
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
+        { "index": 1, "name": "test_duration", "type": "u16", "default": 30000, "desc": "检测时间(ms)" }
+    ]
+}

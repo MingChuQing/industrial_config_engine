@@ -1,0 +1,36 @@
+{
+"type": "action_bundle",
+"description": "控制类原子操作集合",
+"version": "1.0.0",
+"actions": [
+{
+"filename": "wait.u16_s.r_b_wait_done",
+"type": "wait",
+"description": "等待指定时间",
+"duration": "
+d
+u
+r
+a
+t
+i
+o
+n
+"
+,
+"
+u
+n
+i
+t
+"
+:
+"
+duration","unit":"{unit}",
+"args": [
+{ "index": 0, "name": "duration", "type": "u16", "min": 1, "max": 65535, "desc": "等待时长" },
+{ "index": 1, "name": "unit", "type": "s", "enum": ["ms", "seconds", "minutes"], "default": "seconds", "desc": "时间单位" }
+]
+}
+]
+}

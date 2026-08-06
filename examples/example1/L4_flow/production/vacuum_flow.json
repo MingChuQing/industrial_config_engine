@@ -1,0 +1,122 @@
+{
+"type": "flow",
+"name": "真空工艺流程",
+"description": "完整的真空抽气工艺流程，包含参数配置、抽真空、保压和泄漏检测",
+"version": "2.1.0",
+"timeout_ms": 7200000,
+"max_retries": 0,
+"profiles": {
+"test": {
+"description": "测试模式 - 使用宽松参数",
+"params": {
+"vacuum_target": 10.0,
+"pump_timeout": 120000,
+"hold_time": 30,
+"leak_threshold": 2.0,
+"confirm_between": false
+}
+},
+"production": {
+"description": "生产模式 - 标准工艺参数",
+"params": {
+"vacuum_target": 5.0,
+"pump_timeout": 300000,
+"hold_time": 60,
+"leak_threshold": 0.5,
+"confirm_between": false
+}
+},
+"high_precision": {
+"description": "高精度模式 - 严格工艺参数",
+"params": {
+"vacuum_target": 1.0,
+"pump_timeout": 600000,
+"hold_time": 120,
+"leak_threshold": 0.1,
+"confirm_between": false
+}
+},
+"debug": {
+"description": "调试模式 - 每步需要用户确认",
+"params": {
+"vacuum_target": 5.0,
+"pump_timeout": 600000,
+"hold_time": 60,
+"leak_threshold": 0.5,
+"confirm_between": true
+}
+}
+},
+"active_profile": "production",
+"body": [
+{
+"type": "group",
+"name": "阶段1：系统自检",
+"template": "L3_group/common/system_check.group",
+"timeout_ms": 30000,
+"confirm_between": "{profile.confirm_between}" }, { "type": "group", "name": "阶段2：抽真空", "template": "L3_group/vacuum/pump_down.group", "timeout_ms": "{profile.pump_timeout}",
+"confirm_between": "{profile.confirm_between}" }, { "type": "group", "name": "阶段3：保压测试", "template": "L3_group/vacuum/hold_pressure.group", "timeout_ms": 180000, "confirm_between": "{profile.confirm_between}"
+},
+{
+"type": "group",
+"name": "阶段4：泄漏检测",
+"template": "L3_group/vacuum/leak_test.group",
+"timeout_ms": 120000,
+"confirm_between": "{profile.confirm_between}" }, { "type": "group", "name": "阶段5：结果记录", "template": "L3_group/common/log_result.group", "timeout_ms": 10000, "confirm_between": "{profile.confirm_between}"
+}
+],
+"on_timeout": [
+{ "type": "log", "message": "[TIMEOUT] 真空工艺流程整体超时" },
+{
+"type": "group",
+"template": "L3_group/common/emergency_stop.group"
+},
+{
+"type": "node",
+"name": "超时告警",
+"result_key": "popup_result",
+"params": ["真空工艺流程超时，已自动停止", "error"],
+"timeout_ms": 3000,
+"max_retries": 0,
+"retry_interval": 0,
+"action": { "template": "L1_action/system/popup.s_s" },
+"on_success": [],
+"on_failure": []
+}
+],
+"on_emergency_cleanup": {
+"type": "sequence",
+"body": [
+{
+"type": "group",
+"name": "全局紧急关机",
+"template": "L3_group/common/emergency_stop.group"
+},
+{
+"type": "node",
+"name": "急停日志",
+"result_key": "log_result",
+"params": ["[EMERGENCY] 真空工艺流程急停清理完成"],
+"timeout_ms": 2000,
+"max_retries": 2,
+"retry_interval": 500,
+"action": { "template": "L1_action/system/log.s" },
+"on_success": [],
+"on_failure": []
+},
+{
+"type": "node",
+"name": "急停弹框",
+"result_key": "popup_result",
+"params": ["系统已紧急停止！请检查安全后重置", "error"],
+"timeout_ms": 3000,
+"max_retries": 0,
+"retry_interval": 0,
+"action": { "template": "L1_action/system/popup.s_s" },
+"on_success": [],
+"on_failure": []
+}
+],
+"inherit_parent": "skip"
+}
+}

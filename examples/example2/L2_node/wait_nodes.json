@@ -1,0 +1,75 @@
+{
+    "type": "node_bundle",
+    "description": "等待类执行节点集合",
+    "version": "1.0.0",
+    "nodes": [
+        {
+            "filename": "wait_ms.u16.r_b_wait_done",
+            "type": "node",
+            "name": "等待指定毫秒",
+            "description": "等待指定毫秒数",
+            "params": [100],
+            "timeout_ms": 10000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "action": {
+                "template": "L1_action/control_actions.json/wait.u16.r_b_wait_done"
+            },
+            "judge": {
+                "type": "exists"
+            },
+            "on_success": [
+                {
+                    "type": "log",
+                    "message": "等待${param_0}ms完成"
+                }
+            ],
+            "on_failure": [
+                {
+                    "type": "log",
+                    "message": "等待失败"
+                }
+            ],
+            "on_timeout": [
+                {
+                    "type": "log",
+                    "message": "等待超时"
+                }
+            ]
+        },
+        {
+            "filename": "wait_seconds.u16.r_b_wait_done",
+            "type": "node",
+            "name": "等待指定秒数",
+            "description": "等待指定秒数",
+            "params": [1],
+            "timeout_ms": 60000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "action": {
+                "template": "L1_action/control_actions.json/wait_seconds.u16.r_b_wait_done"
+            },
+            "judge": {
+                "type": "exists"
+            },
+            "on_success": [
+                {
+                    "type": "log",
+                    "message": "等待${param_0}秒完成"
+                }
+            ],
+            "on_failure": [
+                {
+                    "type": "log",
+                    "message": "等待失败"
+                }
+            ],
+            "on_timeout": [
+                {
+                    "type": "log",
+                    "message": "等待超时"
+                }
+            ]
+        }
+    ]
+}

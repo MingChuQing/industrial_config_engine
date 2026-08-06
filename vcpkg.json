@@ -1,0 +1,8 @@
+{
+	"name": "industrial-config-engine",
+	"version": "1.0.0",
+	"description": "工业配置引擎 - L1原子操作解析库",
+	"dependencies": [
+		"nlohmann-json"
+	]
+}

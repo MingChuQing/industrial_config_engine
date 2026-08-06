@@ -1,0 +1,524 @@
+﻿{
+    "type": "action_bundle",
+    "description": "  iDM 系列步进电机原子操作集合 v2.0",
+    "version": "2.0.0",
+    "actions": [
+        {
+            "filename": "write_register.u16_u16.r_b_write_result",
+            "type": "modbus_write_verify",
+            "description": "写入单个16位寄存器，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 ${register} ${value_high} ${value_low}",
+            "response": "06 ${register} ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                {
+                    "index": 0,
+                    "name": "register",
+                    "type": "u16",
+                    "min": 0,
+                    "max": 65535,
+                    "desc": "寄存器地址"
+                },
+                {
+                    "index": 1,
+                    "name": "value",
+                    "type": "u16",
+                    "min": 0,
+                    "max": 65535,
+                    "desc": "写入值"
+                }
+            ]
+        },
+        {
+            "filename": "read_register.u8_u16.r_u16_register_value",
+            "type": "modbus_read_cache",
+            "description": "读取单个16位寄存器，返回uint16值",
+            "protocol": "modbus",
+            "request": "03 ${register} 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": "${timeout}",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "register",
+                    "type": "u8",
+                    "min": 0,
+                    "max": 255,
+                    "desc": "寄存器地址"
+                },
+                {
+                    "index": 1,
+                    "name": "timeout",
+                    "type": "u16",
+                    "min": 500,
+                    "max": 10000,
+                    "default": 2000,
+                    "desc": "超时(毫秒)"
+                }
+            ]
+        },
+        {
+            "filename": "read_register_32.u8_u16.r_i32_position",
+            "type": "modbus_read_cache",
+            "description": "读取32位寄存器（两个连续寄存器），返回int32值",
+            "protocol": "modbus",
+            "request": "03 ${register} 00 02",
+            "parse": {
+                "start_byte": 2,
+                "length": 4,
+                "endian": "big",
+                "type": "int32"
+            },
+            "timeout_ms": "${timeout}",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "register",
+                    "type": "u8",
+                    "min": 0,
+                    "max": 255,
+                    "desc": "寄存器起始地址"
+                },
+                {
+                    "index": 1,
+                    "name": "timeout",
+                    "type": "u16",
+                    "min": 500,
+                    "max": 10000,
+                    "default": 2000,
+                    "desc": "超时(毫秒)"
+                }
+            ]
+        },
+        {
+            "filename": "check_register.u8_s_u16_u16.r_b_check_result",
+            "type": "modbus_read_check",
+            "description": "读取寄存器并检查条件，返回布尔值",
+            "protocol": "modbus",
+            "request": "03 ${register} 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "check": {
+                "condition": "${condition}",
+                "value": "${compare_value}"
+            },
+            "timeout_ms": "${timeout}",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "register",
+                    "type": "u8",
+                    "min": 0,
+                    "max": 255,
+                    "desc": "寄存器地址"
+                },
+                {
+                    "index": 1,
+                    "name": "condition",
+                    "type": "s",
+                    "enum": [ "eq", "ne", "lt", "le", "gt", "ge" ],
+                    "desc": "比较条件"
+                },
+                {
+                    "index": 2,
+                    "name": "compare_value",
+                    "type": "u16",
+                    "min": 0,
+                    "max": 65535,
+                    "desc": "比较值"
+                },
+                {
+                    "index": 3,
+                    "name": "timeout",
+                    "type": "u16",
+                    "min": 500,
+                    "max": 10000,
+                    "default": 2000,
+                    "desc": "超时(毫秒)"
+                }
+            ]
+        },
+        {
+            "filename": "write_control_word.u16.r_b_control_result",
+            "type": "modbus_write_verify",
+            "description": "写入控制字 (0x1801)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 18 01 ${value_high} ${value_low}",
+            "response": "06 18 01 ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16",
+                    "min": 0,
+                    "max": 65535,
+                    "desc": "控制字值"
+                }
+            ]
+        },
+        {
+            "filename": "read_status.r_u16_motor_status",
+            "type": "modbus_read_cache",
+            "description": "读取运行状态 (0x1003)，返回uint16值",
+            "protocol": "modbus",
+            "request": "03 10 03 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": 2000
+        },
+        {
+            "filename": "read_alarm.r_u16_alarm_code",
+            "type": "modbus_read_cache",
+            "description": "读取当前报警 (0x2203)，返回uint16值",
+            "protocol": "modbus",
+            "request": "03 22 03 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": 2000
+        },
+        {
+            "filename": "motor_enable.r_b_enable_result",
+            "type": "modbus_write_verify",
+            "description": "电机使能 (0x1801 = 0x0001)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 18 01 00 01",
+            "response": "06 18 01 00 01",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "motor_disable.r_b_disable_result",
+            "type": "modbus_write_verify",
+            "description": "电机关闭使能 (0x1801 = 0x0000)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 18 01 00 00",
+            "response": "06 18 01 00 00",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "jog_forward.r_b_jog_result",
+            "type": "modbus_write_verify",
+            "description": "JOG 正转 (控制字 0x4001)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 18 01 40 01",
+            "response": "06 18 01 40 01",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "jog_reverse.r_b_jog_result",
+            "type": "modbus_write_verify",
+            "description": "JOG 反转 (控制字 0x4002)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 18 01 40 02",
+            "response": "06 18 01 40 02",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "jog_stop.r_b_jog_stop_result",
+            "type": "modbus_write_verify",
+            "description": "JOG 停止 (控制字 0x0000)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 18 01 00 00",
+            "response": "06 18 01 00 00",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "trigger_pr.u16.r_b_pr_result",
+            "type": "modbus_write_verify",
+            "description": "触发 PR 路径 (0x6002)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 60 02 ${value_high} ${value_low}",
+            "response": "06 60 02 ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16",
+                    "min": 0,
+                    "max": 65535,
+                    "desc": "触发值: 0x001P=路径P, 0x0020=回零, 0x0040=急停"
+                }
+            ]
+        },
+        {
+            "filename": "trigger_homing.r_b_homing_result",
+            "type": "modbus_write_verify",
+            "description": "触发回零 (0x6002 = 0x0020)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 60 02 00 20",
+            "response": "06 60 02 00 20",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "motor_emergency_stop.r_b_estop_result",
+            "type": "modbus_write_verify",
+            "description": "电机紧急停止 (0x6002 = 0x0040)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 60 02 00 40",
+            "response": "06 60 02 00 40",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "set_homing_mode.u16.r_b_mode_result",
+            "type": "modbus_write_verify",
+            "description": "设置回零模式 (0x600A)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 60 0A ${value_high} ${value_low}",
+            "response": "06 60 0A ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16",
+                    "min": 0,
+                    "max": 65535,
+                    "desc": "回零模式: bit2=1原点回零, bit2=0限位回零"
+                }
+            ]
+        },
+        {
+            "filename": "set_pr_mode.u16.r_b_pr_mode_result",
+            "type": "modbus_write_verify",
+            "description": "设置 PR 路径模式 (0x6200)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 62 00 ${value_high} ${value_low}",
+            "response": "06 62 00 ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16",
+                    "min": 0,
+                    "max": 65535,
+                    "desc": "模式值: 0x0001=绝对位置, 0x0002=速度模式, 0x0003=回零"
+                }
+            ]
+        },
+        {
+            "filename": "set_position_high.u16.r_b_position_result",
+            "type": "modbus_write_verify",
+            "description": "写入32位位置的高16位 (0x6201)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 62 01 ${value_high} ${value_low}",
+            "response": "06 62 01 ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16",
+                    "min": 0,
+                    "max": 65535,
+                    "desc": "高16位值"
+                }
+            ]
+        },
+        {
+            "filename": "set_position_low.u16.r_b_position_result",
+            "type": "modbus_write_verify",
+            "description": "写入32位位置的低16位 (0x6202)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 62 02 ${value_high} ${value_low}",
+            "response": "06 62 02 ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16",
+                    "min": 0,
+                    "max": 65535,
+                    "desc": "低16位值"
+                }
+            ]
+        },
+        {
+            "filename": "set_jog_speed.u16.r_b_jog_speed_result",
+            "type": "modbus_write_verify",
+            "description": "设置 JOG 速度 (0x01E1)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 01 E1 ${value_high} ${value_low}",
+            "response": "06 01 E1 ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16",
+                    "min": 0,
+                    "max": 6000,
+                    "desc": "JOG 速度 (rpm)"
+                }
+            ]
+        },
+        {
+            "filename": "set_jog_acc.u16.r_b_jog_acc_result",
+            "type": "modbus_write_verify",
+            "description": "设置 JOG 加减速时间 (0x01E7)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 01 E7 ${value_high} ${value_low}",
+            "response": "06 01 E7 ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16",
+                    "min": 10,
+                    "max": 10000,
+                    "desc": "加减速时间 (ms)"
+                }
+            ]
+        },
+        {
+            "filename": "save_parameters.r_b_save_result",
+            "type": "modbus_write_verify",
+            "description": "保存所有参数到 EEPROM (0x1801 = 0x2211)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 18 01 22 11",
+            "response": "06 18 01 22 11",
+            "timeout_ms": 5000
+        },
+        {
+            "filename": "reset_alarm.r_b_reset_result",
+            "type": "modbus_write_verify",
+            "description": "复位当前报警 (0x1801 = 0x1111)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 18 01 11 11",
+            "response": "06 18 01 11 11",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "reset_to_default.r_b_default_result",
+            "type": "modbus_write_verify",
+            "description": "恢复出厂设置 (0x1801 = 0x2233)，返回布尔值",
+            "protocol": "modbus",
+            "request": "06 18 01 22 33",
+            "response": "06 18 01 22 33",
+            "timeout_ms": 5000
+        },
+        {
+            "filename": "read_position.r_i32_motor_position",
+            "type": "modbus_read_cache",
+            "description": "读取电机当前位置 (0x602C, 0x602D)，返回int32值",
+            "protocol": "modbus",
+            "request": "03 60 2C 00 02",
+            "parse": {
+                "start_byte": 2,
+                "length": 4,
+                "endian": "big",
+                "type": "int32"
+            },
+            "timeout_ms": 2000
+        },
+        {
+            "filename": "wait.u16_s.r_b_wait_done",
+            "type": "wait",
+            "description": "等待指定时间，返回布尔值",
+            "duration": "${duration}",
+            "unit": "${unit}",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "duration",
+                    "type": "u16",
+                    "min": 1,
+                    "max": 3600,
+                    "desc": "等待时长"
+                },
+                {
+                    "index": 1,
+                    "name": "unit",
+                    "type": "s",
+                    "enum": [ "seconds", "milliseconds" ],
+                    "default": "seconds",
+                    "desc": "时间单位"
+                }
+            ]
+        },
+        {
+            "filename": "log.s",
+            "type": "log",
+            "description": "写入日志信息",
+            "message": "${message}",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "message",
+                    "type": "s",
+                    "desc": "日志内容"
+                }
+            ]
+        },
+        {
+            "filename": "popup.s_s",
+            "type": "popup",
+            "description": "弹框提示用户",
+            "message": "${message}",
+            "level": "${level}",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "message",
+                    "type": "s",
+                    "desc": "提示内容"
+                },
+                {
+                    "index": 1,
+                    "name": "level",
+                    "type": "s",
+                    "enum": [ "info", "warning", "error", "success" ],
+                    "default": "info",
+                    "desc": "提示级别"
+                }
+            ]
+        },
+        {
+            "filename": "show_status.s_s",
+            "type": "ui_action",
+            "description": "更新状态显示",
+            "action": "update_status",
+            "data": {
+                "text": "${text}",
+                "color": "${color}"
+            },
+            "args": [
+                {
+                    "index": 0,
+                    "name": "text",
+                    "type": "s",
+                    "desc": "状态文字"
+                },
+                {
+                    "index": 1,
+                    "name": "color",
+                    "type": "s",
+                    "enum": [ "red", "green", "blue", "yellow", "orange" ],
+                    "default": "blue",
+                    "desc": "颜色"
+                }
+            ]
+        }
+    ]
+}

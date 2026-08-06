@@ -1,0 +1,88 @@
+{
+    "type": "action_bundle",
+    "description": "Modbus 通信类原子操作集合",
+    "version": "1.0.0",
+    "actions": [
+        {
+            "filename": "write_register_fixed.r_b_pump_start",
+            "type": "modbus_write_verify",
+            "protocol": "modbus",
+            "device": "Pump",
+            "description": "启动真空泵（固定寄存器0x6000，值0x0001）",
+            "request": "06 60 00 00 01",
+            "response": "06 60 00 00 01",
+            "timeout_ms": 3000,
+            "args": []
+        },
+        {
+            "filename": "write_register.u16_u16.r_b_write_result",
+            "type": "modbus_write_verify",
+            "protocol": "modbus",
+            "device": "Pump",
+            "description": "写入单个寄存器",
+            "request": "06 ${register} ${value}",
+            "response": "06 ${register} ${value}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "register", "type": "u16", "min": 0, "max": 65535, "desc": "寄存器地址" },
+                { "index": 1, "name": "value", "type": "u16", "min": 0, "max": 65535, "desc": "写入值" }
+            ]
+        },
+        {
+            "filename": "write_coil_on.r_b_coil_on_result",
+            "type": "modbus_write_verify",
+            "protocol": "modbus",
+            "device": "Valve",
+            "description": "开启线圈",
+            "request": "05 ${coil} FF 00",
+            "response": "05 ${coil} FF 00",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "coil", "type": "u16", "min": 0, "max": 65535, "desc": "线圈地址" }
+            ]
+        },
+        {
+            "filename": "write_coil_off.r_b_coil_off_result",
+            "type": "modbus_write_verify",
+            "protocol": "modbus",
+            "device": "Valve",
+            "description": "关闭线圈",
+            "request": "05 ${coil} 00 00",
+            "response": "05 ${coil} 00 00",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "coil", "type": "u16", "min": 0, "max": 65535, "desc": "线圈地址" }
+            ]
+        },
+        {
+            "filename": "read_register.u8_u16.r_u16_pressure",
+            "type": "modbus_read_cache",
+            "protocol": "modbus",
+            "device": "Gauge",
+            "description": "读取单个寄存器值",
+            "request": "03 ${register} 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": "${timeout}",
+            "args": [
+                { "index": 0, "name": "register", "type": "u8", "min": 0, "max": 255, "desc": "寄存器地址" },
+                { "index": 1, "name": "timeout", "type": "u16", "min": 500, "max": 10000, "default": 2000, "desc": "超时(毫秒)" }
+            ]
+        },
+        {
+            "filename": "write_register_fixed_stop.r_b_pump_stop",
+            "type": "modbus_write_verify",
+            "protocol": "modbus",
+            "device": "Pump",
+            "description": "停止真空泵（固定寄存器0x6000，值0x0000）",
+            "request": "06 60 00 00 00",
+            "response": "06 60 00 00 00",
+            "timeout_ms": 3000,
+            "args": []
+        }
+    ]
+}

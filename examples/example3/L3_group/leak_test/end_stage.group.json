@@ -1,0 +1,80 @@
+{
+    "type": "group",
+    "name": "气密性检测结束阶段",
+    "description": "排气、打开夹具、停止气泵",
+    "mode": "sequence",
+    "max_nodes": 15,
+    "delay_between": 300,
+    "confirm_between": false,
+    "body": [
+        {
+            "type": "node",
+            "name": "打开排气阀",
+            "params": [],
+            "timeout_ms": 1000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/open_exhaust_valve.r_b_valve_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "等待压力归零",
+            "params": ["${pressure_channel}", 0.01, 5000],
+            "timeout_ms": 5000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/wait_pressure_zero.u8_f_u16.r_b_pressure_zero"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "关闭排气阀",
+            "params": [],
+            "timeout_ms": 1000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/close_exhaust_valve.r_b_valve_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "打开夹具",
+            "params": [],
+            "timeout_ms": 2000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/clamp_open_workpiece.r_b_clamp_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "停止气泵",
+            "params": ["${pump_output_register}"],
+            "timeout_ms": 1000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/stop_air_pump.r_b_pump_stop_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        }
+    ],
+    "args": [
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
+        { "index": 1, "name": "pump_output_register", "type": "u8", "default": 0x0201, "desc": "气泵控制输出" }
+    ]
+}

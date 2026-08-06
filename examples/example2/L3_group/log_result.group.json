@@ -1,0 +1,23 @@
+{
+    "type": "group",
+    "name": "结果记录",
+    "description": "记录工艺执行结果",
+    "mode": "sequence",
+    "max_nodes": 10,
+    "timeout_ms": 10000,
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/system_nodes.json/log.s",
+            "params": ["真空工艺流程执行完成，目标压力=${profile.vacuum_target}Pa，最终压力=${hold_pressure}Pa，泄漏率=${leak_rate}%"]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/system_nodes.json/popup.s_s",
+            "params": ["真空工艺流程执行完成", "success"]
+        }
+    ],
+    "on_timeout": [
+        { "type": "log", "message": "结果记录超时" }
+    ]
+}

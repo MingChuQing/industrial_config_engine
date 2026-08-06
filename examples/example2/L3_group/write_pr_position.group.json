@@ -1,0 +1,28 @@
+{
+    "type": "group",
+    "name": "写入并验证PR点位",
+    "description": "写入PR点位坐标并验证",
+    "mode": "sequence",
+    "max_nodes": 20,
+    "timeout_ms": 30000,
+    "args": [
+        { "index": 0, "name": "pr_number", "type": "u8", "desc": "PR点位号" },
+        { "index": 1, "name": "position", "type": "i32", "desc": "目标位置(脉冲数)" }
+    ],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/leadshine_nodes.json/write_pr_position.u8_i32.r_b_write_pr_result",
+            "params": ["${pr_number}", "${position}"]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/leadshine_nodes.json/verify_pr_position.u8_i32.r_b_verify_result",
+            "params": ["${pr_number}", "${position}"]
+        }
+    ],
+    "on_timeout": [
+        { "type": "log", "message": "写入并验证PR${pr_number}超时" },
+        { "type": "popup", "message": "写入并验证PR${pr_number}超时", "level": "error" }
+    ]
+}

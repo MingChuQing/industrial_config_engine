@@ -1,0 +1,48 @@
+﻿# Build directories
+build/
+cmake-build-*/
+out/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Compiled files
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+*.o
+*.obj
+*.pdb
+*.exp
+*.ilk
+
+# Test output
+Testing/
+*.gcda
+*.gcno
+*.gcov
+
+# vcpkg local install (依赖安装目录)
+vcpkg_installed/
+vcpkg-manifest-install/
+
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 忽略所有PDF和TXT文件
+*.pdf
+*.txt
+
+# 忽略特定目录
+docs/device/
+examples/docs/
+examples/device_examples/

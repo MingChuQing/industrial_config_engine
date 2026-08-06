@@ -1,0 +1,136 @@
+{
+    "type": "group",
+    "name": "气密性检测判断阶段",
+    "description": "判断泄漏率是否合格，输出结果",
+    "mode": "if",
+    "max_nodes": 20,
+    "condition": {
+        "type": "expression",
+        "expression": "${leak_ok} == true"
+    },
+    "then": [
+        {
+            "type": "node",
+            "name": "设置结果PASS",
+            "params": ["PASS"],
+            "timeout_ms": 1000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/set_test_result.s.r_b_set_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "设置绿灯",
+            "params": ["green"],
+            "timeout_ms": 1000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/set_result_led.s.r_b_led_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "保存PASS记录",
+            "params": ["${product_id}", "${leak_rate}", "PASS", "${timestamp}"],
+            "timeout_ms": 3000,
+            "max_retries": 3,
+            "retry_interval": 1000,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/save_test_record.s_f_f_s_s.r_b_save_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "显示PASS弹窗",
+            "params": ["气密性检测通过！泄漏率=${leak_rate}kPa/min", "success"],
+            "timeout_ms": 5000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/show_result_popup.s_s"
+            },
+            "on_success": [],
+            "on_failure": []
+        }
+    ],
+    "else": [
+        {
+            "type": "node",
+            "name": "设置结果FAIL",
+            "params": ["FAIL"],
+            "timeout_ms": 1000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/set_test_result.s.r_b_set_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "设置红灯",
+            "params": ["red"],
+            "timeout_ms": 1000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/set_result_led.s.r_b_led_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "蜂鸣报警3秒",
+            "params": [3],
+            "timeout_ms": 4000,
+            "max_retries": 3,
+            "retry_interval": 500,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/beep_alert.u8.r_b_beep_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "保存FAIL记录",
+            "params": ["${product_id}", "${leak_rate}", "FAIL", "${timestamp}"],
+            "timeout_ms": 3000,
+            "max_retries": 3,
+            "retry_interval": 1000,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/save_test_record.s_f_f_s_s.r_b_save_result"
+            },
+            "on_success": [],
+            "on_failure": []
+        },
+        {
+            "type": "node",
+            "name": "显示FAIL弹窗",
+            "params": ["气密性检测不通过！泄漏率=${leak_rate}kPa/min，标准≤${leak_rate_standard}", "error"],
+            "timeout_ms": 5000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "node": {
+                "template": "L2_node/leak_test/all_nodes.json/show_result_popup.s_s"
+            },
+            "on_success": [],
+            "on_failure": []
+        }
+    ],
+    "args": [
+        { "index": 0, "name": "leak_rate_standard", "type": "f", "default": 0.5, "desc": "泄漏率标准(kPa/min)" },
+        { "index": 1, "name": "product_id", "type": "s", "default": "UNKNOWN", "desc": "产品ID" }
+    ]
+}
