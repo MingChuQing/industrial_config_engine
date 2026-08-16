@@ -22,7 +22,7 @@
             "name": "通知开始检测",
             "params": ["产品已放置到测试工位，开始气密性检测"],
             "node": {
-                "template": "L2_node/log/print.s"
+                "template": "L2_node/log_nodes.json/print.s"
             },
             "on_success": [],
             "on_failure": []
@@ -52,7 +52,7 @@
                     "name": "记录合格品",
                     "params": ["产品${product_id}合格，已放入合格品区"],
                     "node": {
-                        "template": "L2_node/log/print.s"
+                        "template": "L2_node/log_nodes.json/print.s"
                     },
                     "on_success": [],
                     "on_failure": []
@@ -70,7 +70,7 @@
                     "name": "记录不合格品",
                     "params": ["产品${product_id}不合格，已放入不合格品区"],
                     "node": {
-                        "template": "L2_node/log/print.s"
+                        "template": "L2_node/log_nodes.json/print.s"
                     },
                     "on_success": [],
                     "on_failure": []

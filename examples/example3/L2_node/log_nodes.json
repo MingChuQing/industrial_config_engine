@@ -1,0 +1,26 @@
+{
+    "type": "node_bundle",
+    "description": "日志类执行节点集合",
+    "version": "1.0.0",
+    "nodes": [
+        {
+            "filename": "print.s",
+            "type": "node",
+            "name": "打印日志",
+            "description": "输出日志消息",
+            "params": ["日志内容"],
+            "timeout_ms": 1000,
+            "max_retries": 0,
+            "retry_interval": 0,
+            "action": {
+                "template": "L1_action/system_actions.json/log.s"
+            },
+            "judge": {
+                "type": "exists"
+            },
+            "on_success": [],
+            "on_failure": [],
+            "on_timeout": []
+        }
+    ]
+}

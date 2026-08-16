@@ -1,0 +1,9 @@
+{
+    "filename": "set.s_s",
+    "type": "set_variable",
+    "description": "设置变量（key, value）",
+    "args": [
+        { "index": 0, "name": "key", "type": "s", "desc": "变量名" },
+        { "index": 1, "name": "value", "type": "s", "desc": "变量值" }
+    ]
+}

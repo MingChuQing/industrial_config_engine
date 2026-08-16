@@ -1,0 +1,9 @@
+{
+    "filename": "wait.u16_s.r_b_wait_done",
+    "type": "wait",
+    "description": "等待指定时长（duration, unit: ms/s）",
+    "args": [
+        { "index": 0, "name": "duration", "type": "u16", "desc": "时长" },
+        { "index": 1, "name": "unit", "type": "s", "default": "ms", "desc": "单位 ms/s" }
+    ]
+}

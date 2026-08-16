@@ -1,0 +1,40 @@
+{
+    "type": "group",
+    "name": "PR点位精确定位",
+    "description": "运行PR点位 → 点动找光电 → 保存精确位置",
+    "mode": "sequence",
+    "max_nodes": 30,
+    "timeout_ms": 90000,
+    "args": [
+        { "index": 0, "name": "pr_number", "type": "u8", "desc": "PR点位号" },
+        { "index": 1, "name": "sensor_register", "type": "u8", "desc": "光电开关寄存器地址" },
+        { "index": 2, "name": "result_key", "type": "s", "desc": "结果保存的变量名" },
+        { "index": 3, "name": "timeout", "type": "u16", "default": 30000, "desc": "超时(毫秒)" }
+    ],
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/positioning/run_pr_with_wait.group.json",
+            "params": ["${pr_number}", "${timeout}"]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/positioning/jog_find_sensor.group.json",
+            "params": ["${sensor_register}", "${timeout}"]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/variable_nodes.json/set_variable.s_s",
+            "params": ["${result_key}", "${current_position}"]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/log_nodes.json/print.s",
+            "params": ["PR${pr_number}精确定位完成，位置已保存到${result_key}：${current_position}"]
+        }
+    ],
+    "on_timeout": [
+        { "type": "log", "message": "PR${pr_number}精确定位超时" },
+        { "type": "popup", "message": "PR${pr_number}精确定位超时", "level": "error" }
+    ]
+}

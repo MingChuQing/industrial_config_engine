@@ -1,0 +1,122 @@
+﻿{
+    "type": "action_bundle",
+    "description": " 电机控制类原子操作集合",
+    "version": "1.0.0",
+    "actions": [
+        {
+            "filename": "write_pr_position.u8_i32.r_b_write_pr_result",
+            "type": "modbus_write_verify",
+            "description": "写入PR点位坐标（32位）",
+            "protocol": "modbus",
+            "request": "06 00 20 ${pr_number} ${position_high} ${position_mid} ${position_low}",
+            "response": "06 00 20 ${pr_number} ${position_high} ${position_mid} ${position_low}",
+            "timeout_ms": 5000,
+            "args": [
+                { "index": 0, "name": "pr_number", "type": "u8", "min": 0, "max": 255 },
+                { "index": 1, "name": "position", "type": "i32" }
+            ]
+        },
+        {
+            "filename": "read_pr_position.u8.r_i32_pr_position",
+            "type": "modbus_read_cache",
+            "description": "读取PR点位坐标",
+            "protocol": "modbus",
+            "request": "03 00 20 ${pr_number} 00 02",
+            "parse": {
+                "start_byte": 2,
+                "length": 4,
+                "endian": "big",
+                "type": "int32"
+            },
+            "timeout_ms": 2000,
+            "args": [
+                { "index": 0, "name": "pr_number", "type": "u8", "min": 0, "max": 255 }
+            ]
+        },
+        {
+            "filename": "pr_run.u8.r_b_pr_run_result",
+            "type": "modbus_write_verify",
+            "description": "触发PR点位运行",
+            "protocol": "modbus",
+            "request": "06 00 02 ${pr_number} 00 01",
+            "response": "06 00 02 ${pr_number} 00 01",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "pr_number", "type": "u8", "min": 0, "max": 255 }
+            ]
+        },
+        {
+            "filename": "check_motion_done.r_b_motion_done",
+            "type": "modbus_read_check",
+            "description": "检查电机运动是否完成",
+            "protocol": "modbus",
+            "request": "03 00 10 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "check": {
+                "condition": "eq",
+                "value": 0
+            },
+            "timeout_ms": 1000,
+            "args": []
+        },
+        {
+            "filename": "jog_start.u16.r_b_jog_start_result",
+            "type": "modbus_write_verify",
+            "description": "启动正向点动",
+            "protocol": "modbus",
+            "request": "06 00 03 ${speed_high} ${speed_low} 06 00 04 00 01",
+            "response": "06 00 03 ${speed_high} ${speed_low}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "speed", "type": "u16", "min": 1, "max": 100, "default": 10 }
+            ]
+        },
+        {
+            "filename": "jog_stop.r_b_jog_stop_result",
+            "type": "modbus_write_verify",
+            "description": "停止点动",
+            "protocol": "modbus",
+            "request": "06 00 04 00 00",
+            "response": "06 00 04 00 00",
+            "timeout_ms": 3000,
+            "args": []
+        },
+        {
+            "filename": "read_sensor.u8.r_u16_sensor_value",
+            "type": "modbus_read_cache",
+            "description": "读取光电开关状态",
+            "protocol": "modbus",
+            "request": "03 ${register} 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": 1000,
+            "args": [
+                { "index": 0, "name": "register", "type": "u8", "min": 0, "max": 255 }
+            ]
+        },
+        {
+            "filename": "read_current_position.r_i32_current_position",
+            "type": "modbus_read_cache",
+            "description": "读取当前绝对位置（32位）",
+            "protocol": "modbus",
+            "request": "03 00 10 00 02",
+            "parse": {
+                "start_byte": 2,
+                "length": 4,
+                "endian": "big",
+                "type": "int32"
+            },
+            "timeout_ms": 2000,
+            "args": []
+        }
+    ]
+}

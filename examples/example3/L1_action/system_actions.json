@@ -1,0 +1,33 @@
+{
+    "type": "action_bundle",
+    "description": "系统控制类原子操作集合",
+    "version": "1.0.0",
+    "actions": [
+        {
+            "filename": "log.s",
+            "type": "log",
+            "description": "写入日志",
+            "args": [
+                { "index": 0, "name": "message", "type": "s" }
+            ]
+        },
+        {
+            "filename": "popup.s_s",
+            "type": "popup",
+            "description": "显示弹窗提示",
+            "args": [
+                { "index": 0, "name": "message", "type": "s" },
+                { "index": 1, "name": "level", "type": "s", "enum": ["info", "warning", "error", "success"], "default": "info" }
+            ]
+        },
+        {
+            "filename": "set_variable.s_s",
+            "type": "set",
+            "description": "设置变量值",
+            "args": [
+                { "index": 0, "name": "key", "type": "s" },
+                { "index": 1, "name": "value", "type": "s" }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "type": "action_bundle",
+    "description": "数据计算类原子操作集合",
+    "version": "1.0.0",
+    "actions": [
+        {
+            "filename": "calculate.s.r_f_calc_result",
+            "type": "calculate",
+            "description": "计算数学表达式并返回浮点结果",
+            "args": [
+                { "index": 0, "name": "expression", "type": "s" }
+            ]
+        }
+    ]
+}

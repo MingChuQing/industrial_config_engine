@@ -1,0 +1,73 @@
+{
+    "type": "group",
+    "name": "点动找光电开关",
+    "description": "点动前进直到触发光电开关，返回精确位置",
+    "mode": "sequence",
+    "max_nodes": 30,
+    "timeout_ms": 60000,
+    "args": [
+        { "index": 0, "name": "sensor_register", "type": "u8", "desc": "光电开关寄存器地址" },
+        { "index": 1, "name": "timeout", "type": "u16", "default": 10000, "desc": "超时(毫秒)" }
+    ],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/leadshine_nodes.json/start_jog.u16.r_b_jog_start_result",
+            "params": [10]
+        },
+        {
+            "type": "group",
+            "name": "循环检测光电开关",
+            "mode": "loop",
+            "max_nodes": 20,
+            "timeout_ms": "${timeout}",
+            "loop": {
+                "type": "while",
+                "condition": "${sensor_triggered} != true"
+            },
+            "body": [
+                {
+                    "type": "node",
+                    "template": "L2_node/sensor_nodes.json/check_sensor_triggered.u8.r_b_sensor_triggered",
+                    "params": ["${sensor_register}"]
+                },
+                {
+                    "type": "node",
+                    "template": "L2_node/wait_nodes.json/wait_ms.u16.r_b_wait_done",
+                    "params": [50]
+                }
+            ],
+            "on_success": [
+                { "type": "log", "message": "光电开关已触发" }
+            ],
+            "on_timeout": [
+                { "type": "log", "message": "检测光电开关超时" },
+                {
+                    "type": "node",
+                    "template": "L2_node/leadshine_nodes.json/stop_jog.r_b_jog_stop_result",
+                    "params": []
+                },
+                { "type": "popup", "message": "未检测到光电开关触发", "level": "error" }
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/leadshine_nodes.json/stop_jog.r_b_jog_stop_result",
+            "params": []
+        },
+        {
+            "type": "node",
+            "template": "L2_node/leadshine_nodes.json/read_current_position.r_i32_current_position",
+            "params": []
+        }
+    ],
+    "on_timeout": [
+        { "type": "log", "message": "点动找光电开关组超时" },
+        {
+            "type": "node",
+            "template": "L2_node/leadshine_nodes.json/stop_jog.r_b_jog_stop_result",
+            "params": []
+        },
+        { "type": "popup", "message": "点动找光电开关超时", "level": "error" }
+    ]
+}
