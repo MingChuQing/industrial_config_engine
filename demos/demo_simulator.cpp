@@ -148,7 +148,7 @@ int main(int argc, char** argv) {
         nlohmann::json bug = {
             {"type", "group"}, {"name", "bug_missing_node"}, {"mode", "sequence"},
             {"body", nlohmann::json::array({
-                {{"type", "node"}, {"template", "L2_node/vacuum_nodes.json/read_pressureX.r_u16_pressure"}, {"params", {} }}
+                {{"type", "node"}, {"template", "L2_node/vacuum_nodes.json/read_pressureX.r_u16_pressure"}, {"params", nlohmann::json::array()}}
             })}
         };
         ExecResult r = ex.runGroupJson(bug, nlohmann::json::array(), ctx);
