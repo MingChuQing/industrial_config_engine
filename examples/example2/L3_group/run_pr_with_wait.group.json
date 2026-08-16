@@ -22,7 +22,7 @@
             "max_nodes": 20,
             "timeout_ms": "${timeout}",
             "loop": {
-                "type": "while",
+                "type": "do-while",
                 "condition": "${motion_done} != true"
             },
             "body": [

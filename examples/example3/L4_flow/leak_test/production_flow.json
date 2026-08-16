@@ -9,13 +9,13 @@
             "type": "group",
             "name": "上料：取产品",
             "template": "L3_group/positioning/precise_positioning.group",
-            "params": [1, 0x0200, "pick_position", 30000]
+            "params": [1, 512, "pick_position", 30000]
         },
         {
             "type": "group",
             "name": "上料：放置产品到测试工位",
             "template": "L3_group/positioning/precise_positioning.group",
-            "params": [2, 0x0200, "place_position", 30000]
+            "params": [2, 512, "place_position", 30000]
         },
         {
             "type": "node",
@@ -45,7 +45,7 @@
                     "type": "group",
                     "name": "搬运到合格品区",
                     "template": "L3_group/positioning/precise_positioning.group",
-                    "params": [3, 0x0200, "pass_position", 30000]
+                    "params": [3, 512, "pass_position", 30000]
                 },
                 {
                     "type": "node",
@@ -63,7 +63,7 @@
                     "type": "group",
                     "name": "搬运到不合格品区",
                     "template": "L3_group/positioning/precise_positioning.group",
-                    "params": [4, 0x0200, "fail_position", 30000]
+                    "params": [4, 512, "fail_position", 30000]
                 },
                 {
                     "type": "node",

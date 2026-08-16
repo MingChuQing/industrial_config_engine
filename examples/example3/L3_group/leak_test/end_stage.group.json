@@ -75,6 +75,6 @@
     ],
     "args": [
         { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
-        { "index": 1, "name": "pump_output_register", "type": "u8", "default": 0x0201, "desc": "气泵控制输出" }
+        { "index": 1, "name": "pump_output_register", "type": "u8", "default": 513, "desc": "气泵控制输出" }
     ]
 }

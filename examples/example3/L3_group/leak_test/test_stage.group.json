@@ -23,6 +23,7 @@
         {
             "type": "node",
             "name": "读取最终压力P_end",
+            "result_key": "p_end",
             "params": ["${pressure_channel}"],
             "timeout_ms": 1000,
             "max_retries": 3,

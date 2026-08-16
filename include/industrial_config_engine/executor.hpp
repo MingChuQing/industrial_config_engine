@@ -176,6 +176,7 @@ namespace industrial_config_engine {
         void trace(ExecContext& ctx, const std::string& msg) const;
         bool checkSteps(ExecContext& ctx, ExecResult& r) const;
         void advanceTime(ExecContext& ctx, uint64_t dt_ms);
+        uint64_t timeoutValue(const nlohmann::json& v, ExecContext& ctx) const;
         std::string resolveStr(const std::string& s, ExecContext& ctx) const;
         nlohmann::json resolveValue(const nlohmann::json& v, ExecContext& ctx) const;
         static bool compareValues(const nlohmann::json& lhs, const nlohmann::json& rhs,

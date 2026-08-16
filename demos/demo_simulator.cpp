@@ -20,6 +20,7 @@ static void setupDevices(ExecContext& ctx) {
     ctx.devices.setOnline("default", true);
     ctx.devices.setOnline("1", true);
     ctx.devices.setRegister("default", 0x6000, 0);   // 泵控制寄存器 0=停 1=启
+    ctx.devices.setRegister("default", 512, 1);      // 光电开关：已触发
     ctx.devices.setRegister("1", 2000, 65000);       // 压力 65000 Pa
     ctx.devices.setBehavior("1", [&ctx](uint64_t) {
         if (ctx.devices.getRegister("default", 0x6000) == 1) {

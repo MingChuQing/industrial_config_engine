@@ -5,7 +5,7 @@
     "mode": "loop",
     "max_nodes": 20,
     "loop": {
-        "type": "while",
+        "type": "do-while",
         "condition": "${pressure_rising} == false && ${large_leak} == false",
         "max_iterations": 200
     },

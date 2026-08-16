@@ -1,4 +1,4 @@
-﻿// src/l3_group.cpp
+// src/l3_group.cpp
 #include "industrial_config_engine/l3_group.hpp"
 #include <fstream>
 #include <sstream>
@@ -700,7 +700,7 @@ namespace industrial_config_engine {
         if (type_str == "while") return LoopType::WHILE;
         if (type_str == "until") return LoopType::UNTIL;
         if (type_str == "foreach") return LoopType::FOREACH;
-        if (type_str == "dowhile") return LoopType::DOWHILE;
+        if (type_str == "dowhile" || type_str == "do-while" || type_str == "do_while") return LoopType::DOWHILE;
         return LoopType::COUNT;
     }
 

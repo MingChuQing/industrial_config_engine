@@ -1,20 +1,16 @@
 {
     "type": "group",
     "name": "泄漏检测",
-    "description": "计算泄漏率并判断是否合格",
+    "description": "根据保压前后压力计算泄漏率并判断是否合格",
     "mode": "sequence",
     "max_nodes": 30,
     "timeout_ms": 120000,
     "body": [
         {
             "type": "node",
-            "template": "L2_node/vacuum_nodes.json/read_pressure.r_u16_pressure",
-            "params": []
-        },
-        {
-            "type": "node",
             "template": "L2_node/data_nodes.json/calculate.s.r_f_calc_result",
-            "params": ["(${initial_pressure} - ${hold_pressure}) / ${initial_pressure} * 100"]
+            "params": ["(${initial_pressure} - ${hold_pressure}) / ${initial_pressure} * 100"],
+            "result_key": "leak_rate"
         },
         {
             "type": "group",

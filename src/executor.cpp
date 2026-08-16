@@ -211,15 +211,30 @@ namespace industrial_config_engine {
     }
 
     std::string Executor::formatArg(const nlohmann::json& v, const std::string& type_name) {
-        if (v.is_string()) return v.get<std::string>();
+        int tw = 2;   // 按参数声明类型的字节宽度
+        if (type_name == "u8" || type_name == "i8") tw = 1;
+        else if (type_name == "u32" || type_name == "i32") tw = 4;
+
         if (type_name == "f" || type_name == "float" || type_name == "double") {
-            return v.is_number_float() ? std::to_string(v.get<double>()) : v.dump();
+            if (v.is_number_float()) return std::to_string(v.get<double>());
+            return v.is_string() ? v.get<std::string>() : v.dump();
         }
-        if (type_name == "s" || type_name == "string") return v.dump();
-        int w = 2;
-        if (type_name == "u8" || type_name == "i8") w = 1;
-        else if (type_name == "u32" || type_name == "i32") w = 4;
-        return formatArgHex(v, w);
+        if (type_name == "s" || type_name == "string") {
+            return v.is_string() ? v.get<std::string>() : v.dump();
+        }
+        // 数值参数：${变量} 解析后可能变成纯数字字符串，也按数值十六进制格式化
+        if (v.is_string()) {
+            const std::string& s = v.get<std::string>();
+            bool all_digits = !s.empty() &&
+                std::all_of(s.begin(), s.end(), [](char c) { return std::isdigit(static_cast<unsigned char>(c)); });
+            if (!all_digits) return s;
+            int64_t n = std::stoll(s);
+            int vw = (n <= 0xFF) ? 1 : (n <= 0xFFFF) ? 2 : 4;
+            return formatArgHex(nlohmann::json(n), std::max(tw, vw));
+        }
+        int64_t n = v.is_number_integer() ? v.get<int64_t>() : static_cast<int64_t>(v.get<double>());
+        int vw = (n <= 0xFF) ? 1 : (n <= 0xFFFF) ? 2 : 4;
+        return formatArgHex(v, std::max(tw, vw));
     }
 
     std::string Executor::jsonToStr(const nlohmann::json& v) {
@@ -464,6 +479,88 @@ namespace industrial_config_engine {
         ctx.time_ms += dt_ms;
     }
 
+    uint64_t Executor::timeoutValue(const nlohmann::json& v, ExecContext& ctx) const {
+        if (v.is_number()) return v.get<uint64_t>();
+        if (v.is_string()) {
+            std::string s = trimStr(resolveStr(v.get<std::string>(), ctx));
+            try { return static_cast<uint64_t>(std::stoull(s)); }
+            catch (...) { return 0; }
+        }
+        return 0;
+    }
+
+    // 简单四则运算求值（仿真中用于 calculate 动作）：+ - * / 括号 一元正负 数字
+    static bool evalArith(const std::string& expr, double& out) {
+        size_t pos = 0;
+        auto skipWs = [&]() {
+            while (pos < expr.size() && std::isspace(static_cast<unsigned char>(expr[pos]))) ++pos;
+        };
+        std::function<bool(double&)> parseExpr, parseTerm, parseFactor;
+        parseExpr = [&](double& r) -> bool {
+            double lhs = 0;
+            if (!parseTerm(lhs)) return false;
+            r = lhs;
+            skipWs();
+            while (pos < expr.size() && (expr[pos] == '+' || expr[pos] == '-')) {
+                char op = expr[pos++];
+                double rhs = 0;
+                if (!parseTerm(rhs)) return false;
+                r = (op == '+') ? r + rhs : r - rhs;
+                skipWs();
+            }
+            return true;
+        };
+        parseTerm = [&](double& r) -> bool {
+            double lhs = 0;
+            if (!parseFactor(lhs)) return false;
+            r = lhs;
+            skipWs();
+            while (pos < expr.size() && (expr[pos] == '*' || expr[pos] == '/')) {
+                char op = expr[pos++];
+                double rhs = 0;
+                if (!parseFactor(rhs)) return false;
+                if (op == '*') r *= rhs;
+                else {
+                    if (rhs == 0) return false;
+                    r /= rhs;
+                }
+                skipWs();
+            }
+            return true;
+        };
+        parseFactor = [&](double& r) -> bool {
+            skipWs();
+            if (pos >= expr.size()) return false;
+            if (expr[pos] == '(') {
+                ++pos;
+                if (!parseExpr(r)) return false;
+                skipWs();
+                if (pos >= expr.size() || expr[pos] != ')') return false;
+                ++pos;
+                return true;
+            }
+            if (expr[pos] == '+' || expr[pos] == '-') {
+                char sg = expr[pos++];
+                if (!parseFactor(r)) return false;
+                if (sg == '-') r = -r;
+                return true;
+            }
+            size_t start = pos;
+            while (pos < expr.size() &&
+                (std::isdigit(static_cast<unsigned char>(expr[pos])) || expr[pos] == '.')) ++pos;
+            if (start == pos) return false;
+            try {
+                r = std::stod(expr.substr(start, pos - start));
+            }
+            catch (...) { return false; }
+            return true;
+        };
+        skipWs();
+        if (!parseExpr(out)) return false;
+        skipWs();
+        return pos >= expr.size();
+    }
+
     std::string Executor::resolveStr(const std::string& s, ExecContext& ctx) const {
         std::vector<std::string> missing;
         std::string r = ctx.vars.resolve(s, &missing);
@@ -567,7 +664,14 @@ namespace industrial_config_engine {
     ExecResult Executor::execGroupRef(const nlohmann::json& item, ExecContext& ctx) {
         ExecResult r;
         std::string templ = item.value("template", "");
-        if (templ.empty()) { r.status = ExecStatus::REFERENCE_ERROR; r.message = "组条目缺少 template"; return r; }
+        if (templ.empty()) {
+            // 内联组定义（无 template 引用）：直接执行条目自身
+            trace(ctx, "▶ 组(内联) [" + item.value("name", std::string("?")) + "]");
+            ctx.indent++;
+            r = runGroupJson(item, item.value("params", nlohmann::json::array()), ctx);
+            ctx.indent--;
+            return r;
+        }
         nlohmann::json g;
         if (!loadGroupJson(templ, g)) {
             r.status = ExecStatus::REFERENCE_ERROR;
@@ -626,6 +730,18 @@ namespace industrial_config_engine {
                 ctx.vars.set("param_" + std::to_string(i), params[i]);
             }
         }
+        // 将条目参数按节点默认参数中的占位符名绑定（如 ${zero_threshold}、${max_wait}）
+        if (params.is_array()) {
+            const auto& defaults = node->getParams();   // std::vector<nlohmann::json>
+            for (size_t i = 0; i < params.size() && i < defaults.size(); ++i) {
+                if (defaults[i].is_string()) {
+                    std::string d = defaults[i].get<std::string>();
+                    if (d.size() > 3 && d[0] == '$' && d[1] == '{' && d.back() == '}') {
+                        ctx.vars.set(d.substr(2, d.size() - 3), params[i]);
+                    }
+                }
+            }
+        }
 
         const L1Action* act = nullptr;
         const std::string& act_tmpl = node->getAction().template_path;
@@ -669,7 +785,16 @@ namespace industrial_config_engine {
             switch (j.type) {
             case JudgeType::EXISTS: success = !out.is_null(); break;
             case JudgeType::COMPARE: {
-                nlohmann::json rhs = resolveValue(nlohmann::json(j.value), ctx);
+                // judge 的 value 字段存储为字符串：解析为数值或字符串后再比较
+                std::string rhs_str = resolveStr(j.value, ctx);
+                nlohmann::json rhs;
+                try {
+                    size_t p = 0;
+                    long long iv = std::stoll(rhs_str, &p);
+                    if (p == rhs_str.size()) rhs = nlohmann::json(iv);
+                    else rhs = nlohmann::json(std::stod(rhs_str));
+                }
+                catch (...) { rhs = nlohmann::json(rhs_str); }
                 if (!compareValues(out, rhs, j.condition, success)) {
                     r.status = ExecStatus::CONDITION_ERROR;
                     r.message = "judge 比较不支持: " + j.condition;
@@ -691,12 +816,19 @@ namespace industrial_config_engine {
             }
         }
 
-        // 保存结果变量
+        // 保存动作层结果（动作签名中的 result_key）
+        if (act && !out.is_null()) {
+            const std::string& act_key = act->getSignature().result_key;
+            if (!act_key.empty()) ctx.vars.set(act_key, out);
+        }
+        // 保存节点结果：bool 返回类型 → judge 判定结果；其他类型 → 动作原始输出
         std::string result_key = item.contains("result_key") ? item["result_key"].get<std::string>()
             : node->getSignature().result_key;
-        if (success && !out.is_null() && !result_key.empty()) {
-            ctx.vars.set(result_key, out);
-            trace(ctx, "  ↳ " + result_key + " = " + jsonToStr(out));
+        if (!result_key.empty()) {
+            nlohmann::json rv = out;
+            if (node->getSignature().return_type == DataType::B) rv = nlohmann::json(success);
+            ctx.vars.set(result_key, rv);
+            trace(ctx, "  ↳ " + result_key + " = " + jsonToStr(rv));
         }
         // 仿真语义约定：set_test_result 节点写 test_result 变量
         if (node->getFilename().find("set_test_result") != std::string::npos &&
@@ -806,7 +938,7 @@ namespace industrial_config_engine {
                 bool on = parseHexToken(tok[3], ok) != 0;
                 ctx.devices.setCoil(device, static_cast<uint16_t>(addr), on);
                 out = true;
-                trace(ctx, "  ⇄ 写线圈 dev=" + device + " addr=0x" + formatArgHex(tok[1], 0).substr(0, 2) +
+                trace(ctx, "  ⇄ 写线圈 dev=" + device + " addr=0x" + formatArgHex(nlohmann::json(addr), 0) +
                     " val=" + (on ? "ON" : "OFF"));
             }
             else if (tok.size() >= 5 && fn == 6) {
@@ -814,7 +946,7 @@ namespace industrial_config_engine {
                 int64_t val = (parseHexToken(tok[3], ok) << 8) | parseHexToken(tok[4], ok);
                 ctx.devices.setRegister(device, static_cast<uint16_t>(addr), val);
                 out = true;
-                trace(ctx, "  ⇄ 写寄存器 dev=" + device + " addr=0x" + formatArgHex(tok[1], 0).substr(0, 2) +
+                trace(ctx, "  ⇄ 写寄存器 dev=" + device + " addr=0x" + formatArgHex(nlohmann::json(addr), 0) +
                     " value=" + std::to_string(val));
                 ctx.audit.log(ctx.time_ms, "CHANGE", "写寄存器", {
                     {"device", device}, {"register", addr}, {"value", val}, {"request", req} });
@@ -840,14 +972,18 @@ namespace industrial_config_engine {
             bool ok = true;
             int64_t fn = tok.empty() ? -1 : parseHexToken(tok[0], ok);
             int64_t addr = 0;
-            if (fn == 3 && tok.size() >= 5) {
+            if (fn == 3 && tok.size() >= 6) {
+                // 含从站字节: 03 slave addr_hi addr_lo cnt_hi cnt_lo
                 addr = (parseHexToken(tok[2], ok) << 8) | parseHexToken(tok[3], ok);
+            }
+            else if (fn == 3 && tok.size() >= 5) {
+                // 无从站字节: 03 addr_hi addr_lo cnt_hi cnt_lo
+                addr = (parseHexToken(tok[1], ok) << 8) | parseHexToken(tok[2], ok);
             }
             out = nlohmann::json(ctx.devices.getRegister(device, static_cast<uint16_t>(addr)));
             const ParseConfig* pc = act.getParse();
             if (pc && pc->type == "uint16") out = nlohmann::json(static_cast<int64_t>(out.get<int64_t>() & 0xFFFF));
-            trace(ctx, "  ⇄ 读寄存器 dev=" + device + " addr=0x" +
-                formatArgHex(tok.size() > 3 ? tok[2] : std::string("0"), 0) +
+            trace(ctx, "  ⇄ 读寄存器 dev=" + device + " addr=0x" + formatArgHex(nlohmann::json(addr), 0) +
                 " → " + jsonToStr(out));
             if (type == "modbus_read_check" && act.getCheck() != nullptr) {
                 nlohmann::json cv = resolveValue(nlohmann::json(act.getCheck()->value), ctx);
@@ -862,11 +998,16 @@ namespace industrial_config_engine {
         if (type == "wait" || type == "wait_ms" || type == "wait_seconds" || type == "delay") {
             uint64_t dt = args.is_array() && !args.empty() && args[0].is_number()
                 ? static_cast<uint64_t>(args[0].get<int64_t>()) : 100;
-            std::string unit = act.getUnit();
-            if (type == "wait_seconds") dt *= 1000;
+            if (type == "wait_seconds") {
+                dt *= 1000;
+            }
             else if (args.is_array() && args.size() > 1 && args[1].is_string() &&
-                args[1].get<std::string>() == "s") dt *= 1000;
-            else if (unit == "seconds") dt *= 1000;
+                args[1].get<std::string>() == "s") {
+                dt *= 1000;   // 显式参数单位 s
+            }
+            else if (act.getUnit() == "s" || act.getUnit() == "sec") {
+                dt *= 1000;   // 动作级显式单位 s（默认按 ms 处理）
+            }
             advanceTime(ctx, dt);
             out = true;
             trace(ctx, "  ⏳ 等待 " + std::to_string(dt) + "ms");
@@ -914,13 +1055,34 @@ namespace industrial_config_engine {
 
         if (type == "calculate" || type == "calculate_check") {
             if (act.hasExpression()) {
-                std::string err;
-                bool b = evalExpression(resolveStr(*act.getExpression(), ctx), ctx.vars, err);
-                out = nlohmann::json(b);
-                if (!err.empty()) trace(ctx, "  (计算表达式: " + err + ")");
+                // 表达式分派：含比较运算符 → 布尔条件；否则 → 四则运算
+                std::string es = resolveStr(*act.getExpression(), ctx);
+                bool is_compare = es.find("==") != std::string::npos || es.find("!=") != std::string::npos ||
+                    es.find(">=") != std::string::npos || es.find("<=") != std::string::npos ||
+                    es.find('>') != std::string::npos || es.find('<') != std::string::npos;
+                if (is_compare) {
+                    std::string err;
+                    bool b = evalExpression(*act.getExpression(), ctx.vars, err);
+                    out = nlohmann::json(b);
+                    if (!err.empty()) trace(ctx, "  (计算表达式: " + err + ")");
+                }
+                else {
+                    double v = 0;
+                    if (evalArith(es, v)) out = nlohmann::json(v);
+                    else out = nlohmann::json(es);
+                }
             }
             else if (args.is_array() && !args.empty()) {
-                out = args[0];
+                if (args[0].is_string()) {
+                    // 字符串表达式：先替换占位符，再做四则运算求值
+                    std::string es = resolveStr(args[0].get<std::string>(), ctx);
+                    double v = 0;
+                    if (evalArith(es, v)) out = nlohmann::json(v);
+                    else out = nlohmann::json(es);
+                }
+                else {
+                    out = args[0];
+                }
             }
             else out = true;
             trace(ctx, "  ∑ 计算 → " + jsonToStr(out));
@@ -949,7 +1111,7 @@ namespace industrial_config_engine {
         }
         std::string mode = g.value("mode", "sequence");
         uint64_t start = ctx.time_ms;
-        uint64_t timeout = g.contains("timeout_ms") ? g["timeout_ms"].get<uint64_t>() : 0;
+        uint64_t timeout = g.contains("timeout_ms") ? timeoutValue(g["timeout_ms"], ctx) : 0;
 
         auto checkGroupTimeout = [&]() -> bool {
             return timeout > 0 && (ctx.time_ms - start) > timeout;
@@ -998,7 +1160,7 @@ namespace industrial_config_engine {
             std::string ltype = loop.value("type", "count");
             int64_t count = loop.value("count", 0);
             int64_t max_iter = loop.value("max_iterations", 10000);
-            uint64_t loop_timeout = loop.value("timeout_ms", timeout);
+            uint64_t loop_timeout = loop.contains("timeout_ms") ? timeoutValue(loop["timeout_ms"], ctx) : timeout;
             int64_t iter = 0;
 
             // 循环条件按表达式求值（支持 ${变量} 比较与布尔字面量）
@@ -1159,6 +1321,7 @@ namespace industrial_config_engine {
         // 应用当前 profile 参数
         for (const auto& kv : f.getCurrentProfileParams()) {
             ctx.vars.set(kv.first, nlohmann::json(kv.second));
+            ctx.vars.set("profile." + kv.first, nlohmann::json(kv.second));
         }
         uint64_t start = ctx.time_ms;
         ctx.indent++;

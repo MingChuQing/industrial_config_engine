@@ -23,6 +23,7 @@
         {
             "type": "node",
             "name": "记录稳定压力P_start",
+            "result_key": "p_start",
             "params": ["${pressure_channel}"],
             "timeout_ms": 1000,
             "max_retries": 3,

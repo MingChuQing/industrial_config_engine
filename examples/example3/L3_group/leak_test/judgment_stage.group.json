@@ -6,7 +6,7 @@
     "max_nodes": 20,
     "condition": {
         "type": "expression",
-        "expression": "${leak_ok} == true"
+        "expression": "${leak_rate} <= ${leak_rate_standard}"
     },
     "then": [
         {

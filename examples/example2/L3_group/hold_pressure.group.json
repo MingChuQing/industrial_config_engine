@@ -1,7 +1,7 @@
 {
     "type": "group",
     "name": "保压测试",
-    "description": "关闭所有阀门，保压指定时间",
+    "description": "关闭所有阀门，记录初始压力，保压指定时间后读取保压后压力",
     "mode": "sequence",
     "max_nodes": 20,
     "timeout_ms": 180000,
@@ -13,13 +13,20 @@
         },
         {
             "type": "node",
+            "template": "L2_node/vacuum_nodes.json/read_pressure.r_u16_pressure",
+            "params": [],
+            "result_key": "initial_pressure"
+        },
+        {
+            "type": "node",
             "template": "L2_node/wait_nodes.json/wait_seconds.u16.r_b_wait_done",
             "params": [60]
         },
         {
             "type": "node",
             "template": "L2_node/vacuum_nodes.json/read_pressure.r_u16_pressure",
-            "params": []
+            "params": [],
+            "result_key": "hold_pressure"
         }
     ],
     "on_timeout": [

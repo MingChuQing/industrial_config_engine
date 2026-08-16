@@ -1,4 +1,4 @@
-﻿// src/node_loader.cpp
+// src/node_loader.cpp
 #include "industrial_config_engine/node_loader.hpp"
 #include <fstream>
 #include <filesystem>
@@ -95,7 +95,16 @@ namespace industrial_config_engine {
         int loaded = 0;
 
         for (const auto& file : files) {
-            bool result = loadJsonFile(file, base_path);
+            // 按文件所在子目录计算 base_path（如 L2_node/leak_test）
+            std::string file_base = base_path;
+            try {
+                fs::path rel = fs::relative(fs::path(file), fs::path(directory_path));
+                if (rel.has_parent_path()) {
+                    std::string parent = rel.parent_path().generic_string();
+                    if (!parent.empty() && parent != ".") file_base += "/" + parent;
+                }
+            } catch (...) {}
+            bool result = loadJsonFile(file, file_base);
             if (result) {
                 loaded++;
             }
