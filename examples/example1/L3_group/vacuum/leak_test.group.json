@@ -1,4 +1,4 @@
-﻿{
+{
     "type": "group",
     "name": "泄漏检测",
     "description": "计算泄漏率并判断是否合格",
@@ -14,7 +14,8 @@
         {
             "type": "node",
             "template": "L2_node/data/all_nodes.json/calculate.s.r_f_calc_result",
-            "params": [ "(${initial_pressure} - ${hold_pressure}) / ${initial_pressure} * 100" ]
+            "params": [ "(${initial_pressure} - ${hold_pressure}) / ${initial_pressure} * 100" ],
+            "result_key": "leak_rate"
         },
         {
             "type": "group",

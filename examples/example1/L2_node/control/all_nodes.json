@@ -13,7 +13,7 @@
 "max_retries": 0,
 "retry_interval": 0,
 "action": {
-"template": "L1_action/control/wait.u16_s.r_b_wait_done"
+"template": "L1_action/control/all_actions.json/wait.u16_s.r_b_wait_done"
 },
 "judge": {
 "type": "compare",
@@ -34,7 +34,7 @@
 "max_retries": 0,
 "retry_interval": 0,
 "action": {
-"template": "L1_action/control/wait.u16_s.r_b_wait_done"
+"template": "L1_action/control/all_actions.json/wait.u16_s.r_b_wait_done"
 },
 "judge": {
 "type": "compare",

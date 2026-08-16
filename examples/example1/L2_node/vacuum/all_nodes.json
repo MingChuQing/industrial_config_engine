@@ -13,7 +13,7 @@
 "max_retries": 3,
 "retry_interval": 1000,
 "action": {
-"template": "L1_action/modbus/write_register_fixed.r_b_pump_start"
+"template": "L1_action/modbus/all_actions.json/write_register_fixed.r_b_pump_start"
 },
 "judge": {
 "type": "compare",
@@ -41,7 +41,7 @@
 "max_retries": 3,
 "retry_interval": 500,
 "action": {
-"template": "L1_action/modbus/write_register_fixed_stop.r_b_pump_stop"
+"template": "L1_action/modbus/all_actions.json/write_register_fixed_stop.r_b_pump_stop"
 },
 "judge": {
 "type": "compare",
@@ -64,12 +64,12 @@
 "type": "node",
 "name": "读取压力",
 "description": "从压力传感器读取当前压力值",
-"params": [0x01, 2000],
+"params": [1, 2000],
 "timeout_ms": 3000,
 "max_retries": 2,
 "retry_interval": 500,
 "action": {
-"template": "L1_action/modbus/read_register.u8_u16.r_u16_pressure"
+"template": "L1_action/modbus/all_actions.json/read_register.u8_u16.r_u16_pressure"
 },
 "judge": {
 "type": "exists"
@@ -90,12 +90,12 @@
 "type": "node",
 "name": "开阀门",
 "description": "打开指定阀门",
-"params": [0x01],
+"params": [1],
 "timeout_ms": 3000,
 "max_retries": 3,
 "retry_interval": 500,
 "action": {
-"template": "L1_action/modbus/write_coil_on.r_b_coil_on_result"
+"template": "L1_action/modbus/all_actions.json/write_coil_on.r_b_coil_on_result"
 },
 "judge": {
 "type": "compare",
@@ -118,12 +118,12 @@
 "type": "node",
 "name": "关阀门",
 "description": "关闭指定阀门",
-"params": [0x02],
+"params": [2],
 "timeout_ms": 3000,
 "max_retries": 3,
 "retry_interval": 500,
 "action": {
-"template": "L1_action/modbus/write_coil_off.r_b_coil_off_result"
+"template": "L1_action/modbus/all_actions.json/write_coil_off.r_b_coil_off_result"
 },
 "judge": {
 "type": "compare",

@@ -522,8 +522,16 @@ namespace industrial_config_engine {
             if (arg_json.contains("type") && arg_json["type"].is_string()) {
                 arg.type = stringToDataType(arg_json["type"].get<std::string>());
             }
-            if (arg_json.contains("default") && arg_json["default"].is_string()) {
-                arg.default_value = arg_json["default"].get<std::string>();
+            if (arg_json.contains("default")) {
+                if (arg_json["default"].is_string()) {
+                    arg.default_value = arg_json["default"].get<std::string>();
+                }
+                else if (arg_json["default"].is_number()) {
+                    arg.default_value = arg_json["default"].dump();
+                }
+                else if (arg_json["default"].is_boolean()) {
+                    arg.default_value = arg_json["default"].get<bool>() ? "true" : "false";
+                }
             }
             if (arg_json.contains("desc") && arg_json["desc"].is_string()) {
                 arg.desc = arg_json["desc"].get<std::string>();

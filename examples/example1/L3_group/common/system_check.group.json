@@ -1,4 +1,4 @@
-﻿{
+{
     "type": "group",
     "name": "系统自检",
     "description": "检查系统通讯和传感器状态",
@@ -13,7 +13,7 @@
         },
         {
             "type": "node",
-            "template": "L1_action/system/all_actions.json/log.s",
+            "template": "L2_node/system/all_nodes.json/log.s",
             "params": [ "系统自检通过" ]
         }
     ]

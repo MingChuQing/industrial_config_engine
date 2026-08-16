@@ -767,7 +767,15 @@ namespace industrial_config_engine {
         for (uint32_t a = 0; a < attempts; ++a) {
             if (!checkSteps(ctx, r)) return r;
             if (act) {
-                r = execAction(*act, params, ctx, out, timed_out);
+                try {
+                    r = execAction(*act, params, ctx, out, timed_out);
+                }
+                catch (const std::exception& e) {
+                    r.status = ExecStatus::INTERNAL_ERROR;
+                    r.message = std::string("动作执行异常 [") + act->getType() + "] " + e.what()
+                        + " (params=" + params.dump() + ")";
+                    return r;
+                }
                 if (r.status != ExecStatus::SUCCESS) return r;
             }
             else {
@@ -822,9 +830,16 @@ namespace industrial_config_engine {
             if (!act_key.empty()) ctx.vars.set(act_key, out);
         }
         // 保存节点结果：bool 返回类型 → judge 判定结果；其他类型 → 动作原始输出
-        std::string result_key = item.contains("result_key") ? item["result_key"].get<std::string>()
-            : node->getSignature().result_key;
-        if (!result_key.empty()) {
+        // 节点签名 result_key 与条目级 result_key 可并存（如 final_pressure 与 p_end 同时落盘）
+        std::vector<std::string> result_keys;
+        if (!node->getSignature().result_key.empty()) result_keys.push_back(node->getSignature().result_key);
+        if (item.contains("result_key") && item["result_key"].is_string()) {
+            std::string ik = item["result_key"].get<std::string>();
+            if (std::find(result_keys.begin(), result_keys.end(), ik) == result_keys.end()) {
+                result_keys.push_back(ik);
+            }
+        }
+        for (const auto& result_key : result_keys) {
             nlohmann::json rv = out;
             if (node->getSignature().return_type == DataType::B) rv = nlohmann::json(success);
             ctx.vars.set(result_key, rv);
@@ -856,7 +871,7 @@ namespace industrial_config_engine {
         ExecResult r;
         std::string type = act.getType();
 
-        // 参数名 → 值（含默认值）
+        // 参数名 → 值（含默认值）；纯数字字符串归一为数值（${变量} 解析产物）
         std::map<std::string, nlohmann::json> amap;
         for (size_t i = 0; i < act.getArgs().size(); ++i) {
             const ArgDef& d = act.getArgs()[i];
@@ -864,6 +879,14 @@ namespace industrial_config_engine {
             if (args.is_array() && i < args.size()) v = args[i];
             else if (d.default_value.has_value()) v = nlohmann::json(*d.default_value);
             else v = nlohmann::json();
+            if (v.is_string()) {
+                const std::string& sv = v.get<std::string>();
+                bool all_digits = !sv.empty() &&
+                    std::all_of(sv.begin(), sv.end(), [](char c) { return std::isdigit(static_cast<unsigned char>(c)); });
+                if (all_digits) {
+                    try { v = nlohmann::json(std::stoll(sv)); } catch (...) {}
+                }
+            }
             amap[d.name] = v;
         }
 
@@ -977,12 +1000,18 @@ namespace industrial_config_engine {
                 addr = (parseHexToken(tok[2], ok) << 8) | parseHexToken(tok[3], ok);
             }
             else if (fn == 3 && tok.size() >= 5) {
-                // 无从站字节: 03 addr_hi addr_lo cnt_hi cnt_lo
+                // 无从站字节，双字节地址: 03 addr_hi addr_lo cnt_hi cnt_lo
                 addr = (parseHexToken(tok[1], ok) << 8) | parseHexToken(tok[2], ok);
+            }
+            else if (fn == 3 && tok.size() >= 4) {
+                // 无从站字节，单字节地址: 03 addr cnt_hi cnt_lo
+                addr = parseHexToken(tok[1], ok);
             }
             out = nlohmann::json(ctx.devices.getRegister(device, static_cast<uint16_t>(addr)));
             const ParseConfig* pc = act.getParse();
-            if (pc && pc->type == "uint16") out = nlohmann::json(static_cast<int64_t>(out.get<int64_t>() & 0xFFFF));
+            if (pc && pc->type == "uint16" && out.is_number_integer()) {
+                out = nlohmann::json(static_cast<int64_t>(out.get<int64_t>() & 0xFFFF));
+            }
             trace(ctx, "  ⇄ 读寄存器 dev=" + device + " addr=0x" + formatArgHex(nlohmann::json(addr), 0) +
                 " → " + jsonToStr(out));
             if (type == "modbus_read_check" && act.getCheck() != nullptr) {
