@@ -1,0 +1,128 @@
+完成抽真空全部流程 L1~L3
+L1 Action（原子操作层）
+文件：L1_action/modbus/write_register_fixed.r_b.json
+json
+{"type":"modbus_write_verify","protocol":"modbus","device":"Pump","request":"06 60 00 00 01","response":"06 60 00 00 01","timeout_ms":3000}
+文件：L1_action/modbus/write_register.u16_u16.r_b.json
+json
+{"type":"modbus_write_verify","protocol":"modbus","device":"Pump","request":"06 ${register} ${value}","response":"06 ${register} ${value}","timeout_ms":3000,"args":[{"name":"register","type":"u16"},{"name":"value","type":"u16"}]}
+文件：L1_action/modbus/write_coil_on.r_b.json
+json
+{"type":"modbus_write_verify","protocol":"modbus","device":"Valve","request":"05 ${coil} FF 00","response":"05 ${coil} FF 00","timeout_ms":3000,"args":[{"name":"coil","type":"u16"}]}
+文件：L1_action/modbus/write_coil_off.r_b.json
+json
+{"type":"modbus_write_verify","protocol":"modbus","device":"Valve","request":"05 ${coil} 00 00","response":"05 ${coil} 00 00","timeout_ms":3000,"args":[{"name":"coil","type":"u16"}]}
+文件：L1_action/modbus/read_register.u8_u16.r_u16.json
+json
+{"type":"modbus_read_cache","protocol":"modbus","device":"Gauge","request":"03 ${register} 00 01","parse":{"start_byte":2,"length":2,"endian":"big","type":"uint16"},"timeout_ms":"${timeout}","args":[{"name":"register","type":"u8"},{"name":"timeout","type":"u16","default":2000}]}
+文件：L1_action/modbus/write_register_fixed_stop.r_b.json
+json
+{"type":"modbus_write_verify","protocol":"modbus","device":"Pump","request":"06 60 00 00 00","response":"06 60 00 00 00","timeout_ms":3000}
+L2 Node（执行节点层）
+文件：L2_node/open_valve.json
+json
+{"type":"node","name":"开阀门","template":"L1_action/modbus/write_coil_on.r_b","params":[0x01],"timeout_ms":3000,"max_retries":3,"on_success":[{"type":"log","message":"阀门已打开"}],"on_failure":[{"type":"popup","message":"阀门打开失败","level":"error"}]}
+文件：L2_node/close_valve.json
+json
+{"type":"node","name":"关阀门","template":"L1_action/modbus/write_coil_off.r_b","params":[0x02],"timeout_ms":3000,"max_retries":3,"on_success":[{"type":"log","message":"阀门已关闭"}],"on_failure":[{"type":"popup","message":"阀门关闭失败","level":"error"}]}
+文件：L2_node/start_pump.json
+json
+{"type":"node","name":"启动真空泵","template":"L1_action/modbus/write_register_fixed.r_b","params":[],"timeout_ms":5000,"max_retries":3,"on_success":[{"type":"log","message":"真空泵已启动"}],"on_failure":[{"type":"popup","message":"真空泵启动失败","level":"error"}]}
+文件：L2_node/read_pressure.json
+json
+{"type":"node","name":"读取压力","template":"L1_action/modbus/read_register.u8_u16.r_u16","params":[0x01,2000],"timeout_ms":3000,"max_retries":2,"on_success":[{"type":"log","message":"当前压力=${pressure}Pa"}],"on_failure":[{"type":"popup","message":"压力读取失败","level":"error"}]}
+文件：L2_node/stop_pump.json
+json
+{"type":"node","name":"停止真空泵","template":"L1_action/modbus/write_register_fixed_stop.r_b","params":[],"timeout_ms":3000,"max_retries":3,"on_success":[{"type":"log","message":"真空泵已停止"}],"on_failure":[{"type":"popup","message":"真空泵停止失败","level":"error"}]}
+L3 Group（流程编排层）
+文件：L3_group/open_valve.group.json
+json
+{"type":"group","name":"开阀门","mode":"sequence","body":[
+  {"type":"node","template":"set_motor_mode_speed"},
+  {"type":"node","template":"set_motor_speed","params":[300]},
+  {"type":"node","template":"set_motor_direction_forward"},
+  {"type":"node","template":"trigger_motor_run"}
+]}
+文件：L3_group/pump_down.group.json
+json
+{
+  "type":"group",
+  "name":"抽真空",
+  "mode":"sequence",
+  "body":[
+    {"type":"node","template":"open_valve","params":[0x01]},
+    {"type":"node","template":"close_valve","params":[0x02]},
+    {"type":"node","template":"start_pump"},
+    {
+      "type":"group",
+      "mode":"loop",
+      "loop":{"type":"do_while","condition":"${pressure} > 5","timeout_ms":300000,"interval_ms":500},
+      "body":[{"type":"node","template":"read_pressure","result_key":"pressure"}],
+      "on_success":[
+        {"type":"node","$ref":"stop_pump"},
+        {"type":"log","message":"抽真空完成"}
+      ],
+      "on_timeout":[
+        {"type":"node","$ref":"stop_pump"},
+        {"type":"popup","message":"抽真空超时，已停止","level":"error"}
+      ]
+    }
+  ]
+}
+文件目录结构
+text
+industrial_config_engine/
+├── L1_action/
+│   └── modbus/
+│       ├── write_register_fixed.r_b.json
+│       ├── write_register.u16_u16.r_b.json
+│       ├── write_coil_on.r_b.json
+│       ├── write_coil_off.r_b.json
+│       ├── read_register.u8_u16.r_u16.json
+│       └── write_register_fixed_stop.r_b.json
+├── L2_node/
+│   ├── open_valve.json
+│   ├── close_valve.json
+│   ├── start_pump.json
+│   ├── read_pressure.json
+│   └── stop_pump.json
+└── L3_group/
+    ├── open_valve.group.json
+    └── pump_down.group.json
+执行流程
+text
+打开阀门1
+    ↓
+关闭阀门2
+    ↓
+启动真空泵
+    ↓
+┌─ do-while 循环（最长5分钟）──┐
+│  读取压力 → 存入 pressure      │
+│  若 pressure ≤ 5 → 退出（成功）│
+│  等待 500ms                    │
+└────────────────────────────────┘
+    ↓
+停止真空泵
+    ├── 成功 → 记录日志
+    └── 超时 → 弹框提示
+四层架构关系图
+text
+┌─────────────────────────────────────────────────────┐
+│ L3 Group: pump_down.group                          │
+│ 顺序执行：开V1 → 关V2 → 启泵 → 循环检测 → 停泵    │
+├─────────────────────────────────────────────────────┤
+│  open_valve    → L2 Node                           │
+│  close_valve   → L2 Node                           │
+│  start_pump    → L2 Node                           │
+│  read_pressure → L2 Node                           │
+│  stop_pump     → L2 Node                           │
+├─────────────────────────────────────────────────────┤
+│ 每个 L2 Node 引用一个 L1 Action                    │
+├─────────────────────────────────────────────────────┤
+│ write_coil_on     → L1 Action（开阀）              │
+│ write_coil_off    → L1 Action（关阀）              │
+│ write_register_fixed → L1 Action（启泵）           │
+│ read_register     → L1 Action（读压力）            │
+│ write_register_fixed_stop → L1 Action（停泵）      │
+└─────────────────────────────────────────────────────┘

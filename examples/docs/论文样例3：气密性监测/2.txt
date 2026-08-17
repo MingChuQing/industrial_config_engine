@@ -1,0 +1,788 @@
+﻿# 气密性检测系统 - 配置文件设计
+
+## 一、L1 Action 文件列表（共19个）
+
+### 1.1 数字量输入/输出控制
+
+| 文件名 | 参数 | 返回值 | 说明 |
+|--------|------|--------|------|
+| `digital_read.u8.r_b_digital_state` | `register`: u8 | `digital_state`: b | 读取数字量输入状态 |
+| `digital_write.u8_b.r_b_write_result` | `register`: u8, `value`: b | `write_result`: b | 写入数字量输出 |
+| `digital_write_on.u8.r_b_write_result` | `register`: u8 | `write_result`: b | 数字量输出置ON |
+| `digital_write_off.u8.r_b_write_result` | `register`: u8 | `write_result`: b | 数字量输出置OFF |
+
+### 1.2 模拟量采集（压力传感器）
+
+| 文件名 | 参数 | 返回值 | 说明 |
+|--------|------|--------|------|
+| `read_analog.u8.r_f_analog_value` | `channel`: u8 | `analog_value`: f | 读取模拟量通道值(0-10V/4-20mA) |
+| `read_pressure.u8.r_f_pressure` | `channel`: u8 | `pressure`: f | 读取压力传感器值(kPa) |
+| `read_temperature.u8.r_f_temperature` | `channel`: u8 | `temperature`: f | 读取温度传感器值(℃) |
+
+### 1.3 Modbus通信
+
+| 文件名 | 参数 | 返回值 | 说明 |
+|--------|------|--------|------|
+| `read_modbus_register.u8_u16.r_u16_register_value` | `addr`: u8, `reg`: u16 | `register_value`: u16 | 读取Modbus寄存器 |
+| `write_modbus_register.u8_u16_u16.r_b_write_result` | `addr`: u8, `reg`: u16, `val`: u16 | `write_result`: b | 写入Modbus寄存器 |
+
+### 1.4 气阀控制
+
+| 文件名 | 参数 | 返回值 | 说明 |
+|--------|------|--------|------|
+| `open_fill_valve.r_b_valve_result` | 无 | `valve_result`: b | 打开充气阀 |
+| `close_fill_valve.r_b_valve_result` | 无 | `valve_result`: b | 关闭充气阀 |
+| `open_exhaust_valve.r_b_valve_result` | 无 | `valve_result`: b | 打开排气阀 |
+| `close_exhaust_valve.r_b_valve_result` | 无 | `valve_result`: b | 关闭排气阀 |
+
+### 1.5 夹具控制
+
+| 文件名 | 参数 | 返回值 | 说明 |
+|--------|------|--------|------|
+| `clamp_close.r_b_clamp_result` | 无 | `clamp_result`: b | 夹具闭合 |
+| `clamp_open.r_b_clamp_result` | 无 | `clamp_result`: b | 夹具打开 |
+| `check_clamp_closed.r_b_clamp_closed` | 无 | `clamp_closed`: b | 检查夹具是否闭合到位 |
+
+### 1.6 数据计算与存储
+
+| 文件名 | 参数 | 返回值 | 说明 |
+|--------|------|--------|------|
+| `calculate_f.f_f.r_f_calc_result` | `a`: f, `b`: f | `calc_result`: f | 浮点数四则运算 |
+| `calculate_pressure_drop.f_f.r_f_pressure_drop` | `p_start`: f, `p_end`: f | `pressure_drop`: f | 计算压降 ΔP = P_start - P_end |
+| `calculate_leak_rate.f_f.r_f_leak_rate` | `delta_p`: f, `duration`: f | `leak_rate`: f | 计算泄漏率 = ΔP / 时间 |
+| `save_test_data.s_f_f_s_s.r_b_save_result` | `product_id`: s, `pressure`: f, `leak_rate`: f, `result`: s, `timestamp`: s | `save_result`: b | 保存测试数据到数据库/文件 |
+
+### 1.7 通知与日志
+
+| 文件名 | 参数 | 返回值 | 说明 |
+|--------|------|--------|------|
+| `log.s` | `msg`: s | 无 | 写入日志 |
+| `popup.s_s` | `msg`: s, `level`: s | 无 | 弹窗提示 |
+| `beep.u8.r_b_beep_result` | `duration`: u8 | `beep_result`: b | 蜂鸣器报警 |
+| `led_set.s.r_b_led_result` | `color`: s | `led_result`: b | 设置指示灯颜色(green/yellow/red) |
+
+---
+
+## 二、L2 Node 文件列表（共24个）
+
+### 2.1 准备阶段 Node
+
+| 文件名 | L1引用 | Judge | 说明 |
+|--------|--------|-------|------|
+| `check_air_pressure.u8.r_b_air_ok` | `read_pressure.u8.r_f_pressure` | `ge` 0.4 | 检查气源压力≥0.4MPa |
+| `check_clamp_open.r_b_clamp_open_ok` | `check_clamp_closed.r_b_clamp_closed` | `eq` false | 检查夹具是否打开 |
+| `check_seal_ring.u8.r_b_seal_ok` | `digital_read.u8.r_b_digital_state` | `eq` true | 检查密封圈是否在位 |
+| `start_air_pump.r_b_pump_start_result` | `digital_write_on.u8.r_b_write_result` | 无 | 启动气泵 |
+| `clamp_workpiece.r_b_clamp_result` | `clamp_close.r_b_clamp_result` | 无 | 闭合夹具 |
+| `check_clamp_closed.r_b_clamp_closed` | `check_clamp_closed.r_b_clamp_closed` | `eq` true | 确认夹具闭合到位 |
+
+### 2.2 充气阶段 Node
+
+| 文件名 | L1引用 | Judge | 说明 |
+|--------|--------|-------|------|
+| `open_fill_valve.r_b_valve_result` | `open_fill_valve.r_b_valve_result` | 无 | 打开充气阀 |
+| `monitor_pressure_rising.u8_f_u16.r_b_pressure_rising` | `read_pressure.u8.r_f_pressure` | `ge` target | 监测压力上升至目标值 |
+| `check_large_leak.u8_f_f.r_b_large_leak` | `read_pressure.u8.r_f_pressure` | `ge` threshold | 检查大漏(压力上升速率) |
+| `close_fill_valve.r_b_valve_result` | `close_fill_valve.r_b_valve_result` | 无 | 关闭充气阀 |
+
+### 2.3 保压阶段 Node
+
+| 文件名 | L1引用 | Judge | 说明 |
+|--------|--------|-------|------|
+| `wait.u16.r_b_wait_done` | `wait` | 无 | 等待保压时间 |
+| `read_stable_pressure.u8.r_f_stable_pressure` | `read_pressure.u8.r_f_pressure` | 无 | 读取稳定后压力P_start |
+| `check_pressure_stable.u8_f_u16.r_b_stable` | `read_pressure.u8.r_f_pressure` | `le` threshold | 检查压力波动是否稳定 |
+
+### 2.4 检测阶段 Node
+
+| 文件名 | L1引用 | Judge | 说明 |
+|--------|--------|-------|------|
+| `read_pressure_value.u8.r_f_pressure_value` | `read_pressure.u8.r_f_pressure` | 无 | 读取压力值 |
+| `wait_test_duration.u16.r_b_wait_done` | `wait` | 无 | 检测计时等待 |
+| `read_final_pressure.u8.r_f_final_pressure` | `read_pressure.u8.r_f_pressure` | 无 | 读取最终压力P_end |
+| `calculate_delta_p.f_f.r_f_delta_p` | `calculate_pressure_drop.f_f.r_f_pressure_drop` | 无 | 计算压降ΔP |
+| `calculate_leak_rate.f_f.r_f_leak_rate` | `calculate_leak_rate.f_f.r_f_leak_rate` | 无 | 计算泄漏率 |
+
+### 2.5 判断阶段 Node
+
+| 文件名 | L1引用 | Judge | 说明 |
+|--------|--------|-------|------|
+| `check_leak_rate.f_f.r_b_leak_ok` | `read_variable` | `le` standard | 判断泄漏率是否合格 |
+| `set_test_result.s.r_b_set_result` | `set` | 无 | 设置测试结果(PASS/FAIL) |
+
+### 2.6 结束阶段 Node
+
+| 文件名 | L1引用 | Judge | 说明 |
+|--------|--------|-------|------|
+| `open_exhaust_valve.r_b_valve_result` | `open_exhaust_valve.r_b_valve_result` | 无 | 打开排气阀 |
+| `wait_pressure_zero.u8_f_u16.r_b_pressure_zero` | `read_pressure.u8.r_f_pressure` | `le` 0.01 | 等待压力归零 |
+| `close_exhaust_valve.r_b_valve_result` | `close_exhaust_valve.r_b_valve_result` | 无 | 关闭排气阀 |
+| `clamp_open_workpiece.r_b_clamp_result` | `clamp_open.r_b_clamp_result` | 无 | 打开夹具 |
+| `stop_air_pump.r_b_pump_stop_result` | `digital_write_off.u8.r_b_write_result` | 无 | 停止气泵 |
+
+### 2.7 通知与记录 Node
+
+| 文件名 | L1引用 | Judge | 说明 |
+|--------|--------|-------|------|
+| `save_test_record.s_f_f_s_s.r_b_save_result` | `save_test_data` | 无 | 保存测试记录 |
+| `show_result_popup.s_s` | `popup.s_s` | 无 | 显示结果弹窗 |
+| `set_result_led.s.r_b_led_result` | `led_set.s.r_b_led_result` | 无 | 设置结果指示灯 |
+| `beep_alert.u8.r_b_beep_result` | `beep.u8.r_b_beep_result` | 无 | 蜂鸣报警 |
+
+---
+
+## 三、L3 Group 配置文件
+
+### 3.1 准备阶段 Group
+
+**文件：`L3_group/leak_test/prepare_stage.group`**
+
+```json
+{
+    "type": "group",
+    "name": "气密性检测准备阶段",
+    "description": "检查气源、密封圈，闭合夹具，启动气泵",
+    "params": [
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
+        { "index": 1, "name": "seal_sensor_register", "type": "u8", "default": 0x0101, "desc": "密封圈传感器寄存器" },
+        { "index": 2, "name": "clamp_sensor_register", "type": "u8", "default": 0x0102, "desc": "夹具到位传感器" },
+        { "index": 3, "name": "pump_output_register", "type": "u8", "default": 0x0201, "desc": "气泵控制输出" }
+    ],
+    "steps": [
+        {
+            "type": "node",
+            "name": "检查气源压力",
+            "path": "L2_node/leak_test/check_air_pressure.u8.r_b_air_ok",
+            "params": ["${pressure_channel}"]
+        },
+        {
+            "type": "node",
+            "name": "检查夹具是否打开",
+            "path": "L2_node/leak_test/check_clamp_open.r_b_clamp_open_ok",
+            "params": []
+        },
+        {
+            "type": "node",
+            "name": "检查密封圈是否在位",
+            "path": "L2_node/leak_test/check_seal_ring.u8.r_b_seal_ok",
+            "params": ["${seal_sensor_register}"]
+        },
+        {
+            "type": "node",
+            "name": "启动气泵",
+            "path": "L2_node/leak_test/start_air_pump.r_b_pump_start_result",
+            "params": ["${pump_output_register}"]
+        },
+        {
+            "type": "node",
+            "name": "闭合夹具",
+            "path": "L2_node/leak_test/clamp_workpiece.r_b_clamp_result",
+            "params": []
+        },
+        {
+            "type": "node",
+            "name": "确认夹具闭合到位",
+            "path": "L2_node/leak_test/check_clamp_closed.r_b_clamp_closed",
+            "params": ["${clamp_sensor_register}"]
+        }
+    ],
+    "on_success": [
+        {
+            "type": "log",
+            "message": "准备阶段完成，开始充气"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "popup",
+            "message": "准备阶段失败，请检查气源、密封圈或夹具",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 3.2 充气阶段 Group
+
+**文件：`L3_group/leak_test/fill_stage.group`**
+
+```json
+{
+    "type": "group",
+    "name": "气密性检测充气阶段",
+    "description": "打开充气阀，充气至目标压力，检测大漏",
+    "params": [
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
+        { "index": 1, "name": "target_pressure", "type": "f", "default": 100.0, "desc": "目标压力(kPa)" },
+        { "index": 2, "name": "fill_timeout", "type": "u16", "default": 10000, "desc": "充气超时(ms)" },
+        { "index": 3, "name": "large_leak_threshold", "type": "f", "default": 5.0, "desc": "大漏阈值(kPa/s)" }
+    ],
+    "steps": [
+        {
+            "type": "node",
+            "name": "打开充气阀",
+            "path": "L2_node/leak_test/open_fill_valve.r_b_valve_result",
+            "params": []
+        },
+        {
+            "type": "while",
+            "name": "监测压力上升",
+            "condition": {
+                "type": "expression",
+                "expression": "${loop_count} * 100 < ${fill_timeout}"
+            },
+            "max_iterations": 100,
+            "steps": [
+                {
+                    "type": "node",
+                    "name": "读取当前压力",
+                    "path": "L2_node/leak_test/monitor_pressure_rising.u8_f_u16.r_b_pressure_rising",
+                    "params": ["${pressure_channel}", "${target_pressure}", "${fill_timeout}"]
+                },
+                {
+                    "type": "break_if",
+                    "condition": {
+                        "type": "expression",
+                        "expression": "${pressure_rising} == true"
+                    }
+                },
+                {
+                    "type": "node",
+                    "name": "检查是否大漏",
+                    "path": "L2_node/leak_test/check_large_leak.u8_f_f.r_b_large_leak",
+                    "params": ["${pressure_channel}", "${large_leak_threshold}", "${fill_timeout}"]
+                },
+                {
+                    "type": "break_if",
+                    "condition": {
+                        "type": "expression",
+                        "expression": "${large_leak} == true"
+                    }
+                },
+                {
+                    "type": "node",
+                    "name": "等待100ms",
+                    "path": "L2_node/wait/wait_ms.u16.r_b_wait_done",
+                    "params": [100]
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "name": "关闭充气阀",
+            "path": "L2_node/leak_test/close_fill_valve.r_b_valve_result",
+            "params": []
+        }
+    ],
+    "on_success": [
+        {
+            "type": "log",
+            "message": "充气完成，压力达到目标值"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "充气阶段失败"
+        },
+        {
+            "type": "popup",
+            "message": "充气失败或检测到大漏",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 3.3 保压阶段 Group
+
+**文件：`L3_group/leak_test/dwell_stage.group`**
+
+```json
+{
+    "type": "group",
+    "name": "气密性检测保压阶段",
+    "description": "等待压力稳定，记录初始压力",
+    "params": [
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
+        { "index": 1, "name": "dwell_time", "type": "u16", "default": 5000, "desc": "保压时间(ms)" },
+        { "index": 2, "name": "stable_threshold", "type": "f", "default": 0.1, "desc": "稳定阈值(kPa/s)" }
+    ],
+    "steps": [
+        {
+            "type": "node",
+            "name": "等待压力稳定",
+            "path": "L2_node/leak_test/check_pressure_stable.u8_f_u16.r_b_stable",
+            "params": ["${pressure_channel}", "${stable_threshold}", "${dwell_time}"]
+        },
+        {
+            "type": "node",
+            "name": "记录稳定压力P_start",
+            "path": "L2_node/leak_test/read_stable_pressure.u8.r_f_stable_pressure",
+            "params": ["${pressure_channel}"]
+        },
+        {
+            "type": "node",
+            "name": "设置变量P_start",
+            "path": "L2_node/variable/set_variable.s_s",
+            "params": ["p_start", "${stable_pressure}"]
+        }
+    ],
+    "on_success": [
+        {
+            "type": "log",
+            "message": "保压完成，P_start = ${p_start} kPa"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "保压阶段失败，压力不稳定"
+        },
+        {
+            "type": "popup",
+            "message": "压力不稳定，请检查密封性",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 3.4 检测阶段 Group
+
+**文件：`L3_group/leak_test/test_stage.group`**
+
+```json
+{
+    "type": "group",
+    "name": "气密性检测检测阶段",
+    "description": "检测时间计时，读取最终压力，计算泄漏率",
+    "params": [
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
+        { "index": 1, "name": "test_duration", "type": "u16", "default": 30000, "desc": "检测时间(ms)" }
+    ],
+    "steps": [
+        {
+            "type": "node",
+            "name": "检测计时",
+            "path": "L2_node/leak_test/wait_test_duration.u16.r_b_wait_done",
+            "params": ["${test_duration}"]
+        },
+        {
+            "type": "node",
+            "name": "读取最终压力P_end",
+            "path": "L2_node/leak_test/read_final_pressure.u8.r_f_final_pressure",
+            "params": ["${pressure_channel}"]
+        },
+        {
+            "type": "node",
+            "name": "设置变量P_end",
+            "path": "L2_node/variable/set_variable.s_s",
+            "params": ["p_end", "${final_pressure}"]
+        },
+        {
+            "type": "node",
+            "name": "计算压降ΔP",
+            "path": "L2_node/leak_test/calculate_delta_p.f_f.r_f_delta_p",
+            "params": ["${p_start}", "${p_end}"]
+        },
+        {
+            "type": "node",
+            "name": "设置变量delta_p",
+            "path": "L2_node/variable/set_variable.s_s",
+            "params": ["delta_p", "${delta_p}"]
+        },
+        {
+            "type": "node",
+            "name": "计算泄漏率",
+            "path": "L2_node/leak_test/calculate_leak_rate.f_f.r_f_leak_rate",
+            "params": ["${delta_p}", "${test_duration}"]
+        },
+        {
+            "type": "node",
+            "name": "设置变量leak_rate",
+            "path": "L2_node/variable/set_variable.s_s",
+            "params": ["leak_rate", "${leak_rate}"]
+        }
+    ],
+    "on_success": [
+        {
+            "type": "log",
+            "message": "检测完成，ΔP=${delta_p}kPa，泄漏率=${leak_rate}kPa/min"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "检测阶段失败"
+        },
+        {
+            "type": "popup",
+            "message": "检测阶段失败",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 3.5 判断阶段 Group
+
+**文件：`L3_group/leak_test/judgment_stage.group`**
+
+```json
+{
+    "type": "group",
+    "name": "气密性检测判断阶段",
+    "description": "判断泄漏率是否合格，输出结果",
+    "params": [
+        { "index": 0, "name": "leak_rate_standard", "type": "f", "default": 0.5, "desc": "泄漏率标准(kPa/min)" },
+        { "index": 1, "name": "product_id", "type": "s", "default": "UNKNOWN", "desc": "产品ID" }
+    ],
+    "steps": [
+        {
+            "type": "node",
+            "name": "判断泄漏率是否合格",
+            "path": "L2_node/leak_test/check_leak_rate.f_f.r_b_leak_ok",
+            "params": ["${leak_rate}", "${leak_rate_standard}"]
+        },
+        {
+            "type": "if",
+            "name": "合格分支",
+            "condition": {
+                "type": "expression",
+                "expression": "${leak_ok} == true"
+            },
+            "then": [
+                {
+                    "type": "node",
+                    "name": "设置结果PASS",
+                    "path": "L2_node/leak_test/set_test_result.s.r_b_set_result",
+                    "params": ["PASS"]
+                },
+                {
+                    "type": "node",
+                    "name": "设置绿灯",
+                    "path": "L2_node/leak_test/set_result_led.s.r_b_led_result",
+                    "params": ["green"]
+                },
+                {
+                    "type": "node",
+                    "name": "保存PASS记录",
+                    "path": "L2_node/leak_test/save_test_record.s_f_f_s_s.r_b_save_result",
+                    "params": ["${product_id}", "${leak_rate}", "PASS", "${timestamp}"]
+                },
+                {
+                    "type": "node",
+                    "name": "显示PASS弹窗",
+                    "path": "L2_node/leak_test/show_result_popup.s_s",
+                    "params": ["气密性检测通过！泄漏率=${leak_rate}kPa/min", "success"]
+                }
+            ],
+            "else": [
+                {
+                    "type": "node",
+                    "name": "设置结果FAIL",
+                    "path": "L2_node/leak_test/set_test_result.s.r_b_set_result",
+                    "params": ["FAIL"]
+                },
+                {
+                    "type": "node",
+                    "name": "设置红灯",
+                    "path": "L2_node/leak_test/set_result_led.s.r_b_led_result",
+                    "params": ["red"]
+                },
+                {
+                    "type": "node",
+                    "name": "蜂鸣报警",
+                    "path": "L2_node/leak_test/beep_alert.u8.r_b_beep_result",
+                    "params": [3]
+                },
+                {
+                    "type": "node",
+                    "name": "保存FAIL记录",
+                    "path": "L2_node/leak_test/save_test_record.s_f_f_s_s.r_b_save_result",
+                    "params": ["${product_id}", "${leak_rate}", "FAIL", "${timestamp}"]
+                },
+                {
+                    "type": "node",
+                    "name": "显示FAIL弹窗",
+                    "path": "L2_node/leak_test/show_result_popup.s_s",
+                    "params": ["气密性检测不通过！泄漏率=${leak_rate}kPa/min，标准≤${leak_rate_standard}", "error"]
+                }
+            ]
+        }
+    ],
+    "on_success": [
+        {
+            "type": "log",
+            "message": "判断阶段完成，结果已记录"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "判断阶段失败"
+        }
+    ]
+}
+```
+
+### 3.6 结束阶段 Group
+
+**文件：`L3_group/leak_test/end_stage.group`**
+
+```json
+{
+    "type": "group",
+    "name": "气密性检测结束阶段",
+    "description": "排气、打开夹具、停止气泵",
+    "params": [
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
+        { "index": 1, "name": "pump_output_register", "type": "u8", "default": 0x0201, "desc": "气泵控制输出" }
+    ],
+    "steps": [
+        {
+            "type": "node",
+            "name": "打开排气阀",
+            "path": "L2_node/leak_test/open_exhaust_valve.r_b_valve_result",
+            "params": []
+        },
+        {
+            "type": "node",
+            "name": "等待压力归零",
+            "path": "L2_node/leak_test/wait_pressure_zero.u8_f_u16.r_b_pressure_zero",
+            "params": ["${pressure_channel}", 0.01, 5000]
+        },
+        {
+            "type": "node",
+            "name": "关闭排气阀",
+            "path": "L2_node/leak_test/close_exhaust_valve.r_b_valve_result",
+            "params": []
+        },
+        {
+            "type": "node",
+            "name": "打开夹具",
+            "path": "L2_node/leak_test/clamp_open_workpiece.r_b_clamp_result",
+            "params": []
+        },
+        {
+            "type": "node",
+            "name": "停止气泵",
+            "path": "L2_node/leak_test/stop_air_pump.r_b_pump_stop_result",
+            "params": ["${pump_output_register}"]
+        }
+    ],
+    "on_success": [
+        {
+            "type": "log",
+            "message": "结束阶段完成，等待下一个产品"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "结束阶段失败"
+        },
+        {
+            "type": "popup",
+            "message": "排气或夹具打开失败，请手动检查",
+            "level": "warning"
+        }
+    ]
+}
+```
+
+### 3.7 完整气密性检测 Group
+
+**文件：`L3_group/leak_test/complete_leak_test.group`**
+
+```json
+{
+    "type": "group",
+    "name": "完整气密性检测流程",
+    "description": "从准备到结束的完整气密性检测流程",
+    "params": [
+        { "index": 0, "name": "product_id", "type": "s", "default": "UNKNOWN", "desc": "产品ID" },
+        { "index": 1, "name": "target_pressure", "type": "f", "default": 100.0, "desc": "目标压力(kPa)" },
+        { "index": 2, "name": "test_duration", "type": "u16", "default": 30000, "desc": "检测时间(ms)" },
+        { "index": 3, "name": "leak_rate_standard", "type": "f", "default": 0.5, "desc": "泄漏率标准(kPa/min)" },
+        { "index": 4, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" }
+    ],
+    "steps": [
+        {
+            "type": "group",
+            "name": "准备阶段",
+            "path": "L3_group/leak_test/prepare_stage.group",
+            "params": ["${pressure_channel}", 0x0101, 0x0102, 0x0201]
+        },
+        {
+            "type": "group",
+            "name": "充气阶段",
+            "path": "L3_group/leak_test/fill_stage.group",
+            "params": ["${pressure_channel}", "${target_pressure}", 10000, 5.0]
+        },
+        {
+            "type": "group",
+            "name": "保压阶段",
+            "path": "L3_group/leak_test/dwell_stage.group",
+            "params": ["${pressure_channel}", 5000, 0.1]
+        },
+        {
+            "type": "group",
+            "name": "检测阶段",
+            "path": "L3_group/leak_test/test_stage.group",
+            "params": ["${pressure_channel}", "${test_duration}"]
+        },
+        {
+            "type": "group",
+            "name": "判断阶段",
+            "path": "L3_group/leak_test/judgment_stage.group",
+            "params": ["${leak_rate_standard}", "${product_id}"]
+        },
+        {
+            "type": "group",
+            "name": "结束阶段",
+            "path": "L3_group/leak_test/end_stage.group",
+            "params": ["${pressure_channel}", 0x0201]
+        }
+    ],
+    "on_success": [
+        {
+            "type": "log",
+            "message": "气密性检测流程完成，产品${product_id}检测结束"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "气密性检测流程失败"
+        },
+        {
+            "type": "popup",
+            "message": "气密性检测流程失败，请检查设备",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 3.8 与上料系统集成的完整生产流程 Group
+
+**文件：`L3_group/production/complete_production_flow.group`**
+
+```json
+{
+    "type": "group",
+    "name": "完整生产流程（上料+气密性检测）",
+    "description": " 电机上料 → 气密性检测 → 下料分拣",
+    "params": [
+        { "index": 0, "name": "product_id", "type": "s", "default": "UNKNOWN", "desc": "产品ID" }
+    ],
+    "steps": [
+        {
+            "type": "group",
+            "name": "上料：运行到PR1取料",
+            "path": "L3_group/positioning/precise_positioning.group",
+            "params": [1, 0x0200, "pick_position", 30000]
+        },
+        {
+            "type": "group",
+            "name": "上料：运行到PR2放料（测试工位）",
+            "path": "L3_group/positioning/precise_positioning.group",
+            "params": [2, 0x0200, "place_position", 30000]
+        },
+        {
+            "type": "node",
+            "name": "通知开始检测",
+            "path": "L2_node/log/print.s",
+            "params": ["产品已放置到测试工位，开始气密性检测"]
+        },
+        {
+            "type": "group",
+            "name": "气密性检测",
+            "path": "L3_group/leak_test/complete_leak_test.group",
+            "params": ["${product_id}", 100.0, 30000, 0.5, 1]
+        },
+        {
+            "type": "if",
+            "name": "根据检测结果分拣",
+            "condition": {
+                "type": "expression",
+                "expression": "${test_result} == 'PASS'"
+            },
+            "then": [
+                {
+                    "type": "group",
+                    "name": "搬运到合格品区",
+                    "path": "L3_group/positioning/precise_positioning.group",
+                    "params": [3, 0x0200, "pass_position", 30000]
+                },
+                {
+                    "type": "node",
+                    "name": "记录合格品",
+                    "path": "L2_node/log/print.s",
+                    "params": ["产品${product_id}合格，已放入合格品区"]
+                }
+            ],
+            "else": [
+                {
+                    "type": "group",
+                    "name": "搬运到不合格品区",
+                    "path": "L3_group/positioning/precise_positioning.group",
+                    "params": [4, 0x0200, "fail_position", 30000]
+                },
+                {
+                    "type": "node",
+                    "name": "记录不合格品",
+                    "path": "L2_node/log/print.s",
+                    "params": ["产品${product_id}不合格，已放入不合格品区"]
+                }
+            ]
+        }
+    ],
+    "on_success": [
+        {
+            "type": "popup",
+            "message": "生产流程完成，产品${product_id}处理完毕",
+            "level": "success"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "popup",
+            "message": "生产流程失败，请检查系统",
+            "level": "error"
+        }
+    ]
+}
+```
+
+---
+
+## 四、数量统计
+
+| 层级 | 数量 | 说明 |
+|------|------|------|
+| **L1 Action** | **19** | 原子操作 |
+| **L2 Node** | **24** | 每个Node只有一个action，无嵌套 |
+| **L3 Group** | **8** | 编排Node的流程 |
+| **最大嵌套深度** | **4层** | L3→L3→L2→L1 |
+
+---
+
+## 五、目录结构
+
+```
+L1_action/
+├── digital/
+│   ├── digital_read.u8.r_b_digital_state
+│   ├── digital_write.u8_b.r_b_write_result
+│   ├── digital_write_on.u8.r_b_write_result
+│   └── digital_write_off.u8.r_b_write_result
+├── analog/
+│   ├── read_analog.u8.r_f_analog_value
+│   ├── read_pressure.u8.r_f_pressure
+│   └── read_temperature.u8.r_f_temperature
+├── modbus/
+│   ├── read_modbus_register.u8_u16.r_u16_register_value
+│   └── write_modbus_register.u8

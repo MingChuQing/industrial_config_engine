@@ -1,0 +1,957 @@
+﻿#  电机上料系统（修正版，符合Node规范）
+
+## 一、修正原则
+
+| 原则 | 说明 |
+|------|------|
+| **Node只能包含一个action** | Node内部不能嵌套Node |
+| **Node的on_success/on_failure只能放L1** | 不能放Node或Group |
+| **循环/顺序逻辑放到Group层** | Group负责编排多个Node |
+| **Node负责单一状态判断** | 一个Node = 一个动作 + 一个判断 |
+
+---
+
+## 二、修正后的L1 Action（共11个）
+
+**文件：`L1_action/leadshine/all_actions.json`**
+
+```json
+{
+    "type": "action_bundle",
+    "description": " 电机控制类原子操作集合",
+    "version": "1.0.0",
+    "actions": [
+        {
+            "filename": "write_pr_position.u8_i32.r_b_write_pr_result",
+            "type": "modbus_write_verify",
+            "description": "写入PR点位坐标（32位）",
+            "protocol": "modbus",
+            "request": "06 00 20 ${pr_number} ${position_high} ${position_mid} ${position_low}",
+            "response": "06 00 20 ${pr_number} ${position_high} ${position_mid} ${position_low}",
+            "timeout_ms": 5000,
+            "args": [
+                { "index": 0, "name": "pr_number", "type": "u8", "min": 0, "max": 255 },
+                { "index": 1, "name": "position", "type": "i32" }
+            ]
+        },
+        {
+            "filename": "read_pr_position.u8.r_i32_pr_position",
+            "type": "modbus_read_cache",
+            "description": "读取PR点位坐标",
+            "protocol": "modbus",
+            "request": "03 00 20 ${pr_number} 00 02",
+            "parse": {
+                "start_byte": 2,
+                "length": 4,
+                "endian": "big",
+                "type": "int32"
+            },
+            "timeout_ms": 2000,
+            "args": [
+                { "index": 0, "name": "pr_number", "type": "u8", "min": 0, "max": 255 }
+            ]
+        },
+        {
+            "filename": "pr_run.u8.r_b_pr_run_result",
+            "type": "modbus_write_verify",
+            "description": "触发PR点位运行",
+            "protocol": "modbus",
+            "request": "06 00 02 ${pr_number} 00 01",
+            "response": "06 00 02 ${pr_number} 00 01",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "pr_number", "type": "u8", "min": 0, "max": 255 }
+            ]
+        },
+        {
+            "filename": "check_motion_done.r_b_motion_done",
+            "type": "modbus_read_check",
+            "description": "检查电机运动是否完成",
+            "protocol": "modbus",
+            "request": "03 00 10 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "check": {
+                "condition": "eq",
+                "value": 0
+            },
+            "timeout_ms": 1000,
+            "args": []
+        },
+        {
+            "filename": "jog_start.u16.r_b_jog_start_result",
+            "type": "modbus_write_verify",
+            "description": "启动正向点动",
+            "protocol": "modbus",
+            "request": "06 00 03 ${speed_high} ${speed_low} 06 00 04 00 01",
+            "response": "06 00 03 ${speed_high} ${speed_low}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "speed", "type": "u16", "min": 1, "max": 100, "default": 10 }
+            ]
+        },
+        {
+            "filename": "jog_stop.r_b_jog_stop_result",
+            "type": "modbus_write_verify",
+            "description": "停止点动",
+            "protocol": "modbus",
+            "request": "06 00 04 00 00",
+            "response": "06 00 04 00 00",
+            "timeout_ms": 3000,
+            "args": []
+        },
+        {
+            "filename": "read_sensor.u8.r_u16_sensor_value",
+            "type": "modbus_read_cache",
+            "description": "读取光电开关状态",
+            "protocol": "modbus",
+            "request": "03 ${register} 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": 1000,
+            "args": [
+                { "index": 0, "name": "register", "type": "u8", "min": 0, "max": 255 }
+            ]
+        },
+        {
+            "filename": "read_current_position.r_i32_current_position",
+            "type": "modbus_read_cache",
+            "description": "读取当前绝对位置（32位）",
+            "protocol": "modbus",
+            "request": "03 00 10 00 02",
+            "parse": {
+                "start_byte": 2,
+                "length": 4,
+                "endian": "big",
+                "type": "int32"
+            },
+            "timeout_ms": 2000,
+            "args": []
+        },
+        {
+            "filename": "set_variable.s_s",
+            "type": "set",
+            "description": "设置变量值",
+            "args": [
+                { "index": 0, "name": "key", "type": "s" },
+                { "index": 1, "name": "value", "type": "s" }
+            ]
+        },
+        {
+            "filename": "log.s",
+            "type": "log",
+            "description": "写入日志",
+            "args": [
+                { "index": 0, "name": "message", "type": "s" }
+            ]
+        },
+        {
+            "filename": "popup.s_s",
+            "type": "popup",
+            "description": "显示弹窗提示",
+            "args": [
+                { "index": 0, "name": "message", "type": "s" },
+                { "index": 1, "name": "level", "type": "s", "enum": ["info","warning","error","success"], "default": "info" }
+            ]
+        }
+    ]
+}
+```
+
+---
+
+## 三、修正后的L2 Node（共10个）
+
+每个Node只包含一个action + judge，**无嵌套**。
+
+### 3.1 写入PR点位坐标
+
+**文件：`L2_node/leadshine/write_pr_position.u8_i32.r_b_write_pr_result.json`**
+
+```json
+{
+    "type": "node",
+    "name": "写入PR点位坐标",
+    "description": "写入指定PR点位的坐标值",
+    "params": [2, 100000],
+    "timeout_ms": 10000,
+    "max_retries": 3,
+    "retry_interval": 500,
+    "action": {
+        "template": "L1_action/leadshine/write_pr_position.u8_i32.r_b_write_pr_result"
+    },
+    "on_success": [
+        {
+            "type": "log",
+            "message": "PR${param_0}坐标写入成功：${write_pr_result}"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "PR${param_0}坐标写入失败"
+        },
+        {
+            "type": "popup",
+            "message": "PR${param_0}坐标写入失败，请检查通信",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 3.2 验证PR点位坐标
+
+**文件：`L2_node/leadshine/verify_pr_position.u8_i32.r_b_verify_result.json`**
+
+```json
+{
+    "type": "node",
+    "name": "验证PR点位坐标",
+    "description": "读取PR点位坐标并验证是否与期望值一致",
+    "params": [2, 100000],
+    "timeout_ms": 5000,
+    "max_retries": 0,
+    "retry_interval": 0,
+    "action": {
+        "template": "L1_action/leadshine/read_pr_position.u8.r_i32_pr_position"
+    },
+    "judge": {
+        "type": "compare",
+        "condition": "eq",
+        "value": "${param_1}"
+    },
+    "on_success": [
+        {
+            "type": "log",
+            "message": "PR${param_0}坐标验证通过：${pr_position}"
+        },
+        {
+            "type": "popup",
+            "message": "PR${param_0}坐标验证通过：${pr_position}",
+            "level": "success"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "PR${param_0}坐标验证失败：期望${param_1}，实际${pr_position}"
+        },
+        {
+            "type": "popup",
+            "message": "PR${param_0}坐标验证失败：期望${param_1}，实际${pr_position}",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 3.3 启动PR点位运行
+
+**文件：`L2_node/leadshine/start_pr_run.u8.r_b_start_result.json`**
+
+```json
+{
+    "type": "node",
+    "name": "启动PR点位运行",
+    "description": "触发PR点位运行指令",
+    "params": [1],
+    "timeout_ms": 5000,
+    "max_retries": 2,
+    "retry_interval": 1000,
+    "action": {
+        "template": "L1_action/leadshine/pr_run.u8.r_b_pr_run_result"
+    },
+    "on_success": [
+        {
+            "type": "log",
+            "message": "PR${param_0}启动成功"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "PR${param_0}启动失败"
+        },
+        {
+            "type": "popup",
+            "message": "PR${param_0}启动失败，请检查通信",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 3.4 检查运动完成
+
+**文件：`L2_node/leadshine/check_motion_done.r_b_motion_done.json`**
+
+```json
+{
+    "type": "node",
+    "name": "检查运动完成",
+    "description": "检查电机运动状态是否完成",
+    "params": [],
+    "timeout_ms": 2000,
+    "max_retries": 3,
+    "retry_interval": 100,
+    "action": {
+        "template": "L1_action/leadshine/check_motion_done.r_b_motion_done"
+    },
+    "on_success": [
+        {
+            "type": "log",
+            "message": "电机运动完成"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "电机运动未完成或超时"
+        }
+    ]
+}
+```
+
+### 3.5 启动点动
+
+**文件：`L2_node/leadshine/start_jog.u16.r_b_jog_start_result.json`**
+
+```json
+{
+    "type": "node",
+    "name": "启动点动",
+    "description": "启动正向点动（低速）",
+    "params": [10],
+    "timeout_ms": 5000,
+    "max_retries": 2,
+    "retry_interval": 500,
+    "action": {
+        "template": "L1_action/leadshine/jog_start.u16.r_b_jog_start_result"
+    },
+    "on_success": [
+        {
+            "type": "log",
+            "message": "点动启动成功，速度：${param_0}%"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "点动启动失败"
+        },
+        {
+            "type": "popup",
+            "message": "点动启动失败，请检查电机",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 3.6 停止点动
+
+**文件：`L2_node/leadshine/stop_jog.r_b_jog_stop_result.json`**
+
+```json
+{
+    "type": "node",
+    "name": "停止点动",
+    "description": "立即停止点动",
+    "params": [],
+    "timeout_ms": 3000,
+    "max_retries": 0,
+    "retry_interval": 0,
+    "action": {
+        "template": "L1_action/leadshine/jog_stop.r_b_jog_stop_result"
+    },
+    "on_success": [
+        {
+            "type": "log",
+            "message": "点动已停止"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "停止点动失败"
+        }
+    ]
+}
+```
+
+### 3.7 读取光电开关状态（带判断）
+
+**文件：`L2_node/sensor/check_sensor_triggered.u8.r_b_sensor_triggered.json`**
+
+```json
+{
+    "type": "node",
+    "name": "检查光电开关是否触发",
+    "description": "读取光电开关状态，判断是否触发（值为1）",
+    "params": [0x0200],
+    "timeout_ms": 2000,
+    "max_retries": 0,
+    "retry_interval": 0,
+    "action": {
+        "template": "L1_action/leadshine/read_sensor.u8.r_u16_sensor_value"
+    },
+    "judge": {
+        "type": "compare",
+        "condition": "eq",
+        "value": 1
+    },
+    "on_success": [
+        {
+            "type": "log",
+            "message": "光电开关已触发，值：${sensor_value}"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "光电开关未触发，值：${sensor_value}"
+        }
+    ]
+}
+```
+
+### 3.8 读取光电开关状态（无判断，仅读取）
+
+**文件：`L2_node/sensor/read_sensor_value.u8.r_u16_sensor_value.json`**
+
+```json
+{
+    "type": "node",
+    "name": "读取光电开关值",
+    "description": "读取光电开关当前数值",
+    "params": [0x0200],
+    "timeout_ms": 2000,
+    "max_retries": 0,
+    "retry_interval": 0,
+    "action": {
+        "template": "L1_action/leadshine/read_sensor.u8.r_u16_sensor_value"
+    },
+    "on_success": [
+        {
+            "type": "log",
+            "message": "光电开关值：${sensor_value}"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "读取光电开关失败"
+        }
+    ]
+}
+```
+
+### 3.9 读取当前位置
+
+**文件：`L2_node/leadshine/read_current_position.r_i32_current_position.json`**
+
+```json
+{
+    "type": "node",
+    "name": "读取当前位置",
+    "description": "读取电机当前绝对位置",
+    "params": [],
+    "timeout_ms": 3000,
+    "max_retries": 0,
+    "retry_interval": 0,
+    "action": {
+        "template": "L1_action/leadshine/read_current_position.r_i32_current_position"
+    },
+    "on_success": [
+        {
+            "type": "log",
+            "message": "当前位置：${current_position}"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "读取当前位置失败"
+        },
+        {
+            "type": "popup",
+            "message": "读取当前位置失败",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 3.10 设置变量
+
+**文件：`L2_node/variable/set_variable.s_s.json`**
+
+```json
+{
+    "type": "node",
+    "name": "设置变量",
+    "description": "设置指定变量的值",
+    "params": ["position_1", "12345"],
+    "timeout_ms": 1000,
+    "max_retries": 0,
+    "retry_interval": 0,
+    "action": {
+        "template": "L1_action/leadshine/set_variable.s_s"
+    },
+    "on_success": [
+        {
+            "type": "log",
+            "message": "变量${param_0}设置为：${param_1}"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "设置变量失败"
+        }
+    ]
+}
+```
+
+### 3.11 日志
+
+**文件：`L2_node/log/print.s.json`**
+
+```json
+{
+    "type": "node",
+    "name": "打印日志",
+    "description": "输出日志消息",
+    "params": ["日志内容"],
+    "timeout_ms": 1000,
+    "max_retries": 0,
+    "retry_interval": 0,
+    "action": {
+        "template": "L1_action/leadshine/log.s"
+    },
+    "on_success": [],
+    "on_failure": []
+}
+```
+
+### 3.12 弹窗
+
+**文件：`L2_node/ui/popup.s_s.json`**
+
+```json
+{
+    "type": "node",
+    "name": "弹窗提示",
+    "description": "显示弹窗消息",
+    "params": ["消息内容", "info"],
+    "timeout_ms": 5000,
+    "max_retries": 0,
+    "retry_interval": 0,
+    "action": {
+        "template": "L1_action/leadshine/popup.s_s"
+    },
+    "on_success": [],
+    "on_failure": []
+}
+```
+
+---
+
+## 四、L3 Group定义（循环+顺序逻辑在这里）
+
+### 4.1 运行PR并等待完成Group
+
+**文件：`L3_group/leadshine/run_pr_with_wait.group`**
+
+```json
+{
+    "type": "group",
+    "name": "运行PR并等待完成",
+    "description": "启动PR运行，然后循环检测直到运动完成",
+    "params": [
+        { "index": 0, "name": "pr_number", "type": "u8", "desc": "PR点位号" },
+        { "index": 1, "name": "timeout", "type": "u16", "default": 30000, "desc": "超时(毫秒)" }
+    ],
+    "steps": [
+        {
+            "type": "node",
+            "name": "启动PR${pr_number}",
+            "path": "L2_node/leadshine/start_pr_run.u8.r_b_start_result",
+            "params": ["${pr_number}"]
+        },
+        {
+            "type": "while",
+            "name": "等待运动完成",
+            "condition": {
+                "type": "expression",
+                "expression": "${loop_count} * 100 < ${timeout}"
+            },
+            "max_iterations": 300,
+            "steps": [
+                {
+                    "type": "node",
+                    "name": "检查运动状态",
+                    "path": "L2_node/leadshine/check_motion_done.r_b_motion_done",
+                    "params": []
+                },
+                {
+                    "type": "break_if",
+                    "condition": {
+                        "type": "expression",
+                        "expression": "${motion_done} == true"
+                    }
+                },
+                {
+                    "type": "node",
+                    "name": "等待100ms",
+                    "path": "L2_node/wait/wait_ms.u16.r_b_wait_done",
+                    "params": [100]
+                }
+            ]
+        }
+    ],
+    "on_success": [
+        {
+            "type": "log",
+            "message": "PR${pr_number}运行完成"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "log",
+            "message": "PR${pr_number}运行超时"
+        },
+        {
+            "type": "popup",
+            "message": "PR${pr_number}运行超时，请检查电机",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 4.2 点动找光电开关Group
+
+**文件：`L3_group/positioning/jog_find_sensor.group`**
+
+```json
+{
+    "type": "group",
+    "name": "点动找光电开关",
+    "description": "点动前进直到触发光电开关，返回精确位置",
+    "params": [
+        { "index": 0, "name": "sensor_register", "type": "u8", "desc": "光电开关寄存器地址" },
+        { "index": 1, "name": "timeout", "type": "u16", "default": 10000, "desc": "超时(毫秒)" }
+    ],
+    "steps": [
+        {
+            "type": "node",
+            "name": "启动点动",
+            "path": "L2_node/leadshine/start_jog.u16.r_b_jog_start_result",
+            "params": [10]
+        },
+        {
+            "type": "while",
+            "name": "循环检测光电开关",
+            "condition": {
+                "type": "expression",
+                "expression": "${loop_count} * 50 < ${timeout}"
+            },
+            "max_iterations": 200,
+            "steps": [
+                {
+                    "type": "node",
+                    "name": "检测光电开关",
+                    "path": "L2_node/sensor/check_sensor_triggered.u8.r_b_sensor_triggered",
+                    "params": ["${sensor_register}"]
+                },
+                {
+                    "type": "break_if",
+                    "condition": {
+                        "type": "expression",
+                        "expression": "${sensor_triggered} == true"
+                    }
+                },
+                {
+                    "type": "node",
+                    "name": "等待50ms",
+                    "path": "L2_node/wait/wait_ms.u16.r_b_wait_done",
+                    "params": [50]
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "name": "停止点动",
+            "path": "L2_node/leadshine/stop_jog.r_b_jog_stop_result",
+            "params": []
+        },
+        {
+            "type": "node",
+            "name": "读取精确位置",
+            "path": "L2_node/leadshine/read_current_position.r_i32_current_position",
+            "params": []
+        }
+    ],
+    "on_success": [
+        {
+            "type": "log",
+            "message": "光电开关触发，位置：${current_position}"
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "node",
+            "name": "紧急停止",
+            "path": "L2_node/leadshine/stop_jog.r_b_jog_stop_result",
+            "params": []
+        },
+        {
+            "type": "log",
+            "message": "点动找光电开关超时"
+        },
+        {
+            "type": "popup",
+            "message": "未检测到光电开关触发，请检查光电开关",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 4.3 写入并验证PR点位Group
+
+**文件：`L3_group/leadshine/write_pr_position.group`**
+
+```json
+{
+    "type": "group",
+    "name": "写入并验证PR点位",
+    "description": "写入PR点位坐标并验证",
+    "params": [
+        { "index": 0, "name": "pr_number", "type": "u8", "desc": "PR点位号" },
+        { "index": 1, "name": "position", "type": "i32", "desc": "目标位置(脉冲数)" }
+    ],
+    "steps": [
+        {
+            "type": "node",
+            "name": "写入PR${pr_number}坐标",
+            "path": "L2_node/leadshine/write_pr_position.u8_i32.r_b_write_pr_result",
+            "params": ["${pr_number}", "${position}"]
+        },
+        {
+            "type": "node",
+            "name": "验证PR${pr_number}坐标",
+            "path": "L2_node/leadshine/verify_pr_position.u8_i32.r_b_verify_result",
+            "params": ["${pr_number}", "${position}"]
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "popup",
+            "message": "PR${pr_number}写入或验证失败",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 4.4 PR点位精确定位Group
+
+**文件：`L3_group/positioning/precise_positioning.group`**
+
+```json
+{
+    "type": "group",
+    "name": "PR点位精确定位",
+    "description": "运行PR点位 → 点动找光电 → 保存精确位置",
+    "params": [
+        { "index": 0, "name": "pr_number", "type": "u8", "desc": "PR点位号" },
+        { "index": 1, "name": "sensor_register", "type": "u8", "desc": "光电开关寄存器地址" },
+        { "index": 2, "name": "result_key", "type": "s", "desc": "结果保存的变量名" },
+        { "index": 3, "name": "timeout", "type": "u16", "default": 30000, "desc": "超时(毫秒)" }
+    ],
+    "steps": [
+        {
+            "type": "group",
+            "name": "运行PR${pr_number}",
+            "path": "L3_group/leadshine/run_pr_with_wait.group",
+            "params": ["${pr_number}", "${timeout}"]
+        },
+        {
+            "type": "group",
+            "name": "点动找光电开关",
+            "path": "L3_group/positioning/jog_find_sensor.group",
+            "params": ["${sensor_register}", "${timeout}"]
+        },
+        {
+            "type": "node",
+            "name": "保存位置到变量",
+            "path": "L2_node/variable/set_variable.s_s",
+            "params": ["${result_key}", "${current_position}"]
+        },
+        {
+            "type": "node",
+            "name": "日志记录",
+            "path": "L2_node/log/print.s",
+            "params": ["PR${pr_number}精确定位完成，位置已保存到${result_key}：${current_position}"]
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "popup",
+            "message": "PR${pr_number}精确定位失败",
+            "level": "error"
+        }
+    ]
+}
+```
+
+### 4.5 完整上料流程Group
+
+**文件：`L3_group/feeding/complete_feeding.group`**
+
+```json
+{
+    "type": "group",
+    "name": "完整上料流程",
+    "description": "写入PR坐标 → 回原点 → PR1精确定位 → PR2精确定位",
+    "params": [
+        { "index": 0, "name": "pr1_position", "type": "i32", "default": 50000, "desc": "PR1位置(脉冲)" },
+        { "index": 1, "name": "pr2_position", "type": "i32", "default": 100000, "desc": "PR2位置(脉冲)" },
+        { "index": 2, "name": "sensor_register", "type": "u8", "default": 0x0200, "desc": "光电开关寄存器" }
+    ],
+    "steps": [
+        {
+            "type": "group",
+            "name": "写入PR0坐标（原点）",
+            "path": "L3_group/leadshine/write_pr_position.group",
+            "params": [0, 0]
+        },
+        {
+            "type": "group",
+            "name": "写入PR1坐标",
+            "path": "L3_group/leadshine/write_pr_position.group",
+            "params": [1, "${pr1_position}"]
+        },
+        {
+            "type": "group",
+            "name": "写入PR2坐标",
+            "path": "L3_group/leadshine/write_pr_position.group",
+            "params": [2, "${pr2_position}"]
+        },
+        {
+            "type": "group",
+            "name": "回原点(PR0)",
+            "path": "L3_group/leadshine/run_pr_with_wait.group",
+            "params": [0, 10000]
+        },
+        {
+            "type": "group",
+            "name": "PR1精确定位",
+            "path": "L3_group/positioning/precise_positioning.group",
+            "params": [1, "${sensor_register}", "position_1", 30000]
+        },
+        {
+            "type": "group",
+            "name": "PR2精确定位",
+            "path": "L3_group/positioning/precise_positioning.group",
+            "params": [2, "${sensor_register}", "position_2", 30000]
+        },
+        {
+            "type": "node",
+            "name": "流程完成通知",
+            "path": "L2_node/ui/popup.s_s",
+            "params": ["上料流程完成！位置1=${position_1}，位置2=${position_2}", "success"]
+        }
+    ],
+    "on_failure": [
+        {
+            "type": "popup",
+            "message": "上料流程失败，请检查系统",
+            "level": "error"
+        }
+    ]
+}
+```
+
+---
+
+## 五、数量统计（修正后）
+
+### 5.1 各层级数量
+
+| 层级 | 数量 | 说明 |
+|------|------|------|
+| **L1 Action** | **11** | 原子操作 |
+| **L2 Node** | **12** | 每个Node只有一个action，无嵌套 |
+| **L3 Group** | **5** | 编排Node的流程 |
+
+### 5.2 最大嵌套深度：**4层**
+
+```
+L3 Group (complete_feeding)
+  └── L3 Group (write_pr_position)      ← 第3层
+        └── L2 Node (write_pr_position)  ← 第2层
+              └── L1 Action             ← 第1层（最深）
+```
+
+### 5.3 修正前后对比
+
+| 对比项 | 修正前 | 修正后 |
+|--------|--------|--------|
+| Node数量 | 6个（违规） | 12个（合规） |
+| Group数量 | 3个 | 5个 |
+| Node嵌套Node | ❌ 有（违规） | ✅ 无（合规） |
+| 循环逻辑位置 | 在Node内部 | ✅ 在Group层 |
+| 是否符合规范 | ❌ 否 | ✅ 是 |
+
+---
+
+## 六、目录结构
+
+```
+L1_action/
+└── leadshine/
+    └── all_actions.json                        # 11个L1原子操作
+
+L2_node/
+├── leadshine/
+│   ├── write_pr_position.u8_i32.r_b_write_pr_result.json   # Node①
+│   ├── verify_pr_position.u8_i32.r_b_verify_result.json    # Node②
+│   ├── start_pr_run.u8.r_b_start_result.json               # Node③
+│   ├── check_motion_done.r_b_motion_done.json              # Node④
+│   ├── start_jog.u16.r_b_jog_start_result.json             # Node⑤
+│   ├── stop_jog.r_b_jog_stop_result.json                   # Node⑥
+│   └── read_current_position.r_i32_current_position.json   # Node⑦
+├── sensor/
+│   ├── check_sensor_triggered.u8.r_b_sensor_triggered.json # Node⑧
+│   └── read_sensor_value.u8.r_u16_sensor_value.json        # Node⑨
+├── variable/
+│   └── set_variable.s_s.json                               # Node⑩
+├── log/
+│   └── print.s.json                                        # Node⑪
+├── ui/
+│   └── popup.s_s.json                                      # Node⑫
+└── wait/
+    └── wait_ms.u16.r_b_wait_done.json                      # 需要补充
+
+L3_group/
+├── leadshine/
+│   ├── write_pr_position.group                             # Group①
+│   └── run_pr_with_wait.group                              # Group②
+├── positioning/
+│   ├── jog_find_sensor.group                               # Group③
+│   └── precise_positioning.group                           # Group④
+└── feeding/
+    └── complete_feeding.group                              # Group⑤
+```
