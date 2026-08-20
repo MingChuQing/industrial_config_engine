@@ -16,7 +16,7 @@
 |------|----------------|----------------|------|
 | Number of files | 1 | 20 | Separated by layer |
 | Total lines | 4082 | 1319 | **−67.7%** |
-| Total bytes | 215.0 KB | 33.7 KB | **−84.3%** |
+| Total bytes | 215,962 B | 35,241 B | **−83.7%** |
 | Modbus frames (occurrences of `"request"`) | 239 | 0 in the orchestration layer (L3/L4); 18 in the device layer (L1/L2) | Device details frozen in L1/L2 |
 | Group references / unique group definitions | Verbatim repetition | 29 references ← 17 parameterized groups | Reuse rate 41.4% |
 
@@ -27,7 +27,7 @@ Reuse distribution (group references in the L4 flow):
 | Filling cycle fill_cycle | 4 (four stations) |
 | Four-station bottle detection pos_detect | 4 |
 | Three-axis movement axis_move_seq | 4 (four filling stations) |
-| Four-station level recheck level_recheck | 4 |
+| Level recheck level_recheck | 2 |
 | Valve control cycle rinse_cycle | 3 (rinse/disinfect/drain) |
 | The remaining 12 groups | 1 each |
 
