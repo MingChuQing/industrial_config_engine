@@ -1,26 +1,26 @@
-﻿# 设备配置示例 -  双轴步进电机系统
+# Device Configuration Example - Dual-Axis Stepper Motor System
 
-## 硬件配置
-- **串口**: COM14
-- **波特率**: 9600
-- **数据位**: 8
-- **停止位**: 1
-- **校验位**: None
-- **设备1**: X轴，Modbus地址 1
-- **设备2**: Y轴，Modbus地址 2
+## Hardware Configuration
+- **Serial port**: COM14
+- **Baud rate**: 9600
+- **Data bits**: 8
+- **Stop bits**: 1
+- **Parity**: None
+- **Device 1**: X-axis, Modbus address 1
+- **Device 2**: Y-axis, Modbus address 2
 
-## 目录结构说明
+## Directory Structure
 
-| 文件 | 层级 | 说明 |
+| File | Layer | Description |
 |------|------|------|
-| `links.json` | 第1层 物理层 | 串口通信参数 |
-| `protocols/modbus_rtu.json` | 第2层 协议层 | Modbus RTU 设备映射 |
-| `types/modbus/iDM42_RS06.json` | 第3层 应用层 |  步进电机类型定义 |
+| `links.json` | Layer 1 (physical) | Serial communication parameters |
+| `protocols/modbus_rtu.json` | Layer 2 (protocol) | Modbus RTU device mapping |
+| `types/modbus/iDM42_RS06.json` | Layer 3 (application) | Stepper motor type definition |
 
-## 三层数据流
+## Three-Layer Data Flow
 
-
-用户操作: 使能 "X_Axis"
+```
+User action: enable "X_Axis"
 ↓
 instances: X_Axis → type_id: iDM42_RS06, link_id: 1, modbus_address: 1
 ↓
@@ -28,12 +28,9 @@ types: iDM42_RS06 → register_map: { control_word: 0x1801, ... }
 ↓
 links: link_id: 1 → COM14, 9600, 8N1
 ↓
-执行: COM14 → Modbus RTU (地址1) → 寄存器 0x1801
+Execution: COM14 → Modbus RTU (address 1) → register 0x1801
+```
 
+## Usage
 
-
-
-## 使用方式
-
-将此目录下的配置文件复制到项目根目录的 `device/` 文件夹下使用。
-
+Copy the configuration files in this directory to the `device/` folder under the project root.

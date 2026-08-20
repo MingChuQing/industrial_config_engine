@@ -10,7 +10,7 @@
 namespace industrial_config_engine {
 
     // ============================================================
-    // JudgeConfig 实现
+    // JudgeConfig implementation
     // ============================================================
 
     bool JudgeConfig::isValid() const {
@@ -54,12 +54,12 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // ActionRef 实现
+    // ActionRef implementation
     // ============================================================
 
     bool ActionRef::resolve() {
         if (is_inline) {
-            // inline action 不需要解析
+            // inline action needs no parsing
             resolved = true;
             signature.name = "inline";
             signature.return_type = DataType::VOIDDataType;
@@ -70,17 +70,17 @@ namespace industrial_config_engine {
             return false;
         }
 
-        // 从路径中提取文件名
+        // extract filename from path
         size_t pos = template_path.find_last_of("/\\");
         std::string basename = (pos != std::string::npos) ? template_path.substr(pos + 1) : template_path;
 
-        // 去除扩展名
+        // strip extension
         size_t dot_pos = basename.find_last_of('.');
         if (dot_pos != std::string::npos) {
             basename = basename.substr(0, dot_pos);
         }
 
-        // 解析签名
+        // parse signature
         signature = L1Action::parseSignatureFromFilename(basename);
         resolved = !signature.name.empty();
 
@@ -88,7 +88,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // NodeSignature 实现
+    // NodeSignature implementation
     // ============================================================
 
     std::string NodeSignature::toString() const {
@@ -109,7 +109,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // L2Node 构造和加载
+    // L2Node constructor and load
     // ============================================================
 
     L2Node::L2Node(const nlohmann::json& json) {
@@ -136,10 +136,10 @@ namespace industrial_config_engine {
             parseJudge(json);
             parseBranches(json);
 
-            // 解析 Action 签名
+            // parse Action signature
             action_.resolve();
 
-            // 如果签名未设置但有filename，重新解析
+            // if signature unset but filename present, re-parse
             if (signature_.name.empty() && !filename_.empty()) {
                 signature_ = parseSignatureFromFilename(filename_);
             }
@@ -180,7 +180,7 @@ namespace industrial_config_engine {
 
         filepath_ = filepath;
 
-        // 从路径提取文件名
+        // extract filename from path
         size_t pos = filepath.find_last_of("/\\");
         std::string basename = (pos != std::string::npos) ? filepath.substr(pos + 1) : filepath;
         pos = basename.find_last_of('.');
@@ -191,7 +191,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 导出为JSON
+    // export to JSON
     // ============================================================
 
     nlohmann::json L2Node::toJson() const {
@@ -212,10 +212,10 @@ namespace industrial_config_engine {
         json["max_retries"] = max_retries_;
         json["retry_interval"] = retry_interval_;
 
-        // 处理 action
+        // handle action
         nlohmann::json action_json;
         if (action_.is_inline) {
-            // inline action：解析 JSON 字符串
+            // inline action: parse JSON string
             try {
                 action_json = nlohmann::json::parse(action_.inline_json);
             }
@@ -270,7 +270,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 文件名解析（静态方法）
+    // filename parse (static method)
     // ============================================================
 
     NodeSignature L2Node::parseSignatureFromFilename(const std::string& filename) {
@@ -282,7 +282,7 @@ namespace industrial_config_engine {
             return sig;
         }
 
-        // 与 L1 使用相同的解析逻辑
+        // same parse logic as L1
         size_t r_pos = filename.find(".r_");
 
         if (r_pos != std::string::npos) {
@@ -337,7 +337,7 @@ namespace industrial_config_engine {
             return false;
         }
 
-        // 与 L1 使用相同的验证逻辑
+        // same validation logic as L1
         std::string params_part = filename.substr(dot_pos + 1);
         size_t r_pos = params_part.find(".r_");
         if (r_pos != std::string::npos) {
@@ -363,7 +363,7 @@ namespace industrial_config_engine {
         const std::vector<DataType>& params,
         DataType return_type,
         const std::string& result_key) {
-        // 与 L1 使用相同的生成逻辑
+        // same generation logic as L1
         std::string filename = name;
 
         if (!params.empty()) {
@@ -383,7 +383,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 占位符处理
+    // placeholder handling
     // ============================================================
 
     std::vector<std::string> L2Node::extractPlaceholders() const {
@@ -394,24 +394,24 @@ namespace industrial_config_engine {
             result.insert(result.end(), extracted.begin(), extracted.end());
             };
 
-        // 从参数中提取
+        // extract from params
         for (const auto& param : params_) {
             if (param.is_string()) {
                 addPlaceholders(param.get<std::string>());
             }
         }
 
-        // 从 Action 模板中提取
+        // extract from Action template
         addPlaceholders(action_.template_path);
 
-        // 从 Judge 中提取
+        // extract from Judge
         if (judge_.has_value()) {
             for (const auto& p : judge_->getPlaceholders()) {
                 result.push_back(p);
             }
         }
 
-        // 从分支中提取
+        // extract from branches
         auto extractFromBranch = [&](const nlohmann::json& branch) {
             if (branch.is_object()) {
                 for (auto it = branch.begin(); it != branch.end(); ++it) {
@@ -430,7 +430,7 @@ namespace industrial_config_engine {
             extractFromBranch(action);
         }
 
-        // ✅ 新增：从 on_timeout 中提取
+        // added: extract from on_timeout
         for (const auto& action : on_timeout_) {
             extractFromBranch(action);
         }
@@ -480,7 +480,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 验证
+    // validation
     // ============================================================
 
     bool L2Node::validate() const {
@@ -488,10 +488,10 @@ namespace industrial_config_engine {
         if (!validateJudge()) return false;
         if (!validateBranches()) return false;
 
-        // 验证超时
+        // validate timeout
         if (timeout_ms_ < 1) return false;
 
-        // 验证重试间隔
+        // validate retry interval
         if (retry_interval_ > 0 && (retry_interval_ < 10 || retry_interval_ > 10000)) {
             return false;
         }
@@ -514,12 +514,12 @@ namespace industrial_config_engine {
     }
 
     bool L2Node::validateBranches() const {
-        // on_success、on_failure、on_timeout 可以为空，但不能是 null
+        // on_success/on_failure/on_timeout may be empty but not null
         return true;
     }
 
     // ============================================================
-    // 私有解析方法
+    // private parse methods
     // ============================================================
 
     void L2Node::parseCommonFields(const nlohmann::json& json) {
@@ -554,7 +554,7 @@ namespace industrial_config_engine {
             params_ = json["params"].get<std::vector<nlohmann::json>>();
         }
         else if (json["params"].is_object()) {
-            // 支持对象格式（命名参数）
+            // support object format (named params)
             params_.clear();
             for (auto it = json["params"].begin(); it != json["params"].end(); ++it) {
                 params_.push_back({ {it.key(), it.value()} });
@@ -573,14 +573,14 @@ namespace industrial_config_engine {
         const auto& action_json = json["action"];
 
         if (action_json.contains("template") && action_json["template"].is_string()) {
-            // template 引用
+            // template reference
             action_.template_path = action_json["template"].get<std::string>();
             action_.is_inline = false;
             action_.inline_json.clear();
             action_.resolve();
         }
         else if (action_json.contains("type") && action_json["type"].is_string()) {
-            // inline action：保存整个 JSON 对象
+            // inline action: save whole JSON object
             action_.is_inline = true;
             action_.inline_json = action_json.dump();
             action_.template_path.clear();
@@ -652,7 +652,7 @@ namespace industrial_config_engine {
             on_failure_.clear();
         }
 
-        // 解析 on_timeout
+        // parse on_timeout
         if (json.contains("on_timeout") && json["on_timeout"].is_array()) {
             on_timeout_ = json["on_timeout"].get<std::vector<nlohmann::json>>();
         }
@@ -662,7 +662,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 调试和打印
+    // debug and print
     // ============================================================
 
     std::string L2Node::toString() const {
@@ -685,7 +685,7 @@ namespace industrial_config_engine {
 
         os << "Signature: " << signature_.toString() << std::endl;
 
-        // 参数
+        // params
         if (!params_.empty()) {
             os << "Params: ";
             for (const auto& param : params_) {
@@ -732,9 +732,9 @@ namespace industrial_config_engine {
         // Branches
         os << "On Success: " << on_success_.size() << " actions" << std::endl;
         os << "On Failure: " << on_failure_.size() << " actions" << std::endl;
-        os << "On Timeout: " << on_timeout_.size() << " actions" << std::endl;  // ✅ 新增
+        os << "On Timeout: " << on_timeout_.size() << " actions" << std::endl;  // added:
 
-        // 占位符
+        // placeholder
         auto placeholders = extractPlaceholders();
         if (!placeholders.empty()) {
             os << "Placeholders: ";

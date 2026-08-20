@@ -1,6 +1,6 @@
 // src/executor.cpp
-// 执行器与仿真运行器：虚拟设备 + 运行时变量存储 + 虚拟时钟 + 步数预算 + 审计日志
-// 启动时解析与校验，运行时按数据描述执行（配套论文《数据驱动的工业控制配置语言》）
+// Executor and simulator: virtual devices + runtime variable store + virtual clock + step budget + audit log
+// parse and validate at startup, execute by data description at runtime (companion paper)
 #include "industrial_config_engine/executor.hpp"
 
 #include <iostream>
@@ -14,7 +14,7 @@
 namespace industrial_config_engine {
 
     // ============================================================
-    // 状态字符串
+    // status strings
     // ============================================================
     const char* execStatusToString(ExecStatus s) {
         switch (s) {
@@ -30,7 +30,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 审计日志
+    // audit log
     // ============================================================
     void AuditLog::log(uint64_t t, const std::string& level, const std::string& msg,
         const nlohmann::json& data) {
@@ -51,12 +51,12 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 虚拟设备注册表
+    // virtual device registry
     // ============================================================
     bool DeviceRegistry::isOnline(const std::string& device) const {
         auto it = online_.find(device);
         if (it != online_.end()) return it->second;
-        return true; // 默认在线
+        return true; // default online
     }
 
     void DeviceRegistry::setRegister(const std::string& device, uint16_t addr, int64_t value) {
@@ -119,7 +119,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 运行时变量存储
+    // runtime variable store
     // ============================================================
     const nlohmann::json* VariableStore::get(const std::string& key) const {
         auto it = vars_.find(key);
@@ -146,7 +146,7 @@ namespace industrial_config_engine {
                 out += v->dump();
             }
             else {
-                out += s.substr(b, e - b + 1); // 保留原占位符
+                out += s.substr(b, e - b + 1); // keep original placeholder
                 if (missing) missing->push_back(name);
             }
             pos = e + 1;
@@ -168,7 +168,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 静态工具
+    // static utilities
     // ============================================================
     static std::string trimStr(const std::string& s) {
         size_t a = 0, b = s.size();
@@ -211,7 +211,7 @@ namespace industrial_config_engine {
     }
 
     std::string Executor::formatArg(const nlohmann::json& v, const std::string& type_name) {
-        int tw = 2;   // 按参数声明类型的字节宽度
+        int tw = 2;   // byte width per declared parameter type
         if (type_name == "u8" || type_name == "i8") tw = 1;
         else if (type_name == "u32" || type_name == "i32") tw = 4;
 
@@ -222,7 +222,7 @@ namespace industrial_config_engine {
         if (type_name == "s" || type_name == "string") {
             return v.is_string() ? v.get<std::string>() : v.dump();
         }
-        // 数值参数：${变量} 解析后可能变成纯数字字符串，也按数值十六进制格式化
+        // numeric params: ${var} may resolve to a numeric string, still formatted as hex
         if (v.is_string()) {
             const std::string& s = v.get<std::string>();
             bool all_digits = !s.empty() &&
@@ -245,7 +245,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 条件求值
+    // condition evaluation
     // ============================================================
     bool Executor::compareValues(const nlohmann::json& lhs, const nlohmann::json& rhs,
         const std::string& op, bool& out) {
@@ -275,7 +275,7 @@ namespace industrial_config_engine {
         std::string expr = trimStr(expr_in);
         if (expr.empty()) { err = "empty expression"; return false; }
 
-        // 先解析占位符（变量值若为字符串，原样嵌入后按引号/字面量处理）
+        // resolve placeholders first (string values embedded verbatim then quoted/literal)
         std::vector<std::string> missing;
         expr = vars.resolve(expr, &missing);
         if (!missing.empty()) {
@@ -283,7 +283,7 @@ namespace industrial_config_engine {
             return false;
         }
 
-        // 处理 && 与 ||（自顶向下拆分，注意引号内不拆分）
+        // handle && and || (top-down split, do not split inside quotes)
         auto splitTopLevel = [&](const std::string& s, const std::string& op) -> std::vector<std::string> {
             std::vector<std::string> parts;
             size_t start = 0;
@@ -319,7 +319,7 @@ namespace industrial_config_engine {
             return false;
         }
 
-        // 单比较式：找比较运算符（引号外）
+        // single comparison: find comparison operator (outside quotes)
         struct Op { const char* s; size_t n; };
         static const Op ops[] = { {"==",2}, {"!=",2}, {">=",2}, {"<=",2}, {">",1}, {"<",1} };
         const Op* found = nullptr;
@@ -348,7 +348,7 @@ namespace industrial_config_engine {
             op_str = found->s;
         }
         else {
-            // 无运算符：布尔字面量或变量
+            // no operator: boolean literal or variable
             lhs_str = expr;
             rhs_str = "true";
             op_str = "==";
@@ -358,7 +358,7 @@ namespace industrial_config_engine {
             }
         }
 
-        // 去引号 → 字面量
+        // unquote -> literal
         auto toJson = [&](const std::string& s) -> nlohmann::json {
             std::string t = trimStr(s);
             if (t.size() >= 2 && ((t.front() == '\'' && t.back() == '\'') ||
@@ -373,7 +373,7 @@ namespace industrial_config_engine {
                 }
                 try { return nlohmann::json(std::stoll(t)); } catch (...) {}
             }
-            return nlohmann::json(t); // 字符串
+            return nlohmann::json(t); // string
         };
 
         bool ok = false;
@@ -411,7 +411,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 执行器
+    // Executor
     // ============================================================
     Executor::Executor() = default;
 
@@ -489,7 +489,7 @@ namespace industrial_config_engine {
         return 0;
     }
 
-    // 简单四则运算求值（仿真中用于 calculate 动作）：+ - * / 括号 一元正负 数字
+    // simple arithmetic eval (simulation calculate action): + - * / parens unary sign number
     static bool evalArith(const std::string& expr, double& out) {
         size_t pos = 0;
         auto skipWs = [&]() {
@@ -579,13 +579,13 @@ namespace industrial_config_engine {
         return r;
     }
 
-    // 归一化引用键：加载器 bundle 键不含 ".json"，引用串可能含 ".json"
+    // normalize reference key: loader bundle key has no ".json", reference string may
     static std::vector<std::string> refKeyCandidates(const std::string& templ) {
         std::vector<std::string> c{ templ };
         std::string t = templ;
         size_t pos = 0;
         while ((pos = t.find(".json/", pos)) != std::string::npos) {
-            t.erase(pos, 5); // 去掉 ".json"
+            t.erase(pos, 5); // remove ".json"
         }
         if (t != templ) c.push_back(t);
         return c;
@@ -619,7 +619,7 @@ namespace industrial_config_engine {
         std::string type = item.value("type", "");
         std::string name = item.value("name", "");
 
-        // 操作员逐项确认（安全机制：所有更改在执行前经操作员确认，仿真中自动确认并记审计）
+        // operator per-item confirmation (safety: all changes confirmed before execution; simulated auto-confirm + audit)
         if (ctx.confirm_between && (type == "node" || type == "group")) {
             ctx.audit.log(ctx.time_ms, "OPERATOR_CONFIRM",
                 "step confirmed by operator: " + (name.empty() ? type : name),
@@ -665,7 +665,7 @@ namespace industrial_config_engine {
         ExecResult r;
         std::string templ = item.value("template", "");
         if (templ.empty()) {
-            // 内联组定义（无 template 引用）：直接执行条目自身
+            // inline group definition (no template ref): execute items directly
             trace(ctx, "> inline group [" + item.value("name", std::string("?")) + "]");
             ctx.indent++;
             r = runGroupJson(item, item.value("params", nlohmann::json::array()), ctx);
@@ -715,7 +715,7 @@ namespace industrial_config_engine {
             ? item["name"].get<std::string>() : node->getName();
         trace(ctx, "> node: " + name + " [" + templ + "]");
 
-        // 参数：条目级优先，为空则用节点默认参数
+        // params: item-level first, fallback to node defaults
         nlohmann::json params;
         if (item.contains("params") && !item["params"].is_null() &&
             (!item["params"].is_array() || !item["params"].empty())) {
@@ -724,13 +724,13 @@ namespace industrial_config_engine {
         else {
             params = resolveValue(node->getParams(), ctx);
         }
-        // 将参数暴露为 ${param_N} 供分支消息使用
+        // expose params as ${param_N} for branch messages
         if (params.is_array()) {
             for (size_t i = 0; i < params.size(); ++i) {
                 ctx.vars.set("param_" + std::to_string(i), params[i]);
             }
         }
-        // 将条目参数按节点默认参数中的占位符名绑定（如 ${zero_threshold}、${max_wait}）
+        // bind item params by placeholder names in node defaults (e.g. ${zero_threshold}, ${max_wait})
         if (params.is_array()) {
             const auto& defaults = node->getParams();   // std::vector<nlohmann::json>
             for (size_t i = 0; i < params.size() && i < defaults.size(); ++i) {
@@ -746,7 +746,7 @@ namespace industrial_config_engine {
         const L1Action* act = nullptr;
         const std::string& act_tmpl = node->getAction().template_path;
         if (node->isActionInline()) {
-            // 内联动作：仅记录，仿真按通用动作处理
+            // inline action: record only, simulated as generic action
             act = nullptr;
         }
         else {
@@ -786,14 +786,14 @@ namespace industrial_config_engine {
             if (!out.is_null()) break;
         }
 
-        // Judge 求值
+        // Judge evaluation
         bool success = true;
         if (node->hasJudge()) {
             const JudgeConfig& j = node->getJudge().value();
             switch (j.type) {
             case JudgeType::EXISTS: success = !out.is_null(); break;
             case JudgeType::COMPARE: {
-                // judge 的 value 字段存储为字符串：解析为数值或字符串后再比较
+                // judge value field stored as string: parse to number/string before compare
                 std::string rhs_str = resolveStr(j.value, ctx);
                 nlohmann::json rhs;
                 try {
@@ -824,13 +824,13 @@ namespace industrial_config_engine {
             }
         }
 
-        // 保存动作层结果（动作签名中的 result_key）
+        // save action-level result (result_key in action signature)
         if (act && !out.is_null()) {
             const std::string& act_key = act->getSignature().result_key;
             if (!act_key.empty()) ctx.vars.set(act_key, out);
         }
-        // 保存节点结果：bool 返回类型 → judge 判定结果；其他类型 → 动作原始输出
-        // 节点签名 result_key 与条目级 result_key 可并存（如 final_pressure 与 p_end 同时落盘）
+        // save node result: bool -> judge result; other -> raw action output
+        // node signature result_key and item result_key may coexist (e.g. final_pressure and p_end both stored)
         std::vector<std::string> result_keys;
         if (!node->getSignature().result_key.empty()) result_keys.push_back(node->getSignature().result_key);
         if (item.contains("result_key") && item["result_key"].is_string()) {
@@ -845,7 +845,7 @@ namespace industrial_config_engine {
             ctx.vars.set(result_key, rv);
             trace(ctx, "  -> " + result_key + " = " + jsonToStr(rv));
         }
-        // 仿真语义约定：set_test_result 节点写 test_result 变量
+        // simulation convention: set_test_result node writes test_result variable
         if (node->getFilename().find("set_test_result") != std::string::npos &&
             params.is_array() && !params.empty()) {
             ctx.vars.set("test_result", params[0]);
@@ -871,7 +871,7 @@ namespace industrial_config_engine {
         ExecResult r;
         std::string type = act.getType();
 
-        // 参数名 → 值（含默认值）；纯数字字符串归一为数值（${变量} 解析产物）
+        // param name -> value (with defaults); numeric strings normalized to numbers (${var} resolution product)
         std::map<std::string, nlohmann::json> amap;
         for (size_t i = 0; i < act.getArgs().size(); ++i) {
             const ArgDef& d = act.getArgs()[i];
@@ -890,7 +890,7 @@ namespace industrial_config_engine {
             amap[d.name] = v;
         }
 
-        // 占位符替换（支持 ${name_high} / ${name_low} 字节拆分）
+        // placeholder substitution (supports ${name_high} / ${name_low} byte split)
         auto substitute = [&](const std::string& s) -> std::string {
             std::string out_s;
             size_t pos = 0;
@@ -902,7 +902,7 @@ namespace industrial_config_engine {
                 if (e == std::string::npos) { out_s += s.substr(b); break; }
                 std::string name = s.substr(b + 2, e - b - 2);
                 std::string base = name;
-                int part = -1; // -1 整体 0 高字节 1 低字节
+                int part = -1; // -1 whole 0 high byte 1 low byte
                 if (name.size() > 5 && name.substr(name.size() - 5) == "_high") {
                     base = name.substr(0, name.size() - 5); part = 0;
                 }
@@ -912,7 +912,7 @@ namespace industrial_config_engine {
                 auto it = amap.find(base);
                 if (it != amap.end()) {
                     if (part < 0) {
-                        // 按参数类型格式化
+                        // format by parameter type
                         std::string tn;
                         for (const auto& d : act.getArgs()) if (d.name == base) tn = d.getTypeName();
                         out_s += formatArg(it->second, tn);
@@ -935,7 +935,7 @@ namespace industrial_config_engine {
 
         std::string req = substitute(act.getRequest());
 
-        // 设备：优先 slave_id 参数，否则 default
+        // device: prefer slave_id param, else default
         std::string device = "default";
         auto sid = amap.find("slave_id");
         if (sid != amap.end() && !sid->second.is_null()) {
@@ -996,15 +996,15 @@ namespace industrial_config_engine {
             int64_t fn = tok.empty() ? -1 : parseHexToken(tok[0], ok);
             int64_t addr = 0;
             if (fn == 3 && tok.size() >= 6) {
-                // 含从站字节: 03 slave addr_hi addr_lo cnt_hi cnt_lo
+                // with slave byte: 03 slave addr_hi addr_lo cnt_hi cnt_lo
                 addr = (parseHexToken(tok[2], ok) << 8) | parseHexToken(tok[3], ok);
             }
             else if (fn == 3 && tok.size() >= 5) {
-                // 无从站字节，双字节地址: 03 addr_hi addr_lo cnt_hi cnt_lo
+                // no slave byte, two-byte addr: 03 addr_hi addr_lo cnt_hi cnt_lo
                 addr = (parseHexToken(tok[1], ok) << 8) | parseHexToken(tok[2], ok);
             }
             else if (fn == 3 && tok.size() >= 4) {
-                // 无从站字节，单字节地址: 03 addr cnt_hi cnt_lo
+                // no slave byte, one-byte addr: 03 addr cnt_hi cnt_lo
                 addr = parseHexToken(tok[1], ok);
             }
             out = nlohmann::json(ctx.devices.getRegister(device, static_cast<uint16_t>(addr)));
@@ -1032,10 +1032,10 @@ namespace industrial_config_engine {
             }
             else if (args.is_array() && args.size() > 1 && args[1].is_string() &&
                 args[1].get<std::string>() == "s") {
-                dt *= 1000;   // 显式参数单位 s
+                dt *= 1000;   // explicit param unit s
             }
             else if (act.getUnit() == "s" || act.getUnit() == "sec") {
-                dt *= 1000;   // 动作级显式单位 s（默认按 ms 处理）
+                dt *= 1000;   // action-level explicit unit s (default ms)
             }
             advanceTime(ctx, dt);
             out = true;
@@ -1084,7 +1084,7 @@ namespace industrial_config_engine {
 
         if (type == "calculate" || type == "calculate_check") {
             if (act.hasExpression()) {
-                // 表达式分派：含比较运算符 → 布尔条件；否则 → 四则运算
+                // expression dispatch: comparison op -> boolean; else -> arithmetic
                 std::string es = resolveStr(*act.getExpression(), ctx);
                 bool is_compare = es.find("==") != std::string::npos || es.find("!=") != std::string::npos ||
                     es.find(">=") != std::string::npos || es.find("<=") != std::string::npos ||
@@ -1103,7 +1103,7 @@ namespace industrial_config_engine {
             }
             else if (args.is_array() && !args.empty()) {
                 if (args[0].is_string()) {
-                    // 字符串表达式：先替换占位符，再做四则运算求值
+                    // string expression: substitute placeholders first, then arithmetic
                     std::string es = resolveStr(args[0].get<std::string>(), ctx);
                     double v = 0;
                     if (evalArith(es, v)) out = nlohmann::json(v);
@@ -1118,8 +1118,8 @@ namespace industrial_config_engine {
             return r;
         }
 
-        // 通用动作（ui_action / user_decision / script_exec / 数字IO / 阀门 / 夹具等）：
-        // 仿真中按成功处理并记审计，推进小段时间
+        // generic actions (ui_action / user_decision / script_exec / digital IO / valve / fixture, etc.):
+        // simulated as success with audit, advance small time
         if (type == "user_decision" && ctx.confirm_between) {
             ctx.audit.log(ctx.time_ms, "OPERATOR_CONFIRM", "operator decision confirmed: " + act.getDescription());
         }
@@ -1192,7 +1192,7 @@ namespace industrial_config_engine {
             uint64_t loop_timeout = loop.contains("timeout_ms") ? timeoutValue(loop["timeout_ms"], ctx) : timeout;
             int64_t iter = 0;
 
-            // 循环条件按表达式求值（支持 ${变量} 比较与布尔字面量）
+            // loop condition evaluated as expression (supports ${var} compare and boolean literal)
             auto evalLoopCond = [&](bool& ok) -> bool {
                 std::string err;
                 bool c = evalExpression(loop.value("condition", "true"), ctx.vars, err);
@@ -1237,8 +1237,8 @@ namespace industrial_config_engine {
                     if (!guard()) break;
                     bool ok = true;
                     bool c = evalLoopCond(ok);
-                    if (!ok) break;   // 条件求值错误
-                    if (!c) break;    // 条件为假，正常退出
+                    if (!ok) break;   // condition evaluation error
+                    if (!c) break;    // condition false, normal exit
                     ExecResult br = bodyOnce();
                     if (br.status != ExecStatus::SUCCESS) { r = br; break; }
                     ++iter;
@@ -1252,8 +1252,8 @@ namespace industrial_config_engine {
                     ++iter;
                     bool ok = true;
                     bool c = evalLoopCond(ok);
-                    if (!ok) break;   // 条件求值错误
-                    if (!c) break;    // 条件为假，正常退出
+                    if (!ok) break;   // condition evaluation error
+                    if (!c) break;    // condition false, normal exit
                 }
             }
             else if (ltype == "until") {
@@ -1265,7 +1265,7 @@ namespace industrial_config_engine {
                     bool ok = true;
                     bool c = evalLoopCond(ok);
                     if (!ok) break;
-                    if (c) break;     // 条件为真，停止
+                    if (c) break;     // condition true, stop
                 }
             }
             else if (ltype == "foreach") {
@@ -1313,7 +1313,7 @@ namespace industrial_config_engine {
             r.message = "L3 structural validation failed: " + group_json.value("name", std::string("?"));
             return r;
         }
-        // 绑定调用参数到参数名
+        // bind call args to parameter names
         for (const auto& d : vg.getArgs()) {
             nlohmann::json v;
             if (call_params.is_array() && d.index >= 0 && d.index < static_cast<int>(call_params.size())) {
@@ -1343,11 +1343,11 @@ namespace industrial_config_engine {
             return r;
         }
         if (!f.validate()) {
-            // 结构校验未通过：记审计警告后继续仿真执行，以暴露更深层问题
+            // structural validation failed: log audit warning and continue simulation to expose deeper issues
             ctx.audit.log(ctx.time_ms, "WARN", "L4 structural validation not passed (continuing simulation): " + name);
         }
         trace(ctx, "▶▶ Flow: " + name + (f.getVersion().empty() ? "" : " v" + f.getVersion()));
-        // 应用当前 profile 参数
+        // apply current profile params
         for (const auto& kv : f.getCurrentProfileParams()) {
             ctx.vars.set(kv.first, nlohmann::json(kv.second));
             ctx.vars.set("profile." + kv.first, nlohmann::json(kv.second));

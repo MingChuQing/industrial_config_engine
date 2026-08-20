@@ -1,4 +1,4 @@
-﻿// src/l1_action.cpp
+// src/l1_action.cpp
 #include "industrial_config_engine/l1_action.hpp"
 #include <fstream>
 #include <sstream>
@@ -9,11 +9,11 @@
 namespace industrial_config_engine {
 
     // ============================================================
-    // ArgDef 实现
+    // ArgDef implementation
     // ============================================================
 
     bool ArgDef::validate(const nlohmann::json& value) const {
-        // 类型检查
+        // Type check
         switch (type) {
         case DataType::U8:
         case DataType::I8:
@@ -40,7 +40,7 @@ namespace industrial_config_engine {
             return false;
         }
 
-        // 范围检查
+        // Range check
         if (value.is_number_integer()) {
             int64_t int_val = value.get<int64_t>();
             if (min_val.has_value() && int_val < min_val.value()) return false;
@@ -53,7 +53,7 @@ namespace industrial_config_engine {
             if (max_float.has_value() && float_val > max_float.value()) return false;
         }
 
-        // 枚举检查
+        // Enum check
         if (!enum_values.empty() && value.is_string()) {
             std::string str_val = value.get<std::string>();
             if (std::find(enum_values.begin(), enum_values.end(), str_val) == enum_values.end()) {
@@ -61,7 +61,7 @@ namespace industrial_config_engine {
             }
         }
 
-        // HEX格式检查
+        // HEX format check
         if (type == DataType::HEX && value.is_string()) {
             std::string hex_str = value.get<std::string>();
             if (!isValidHexString(hex_str)) return false;
@@ -71,7 +71,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // ParseConfig 实现
+    // ParseConfig implementation
     // ============================================================
 
     bool ParseConfig::hasPlaceholders() const {
@@ -80,14 +80,14 @@ namespace industrial_config_engine {
 
     std::vector<std::string> ParseConfig::getPlaceholders() const {
         std::vector<std::string> result;
-        // ParseConfig 中的字段可能包含占位符
-        // 例如: start_byte 可能是 "${offset}"
-        // 但目前设计为数值，暂不实现占位符提取
+        // Fields in ParseConfig may contain placeholders
+        // For example: start_byte may be "${offset}"
+        // But it is currently designed as numeric; placeholder extraction is not implemented for now
         return result;
     }
 
     // ============================================================
-    // CheckConfig 实现
+    // CheckConfig implementation
     // ============================================================
 
     bool CheckConfig::hasPlaceholders() const {
@@ -97,7 +97,7 @@ namespace industrial_config_engine {
     std::vector<std::string> CheckConfig::getPlaceholders() const {
         std::vector<std::string> result;
 
-        // 从 condition 中提取
+        // Extract from condition
         static const std::regex pattern(R"(\$\{([^}]+)\})");
         std::smatch match;
         std::string::const_iterator search_start(condition.cbegin());
@@ -107,14 +107,14 @@ namespace industrial_config_engine {
             search_start = match.suffix().first;
         }
 
-        // 从 value 中提取
+        // Extract from value
         search_start = value.cbegin();
         while (std::regex_search(search_start, value.cend(), match, pattern)) {
             result.push_back(match[1].str());
             search_start = match.suffix().first;
         }
 
-        // 去重
+        // Deduplicate
         std::sort(result.begin(), result.end());
         result.erase(std::unique(result.begin(), result.end()), result.end());
 
@@ -122,7 +122,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // ActionSignature 实现
+    // ActionSignature implementation
     // ============================================================
 
     std::string ActionSignature::toString() const {
@@ -151,7 +151,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // L1Action 构造和加载
+    // L1Action construction and loading
     // ============================================================
 
     L1Action::L1Action(const nlohmann::json& json) {
@@ -179,7 +179,7 @@ namespace industrial_config_engine {
             parseExpression(json);
             parseDuration(json);
 
-            // 如果签名未设置但有filename，重新解析
+            // If signature is not set but filename exists, re-parse
             if (signature_.name.empty() && !filename_.empty()) {
                 signature_ = parseSignatureFromFilename(filename_);
             }
@@ -220,7 +220,7 @@ namespace industrial_config_engine {
 
         filepath_ = filepath;
 
-        // 从路径提取文件名
+        // Extract filename from path
         size_t pos = filepath.find_last_of("/\\");
         std::string basename = (pos != std::string::npos) ? filepath.substr(pos + 1) : filepath;
         pos = basename.find_last_of('.');
@@ -231,7 +231,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 导出为JSON
+    // Export to JSON
     // ============================================================
 
     nlohmann::json L1Action::toJson() const {
@@ -301,7 +301,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 文件名解析（静态方法）
+    // Filename parsing (static methods)
     // ============================================================
 
     ActionSignature L1Action::parseSignatureFromFilename(const std::string& filename) {
@@ -313,11 +313,11 @@ namespace industrial_config_engine {
             return sig;
         }
 
-        // 查找 ".r_"
+        // Find ".r_"
         size_t r_pos = filename.find(".r_");
 
         if (r_pos != std::string::npos) {
-            // 提取返回值部分: "b_write_result"
+            // Extract return value part: "b_write_result"
             std::string return_part = filename.substr(r_pos + 3);
             size_t underscore_pos = return_part.find('_');
             if (underscore_pos != std::string::npos) {
@@ -329,7 +329,7 @@ namespace industrial_config_engine {
                 sig.result_key = "";
             }
 
-            // 提取前缀部分
+            // Extract prefix part
             std::string prefix = filename.substr(0, r_pos);
             size_t dot_pos = prefix.find('.');
             if (dot_pos != std::string::npos) {
@@ -344,7 +344,7 @@ namespace industrial_config_engine {
             }
         }
         else {
-            // 无返回值
+            // No return value
             size_t dot_pos = filename.find('.');
             if (dot_pos != std::string::npos) {
                 sig.name = filename.substr(0, dot_pos);
@@ -366,15 +366,15 @@ namespace industrial_config_engine {
     bool L1Action::isValidFilename(const std::string& filename) {
         if (filename.empty()) return false;
 
-        // 基本检查：必须包含名称
+        // Basic check: must contain a name
         size_t dot_pos = filename.find('.');
         if (dot_pos == std::string::npos || dot_pos == 0) {
             return false;
         }
 
-        // 检查参数部分是否都是有效类型
+        // Check whether the parameter part contains only valid types
         std::string params_part = filename.substr(dot_pos + 1);
-        // 如果有 ".r_"，只检查前面的部分
+        // If ".r_" is present, only check the part before it
         size_t r_pos = params_part.find(".r_");
         if (r_pos != std::string::npos) {
             params_part = params_part.substr(0, r_pos);
@@ -384,8 +384,8 @@ namespace industrial_config_engine {
             auto types = parseTypeList(params_part);
             for (auto type : types) {
                 if (type == DataType::VOIDDataType) {
-                    // 检查是否是有效的类型名
-                    // 如果解析为VOIDDataType，可能是无效类型
+                    // Check whether it is a valid type name
+                    // If parsed as VOIDDataType, it may be an invalid type
                     std::string type_str = params_part.substr(0, params_part.find('_'));
                     if (!isValidDataType(type_str)) {
                         return false;
@@ -403,13 +403,13 @@ namespace industrial_config_engine {
         const std::string& result_key) {
         std::string filename = name;
 
-        // 添加参数
+        // Add parameters
         if (!params.empty()) {
             filename += ".";
             filename += typeListToString(params);
         }
 
-        // 添加返回值
+        // Add return value
         if (return_type != DataType::VOIDDataType) {
             filename += ".r_";
             filename += dataTypeToString(return_type);
@@ -422,7 +422,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 占位符处理
+    // Placeholder handling
     // ============================================================
 
     std::vector<std::string> L1Action::extractPlaceholders() const {
@@ -433,7 +433,7 @@ namespace industrial_config_engine {
             result.insert(result.end(), extracted.begin(), extracted.end());
             };
 
-        // 从各个字段提取
+        // Extract from each field
         addPlaceholders(request_);
         addPlaceholders(response_);
         addPlaceholders(timeout_expr_);
@@ -449,14 +449,14 @@ namespace industrial_config_engine {
             addPlaceholders(check_->value);
         }
 
-        // 从参数默认值中提取
+        // Extract from parameter default values
         for (const auto& arg : args_) {
             if (arg.default_value.has_value()) {
                 addPlaceholders(arg.default_value.value());
             }
         }
 
-        // 去重
+        // Deduplicate
         std::sort(result.begin(), result.end());
         result.erase(std::unique(result.begin(), result.end()), result.end());
 
@@ -490,11 +490,11 @@ namespace industrial_config_engine {
     L1Action L1Action::resolvePlaceholders(const std::unordered_map<std::string, std::string>& values) const {
         L1Action resolved = *this;
 
-        // 替换请求
+        // Replace request
         resolved.request_ = replacePlaceholders(request_, values);
         resolved.response_ = replacePlaceholders(response_, values);
 
-        // 替换超时
+        // Replace timeout
         if (!timeout_expr_.empty()) {
             std::string resolved_timeout = replacePlaceholders(timeout_expr_, values);
             try {
@@ -506,17 +506,17 @@ namespace industrial_config_engine {
             }
         }
 
-        // 替换表达式
+        // Replace expression
         if (expression_.has_value()) {
             resolved.expression_ = replacePlaceholders(expression_.value(), values);
         }
 
-        // 替换duration
+        // Replace duration
         if (duration_.has_value()) {
             resolved.duration_ = replacePlaceholders(duration_.value(), values);
         }
 
-        // 替换check
+        // Replace check
         if (check_.has_value()) {
             resolved.check_->condition = replacePlaceholders(check_->condition, values);
             resolved.check_->value = replacePlaceholders(check_->value, values);
@@ -545,7 +545,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 参数验证
+    // Parameter validation
     // ============================================================
 
     bool L1Action::validateArgValue(const std::string& arg_name, const nlohmann::json& value) const {
@@ -597,7 +597,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 类型检查
+    // type check
     // ============================================================
 
     bool L1Action::checkParamTypes(const std::vector<DataType>& types) const {
@@ -609,7 +609,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 私有解析方法
+    // Private parsing methods
     // ============================================================
 
     // src/l1_action.cpp
@@ -635,23 +635,23 @@ namespace industrial_config_engine {
             response_ = json["response"].get<std::string>();
         }
 
-        // ✅ 只有存在 timeout_ms 字段时才设置
+        // ✅ Only set when the timeout_ms field exists
         if (json.contains("timeout_ms") && json["timeout_ms"].is_number()) {
             timeout_ms_ = json["timeout_ms"].get<int>();
         }
         else {
-            // 根据类型设置默认值
+            // Set default value based on type
             if (type_ == "log" || type_ == "popup" || type_ == "show_status") {
-                timeout_ms_ = 0;  // UI 和日志操作不需要超时
+                timeout_ms_ = 0;  // UI and log operations need no timeout
             }
             else if (type_ == "modbus_write_verify" || type_ == "modbus_read_cache" || type_ == "modbus_read_check") {
-                timeout_ms_ = 3000;  // Modbus 操作默认 3 秒
+                timeout_ms_ = 3000;  // Modbus operations default to 3 seconds
             }
             else if (type_ == "wait") {
-                timeout_ms_ = 0;  // wait 使用 duration
+                timeout_ms_ = 0;  // wait uses duration
             }
             else {
-                timeout_ms_ = 3000;  // 其他类型默认 3 秒
+                timeout_ms_ = 3000;  // Other types default to 3 seconds
             }
         }
 
@@ -685,7 +685,7 @@ namespace industrial_config_engine {
                 arg.desc = arg_json["desc"].get<std::string>();
             }
 
-            // 范围检查
+            // Range check
             if (arg_json.contains("min")) {
                 if (arg_json["min"].is_number_integer()) {
                     arg.min_val = arg_json["min"].get<int64_t>();
@@ -704,7 +704,7 @@ namespace industrial_config_engine {
                 }
             }
 
-            // 默认值
+            // Default value
             if (arg_json.contains("default")) {
                 if (arg_json["default"].is_string()) {
                     arg.default_value = arg_json["default"].get<std::string>();
@@ -714,7 +714,7 @@ namespace industrial_config_engine {
                 }
             }
 
-            // 枚举值
+            // Enum values
             if (arg_json.contains("enum") && arg_json["enum"].is_array()) {
                 for (const auto& val : arg_json["enum"]) {
                     if (val.is_string()) {
@@ -804,7 +804,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 调试和打印
+    // Debugging and printing
     // ============================================================
 
     std::string L1Action::toString() const {
@@ -813,7 +813,7 @@ namespace industrial_config_engine {
         return oss.str();
     }
 
-    // src/l1_action.cpp - print() 函数使用英文
+    // src/l1_action.cpp - print() function uses English
 
     void L1Action::print(std::ostream& os) const {
         os << "========================================" << std::endl;
@@ -903,7 +903,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 流输出操作符
+    // Stream output operator
     // ============================================================
 
     std::ostream& operator<<(std::ostream& os, const L1Action& action) {

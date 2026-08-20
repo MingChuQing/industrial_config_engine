@@ -19,21 +19,21 @@
 namespace industrial_config_engine {
 
     // ============================================================
-    // 执行状态
+    // execution status
     // ============================================================
     enum class ExecStatus {
-        SUCCESS,                 // 成功
-        FAILED,                  // 结构/字段校验失败
-        TIMEOUT,                 // 组/流程级超时
-        STEP_BUDGET_EXCEEDED,    // 步数预算超限（疑似死循环）
-        REFERENCE_ERROR,         // 引用缺失（模板/节点/动作未找到）
-        CONDITION_ERROR,         // 条件求值失败（未定义变量/非法表达式）
+        SUCCESS,                 // success
+        FAILED,                  // structure/field validation failed
+        TIMEOUT,                 // group/flow-level timeout
+        STEP_BUDGET_EXCEEDED,    // step budget exceeded (suspected infinite loop)
+        REFERENCE_ERROR,         // reference missing (template/node/action not found)
+        CONDITION_ERROR,         // condition evaluation failed (undefined variable / invalid expression)
         INTERNAL_ERROR
     };
     const char* execStatusToString(ExecStatus s);
 
     // ============================================================
-    // 审计日志（所有更改与决策在执行前记录，供追溯）
+    // audit log (all changes and decisions recorded before execution for traceability)
     // ============================================================
     struct AuditEntry {
         uint64_t time_ms = 0;
@@ -54,7 +54,7 @@ namespace industrial_config_engine {
     };
 
     // ============================================================
-    // 虚拟设备注册表（仿真层：寄存器/线圈读写 + 行为模型）
+    // virtual device registry (simulation layer: register/coil read/write + behavior model)
     // ============================================================
     class DeviceRegistry {
     public:
@@ -68,7 +68,7 @@ namespace industrial_config_engine {
 
         std::vector<std::string> devices() const;
 
-        // 设备行为模型：dt_ms 为本次推进的虚拟时间
+        // device behavior model: dt_ms is the virtual time advanced this step
         using BehaviorFn = std::function<void(uint64_t dt_ms)>;
         void setBehavior(const std::string& device, BehaviorFn fn) { behaviors_[device] = std::move(fn); }
         void tick(uint64_t dt_ms);
@@ -83,7 +83,7 @@ namespace industrial_config_engine {
     };
 
     // ============================================================
-    // 运行时变量存储（${变量} 解析）
+    // runtime variable store (${var} resolution)
     // ============================================================
     class VariableStore {
     public:
@@ -91,7 +91,7 @@ namespace industrial_config_engine {
         bool has(const std::string& key) const { return vars_.count(key) != 0; }
         const nlohmann::json* get(const std::string& key) const;
 
-        // 解析 ${name} 占位符；未知变量名收集到 missing（原占位符保留）
+        // resolve ${name} placeholders; unknown names collected to missing (original placeholder kept)
         std::string resolve(const std::string& s, std::vector<std::string>* missing = nullptr) const;
         nlohmann::json resolveValue(const nlohmann::json& v,
             std::vector<std::string>* missing = nullptr) const;
@@ -103,16 +103,16 @@ namespace industrial_config_engine {
     };
 
     // ============================================================
-    // 执行上下文
+    // execution context
     // ============================================================
     struct ExecContext {
         DeviceRegistry devices;
         VariableStore vars;
         AuditLog audit;
         uint64_t time_ms = 0;
-        size_t step_budget = 200000;   // 步数预算（防止死循环）
+        size_t step_budget = 200000;   // step budget (prevent infinite loop)
         size_t steps = 0;
-        bool confirm_between = false;  // 操作员逐项确认（仿真自动确认并写审计）
+        bool confirm_between = false;  // operator per-item confirmation (simulated auto-confirm and audit)
         bool verbose = true;
         int indent = 0;
     };
@@ -120,25 +120,25 @@ namespace industrial_config_engine {
     struct ExecResult {
         ExecStatus status = ExecStatus::SUCCESS;
         std::string message;
-        uint64_t elapsed_ms = 0;    // 墙钟耗时
+        uint64_t elapsed_ms = 0;    // wall-clock elapsed
         size_t steps = 0;
-        uint64_t sim_time_ms = 0;   // 虚拟时间
+        uint64_t sim_time_ms = 0;   // virtual time
     };
 
     // ============================================================
-    // 执行器：加载配置根目录、解析模板、在虚拟设备上执行 L3/L4
-    // 启动时解析与校验，运行时按数据描述执行
+    // Executor: load config roots, resolve templates, execute L3/L4 on virtual devices
+    // parse and validate at startup, execute by data description at runtime
     // ============================================================
     class Executor {
     public:
         Executor();
 
-        // 添加配置根目录（可多个，支持跨库复用 L1/L2）
+        // add config root (multiple, cross-library L1/L2 reuse)
         bool addRoot(const std::string& root_dir);
-        // 加载所有根目录下的 L1_action / L2_node
+        // load L1_action / L2_node under all roots
         bool loadLayers();
 
-        // 执行入口
+        // execution entry
         ExecResult runFlowFile(const std::string& flow_file, ExecContext& ctx);
         ExecResult runGroupFile(const std::string& group_file,
             const nlohmann::json& call_params, ExecContext& ctx);
@@ -147,19 +147,19 @@ namespace industrial_config_engine {
         ExecResult runGroupJson(const nlohmann::json& group_json,
             const nlohmann::json& call_params, ExecContext& ctx);
 
-        // 查询
+        // query
         const NodeLoader& nodes() const { return nodes_; }
         const ActionLoader& actions() const { return actions_; }
         const std::vector<std::string>& roots() const { return roots_; }
 
-        // 条件求值（静态工具）
+        // condition evaluation (static utility)
         static bool evalCondition(const nlohmann::json& cond_json, VariableStore& vars,
             std::string& err);
         static bool evalExpression(const std::string& expr, VariableStore& vars,
             std::string& err);
 
     private:
-        // L3 组模板 → 文件路径
+        // L3 group template -> file path
         bool resolveGroupPath(const std::string& templ, std::string& out_path) const;
         bool loadGroupJson(const std::string& templ, nlohmann::json& out_json);
 
@@ -172,7 +172,7 @@ namespace industrial_config_engine {
         ExecResult execAction(const L1Action& act, const nlohmann::json& args,
             ExecContext& ctx, nlohmann::json& out, bool& timed_out);
 
-        // 工具
+        // utilities
         void trace(ExecContext& ctx, const std::string& msg) const;
         bool checkSteps(ExecContext& ctx, ExecResult& r) const;
         void advanceTime(ExecContext& ctx, uint64_t dt_ms);

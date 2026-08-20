@@ -1,4 +1,4 @@
-﻿// include/industrial_config_engine/l3_group.hpp
+// include/industrial_config_engine/l3_group.hpp
 #pragma once
 
 #include <string>
@@ -13,61 +13,61 @@
 namespace industrial_config_engine {
 
     // ============================================================
-    // 控制流模式枚举
+    // Control flow mode enumeration
     // ============================================================
     enum class GroupMode {
-        SEQUENCE,   // 顺序执行
-        PARALLEL,   // 并行执行
-        LOOP,       // 循环执行
-        IF,         // 条件分支
-        SWITCH      // 多条件分支
+        SEQUENCE,   // Sequential execution
+        PARALLEL,   // Parallel execution
+        LOOP,       // Loop execution
+        IF,         // Conditional branch
+        SWITCH      // Multi-condition branch
     };
 
     // ============================================================
-    // 循环类型枚举
+    // Loop type enumeration
     // ============================================================
     enum class LoopType {
-        COUNT,      // 固定次数
-        WHILE,      // 条件为真时循环
-        UNTIL,      // 条件为真时停止
-        FOREACH,    // 遍历列表
-        DOWHILE     // 先执行后判断
+        COUNT,      // Fixed number of iterations
+        WHILE,      // Loop while the condition is true
+        UNTIL,      // Stop when the condition becomes true
+        FOREACH,    // Iterate over a list
+        DOWHILE     // Execute first, then check
     };
 
     // ============================================================
-    // 循环配置
+    // Loop configuration
     // ============================================================
     struct LoopConfig {
         LoopType type = LoopType::COUNT;
-        int count = 0;                  // COUNT: 循环次数
-        std::string condition;          // WHILE/UNTIL: 条件表达式
-        std::string items;              // FOREACH: 列表变量
-        std::string item_name;          // FOREACH: 当前项变量名
-        int max_iterations = 10000;     // 最大迭代次数（防止死循环）
+        int count = 0;                  // COUNT: number of iterations
+        std::string condition;          // WHILE/UNTIL: condition expression
+        std::string items;              // FOREACH: list variable
+        std::string item_name;          // FOREACH: current item variable name
+        int max_iterations = 10000;     // Maximum iterations (prevents infinite loop)
     };
 
     // ============================================================
-    // 条件配置
+    // Condition configuration
     // ============================================================
     struct ConditionConfig {
         std::string type;               // compare, expression, exists, choice, value
-        std::string condition;          // compare 条件: eq, ne, lt, le, gt, ge
-        std::string value;              // compare: 比较值; choice: 匹配值
-        std::string source;             // value: 变量来源
-        std::string expression;         // expression: 表达式
-        std::string variable;           // exists: 变量名
+        std::string condition;          // compare condition: eq, ne, lt, le, gt, ge
+        std::string value;              // compare: comparison value; choice: matching value
+        std::string source;             // value: variable source
+        std::string expression;         // expression: expression
+        std::string variable;           // exists: variable name
     };
 
     // ============================================================
-    // Case 分支（用于 switch）
+    // Case branch (used for switch)
     // ============================================================
     struct SwitchCase {
-        std::string case_value;         // 匹配值（字符串形式）
-        nlohmann::json body;            // 分支体
+        std::string case_value;         // Matching value (string form)
+        nlohmann::json body;            // Branch body
     };
 
     // ============================================================
-    // 参数定义
+    // Argument definition
     // ============================================================
     struct GroupArgDef {
         int index = 0;
@@ -78,7 +78,7 @@ namespace industrial_config_engine {
     };
 
     // ============================================================
-    // L3 执行组
+    // L3 execution group
     // ============================================================
     class L3Group {
     public:
@@ -88,7 +88,7 @@ namespace industrial_config_engine {
         explicit L3Group(const std::string& filename, const std::string& json_str);
 
         // ============================================================
-        // 加载和保存
+        // Loading and saving
         // ============================================================
 
         bool loadFromJson(const nlohmann::json& json);
@@ -99,7 +99,7 @@ namespace industrial_config_engine {
         std::string toJsonString(bool pretty = true) const;
 
         // ============================================================
-        // 验证
+        // Validation
         // ============================================================
 
         bool validate() const;
@@ -111,7 +111,7 @@ namespace industrial_config_engine {
         bool validateCircularReference(const std::vector<std::string>& ancestors = {}) const;
 
         // ============================================================
-        // 节点计数
+        // Node counting
         // ============================================================
 
         int countNodes() const;
@@ -131,28 +131,28 @@ namespace industrial_config_engine {
         const std::vector<GroupArgDef>& getArgs() const { return args_; }
         bool isInitialized() const { return initialized_; }
 
-        // 循环相关
+        // Loop related
         bool hasLoop() const { return loop_.has_value(); }
         const std::optional<LoopConfig>& getLoop() const { return loop_; }
 
-        // 条件相关
+        // Condition related
         bool hasCondition() const { return condition_.has_value(); }
         const std::optional<ConditionConfig>& getCondition() const { return condition_; }
 
-        // 分支相关
+        // Branch related
         bool hasThen() const { return !then_body_.is_null(); }
         bool hasElse() const { return !else_body_.is_null(); }
         const nlohmann::json& getThen() const { return then_body_; }
         const nlohmann::json& getElse() const { return else_body_; }
 
-        // Switch 相关
+        // Switch related
         bool hasCases() const { return !cases_.empty(); }
         bool hasDefault() const { return !default_body_.is_null(); }
         const std::vector<SwitchCase>& getCases() const { return cases_; }
         const nlohmann::json& getDefault() const { return default_body_; }
 
         // ============================================================
-        // 参数解析
+        // Parameter parsing
         // ============================================================
 
         std::vector<std::string> extractPlaceholders() const;
@@ -160,7 +160,7 @@ namespace industrial_config_engine {
             const std::unordered_map<std::string, std::string>& values) const;
 
         // ============================================================
-        // 调试和打印
+        // Debugging and printing
         // ============================================================
 
         std::string toString() const;
@@ -168,7 +168,7 @@ namespace industrial_config_engine {
 
     private:
         // ============================================================
-        // 私有解析方法
+        // Private parsing methods
         // ============================================================
 
         void parseCommonFields(const nlohmann::json& json);
@@ -180,7 +180,7 @@ namespace industrial_config_engine {
         void parseSwitch(const nlohmann::json& json);
 
         // ============================================================
-        // 辅助方法
+        // Helper methods
         // ============================================================
 
         std::vector<std::string> extractPlaceholdersFromString(const std::string& str) const;
@@ -192,14 +192,14 @@ namespace industrial_config_engine {
 
     private:
         // ============================================================
-        // 成员变量
+        // Member variables
         // ============================================================
 
-        // 文件信息
+        // File information
         std::string filename_;
         std::string filepath_;
 
-        // 核心字段
+        // Core fields
         std::string name_;
         std::string description_;
         GroupMode mode_ = GroupMode::SEQUENCE;
@@ -207,57 +207,57 @@ namespace industrial_config_engine {
         int delay_between_ = 0;
         bool confirm_between_ = false;
 
-        // Body（包含 L2 Node 或 L3 Group 引用）
+        // Body (contains L2 Node or L3 Group references)
         nlohmann::json body_;
 
-        // 参数定义
+        // Argument definitions
         std::vector<GroupArgDef> args_;
 
-        // 循环配置（mode = LOOP 时使用）
+        // Loop configuration (used when mode = LOOP)
         std::optional<LoopConfig> loop_;
 
-        // 条件配置（mode = IF 时使用）
+        // Condition configuration (used when mode = IF)
         std::optional<ConditionConfig> condition_;
 
-        // 分支体（mode = IF 时使用）
+        // Branch body (used when mode = IF)
         nlohmann::json then_body_;
         nlohmann::json else_body_;
 
-        // Switch 分支（mode = SWITCH 时使用）
+        // Switch branch (used when mode = SWITCH)
         std::vector<SwitchCase> cases_;
         nlohmann::json default_body_;
 
-        // 是否已初始化
+        // Whether it has been initialized
         bool initialized_ = false;
     };
 
     // ============================================================
-    // L3 Group 加载器
+    // L3 Group loader
     // ============================================================
     class L3GroupLoader {
     public:
         L3GroupLoader() = default;
 
-        // 加载单个 Group 文件
+        // Load a single Group file
         L3Group loadFromFile(const std::string& filepath);
 
-        // 加载目录下所有 Group 文件
+        // Load all Group files in a directory
         std::vector<L3Group> loadFromDirectory(const std::string& dir_path);
 
-        // 加载 Group Bundle（聚合文件）
+        // Load a Group Bundle (aggregate file)
         std::vector<L3Group> loadBundle(const std::string& bundle_path);
 
-        // 解析引用路径
+        // Resolve the reference path
         L3Group resolveReference(const std::string& template_path,
             const std::vector<nlohmann::json>& params = {});
 
-        // 设置 L2 Node 目录（用于解析 Node 引用）
+        // Set the L2 Node directory (used to resolve Node references)
         void setL2NodeDir(const std::string& dir) { l2_node_dir_ = dir; }
 
-        // 设置 L3 Group 目录（用于解析 Group 引用）
+        // Set the L3 Group directory (used to resolve Group references)
         void setL3GroupDir(const std::string& dir) { l3_group_dir_ = dir; }
 
-        // 设置缓存
+        // Set the cache
         void setCache(std::shared_ptr<std::unordered_map<std::string, L3Group>> cache) {
             cache_ = cache;
         }
@@ -272,7 +272,7 @@ namespace industrial_config_engine {
     };
 
     // ============================================================
-    // 流输出操作符
+    // Stream output operator
     // ============================================================
     std::ostream& operator<<(std::ostream& os, const L3Group& group);
 

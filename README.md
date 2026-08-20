@@ -1,55 +1,55 @@
-﻿
+
 ```markdown
-# Industrial Config Engine - 工业配置引擎
+# Industrial Config Engine
 
-## 📖 简介
+## 📖 Introduction
 
-Industrial Config Engine 是一个基于四层架构（L1-L4）的工业自动化配置引擎，用于定义、加载和执行工业设备的配置和控制逻辑。所有配置均为 JSON 格式，支持版本控制和热加载。
+Industrial Config Engine is an industrial automation configuration engine based on a four-layer architecture (L1-L4) for defining, loading, and executing configuration and control logic for industrial equipment. All configuration is in JSON format and supports version control and hot reloading.
 
-### 四层架构
+### Four-Layer Architecture
 
-| 层级 | 目录 | 职责 | AI生成 |
+| Layer | Directory | Responsibility | AI-Generated |
 |------|------|------|:---:|
-| **L1 Action** | `L1_action/` | 最小执行单元，无状态（如单次Modbus读） | 否 |
-| **L2 Node** | `L2_node/` | Action的状态封装（含超时、重试、成功/失败/超时三分支） | 否 |
-| **L3 Group** | `L3_group/` | 流程编排（顺序/循环/条件/并行，可嵌套） | 是 |
-| **L4 Flow** | `L4_flow/` | 顶层可执行配置，支持多运行模式 | 是 |
+| **L1 Action** | `L1_action/` | Smallest execution unit, stateless (e.g., a single Modbus read) | No |
+| **L2 Node** | `L2_node/` | Stateful wrapper around Actions (with timeout, retry, and success/failure/timeout three-way branching) | No |
+| **L3 Group** | `L3_group/` | Process orchestration (sequence/loop/condition/parallel, nestable) | Yes |
+| **L4 Flow** | `L4_flow/` | Top-level executable configuration, supports multiple run modes | Yes |
 
-### 设计原则
+### Design Principles
 
-- **L1/L2固化**：所有直接与硬件交互的层由工程师预定义，AI不参与生成。
-- **L3/L4声明式**：AI生成的配置仅描述"做什么"（流程编排），不描述"怎么做"（设备驱动细节）。
-- **接口契约**：L2 Node名称构成工艺师与技术人员之间的基础接口。技术人员负责L1/L2层实现，并可预先将常用流程组合封装为L3 Group（Group支持嵌套调用Node和其他Group），供工艺师在更高层流程编排中直接引用。各层之间通过统一的命名契约实现解耦。
+- **L1/L2 are fixed**: All layers that interact directly with hardware are predefined by engineers; AI does not participate in their generation.
+- **L3/L4 are declarative**: AI-generated configuration describes only "what to do" (process orchestration), not "how to do it" (device driver details).
+- **Interface contract**: L2 Node names form the base interface between process engineers and technicians. Technicians are responsible for the L1/L2 implementation and can pre-package commonly used process combinations as L3 Groups (a Group supports nested calls to Nodes and other Groups), which process engineers reference directly in higher-level process orchestration. The layers are decoupled through a unified naming contract.
 
-### 核心特性
+### Core Features
 
-- ✅ **L1 原子操作**：Modbus读写、计算、日志、弹窗、等待等
-- ✅ **L2 执行节点**：重试机制、超时控制、成功/失败/超时分支
-- ✅ **L3 执行组**：支持 sequence、parallel、loop、if、switch 控制流
-- ✅ **L4 流程层**：编排 L3 Group，构建完整产线流程
-- ✅ **参数化**：支持 `${变量}` 占位符和参数传递
-- ✅ **聚合文件**：L1/L2 使用 bundle 聚合文件，减少文件数量
-- ✅ **JSON 配置**：所有配置为 JSON 格式，易于编辑和版本控制
-- ✅ **三维语义验证**：结构校验 + 语义映射 + 仿真运行
-- ✅ **仿真执行器**：虚拟设备注册表 + 运行时变量存储 + 虚拟时钟 + 步数预算（防死循环）+ 审计日志 + 操作员逐项确认
+- ✅ **L1 Action (atomic operations)**: Modbus read/write, computation, logging, popup, wait, etc.
+- ✅ **L2 Node (execution node)**: retry mechanism, timeout control, success/failure/timeout branches
+- ✅ **L3 Group (execution group)**: supports sequence, parallel, loop, if, switch control flow
+- ✅ **L4 Flow (flow layer)**: orchestrates L3 Groups to build complete production-line flows
+- ✅ **Parameterization**: supports `${variable}` placeholders and parameter passing
+- ✅ **Bundle files**: L1/L2 use bundle aggregation files to reduce the number of files
+- ✅ **JSON configuration**: all configuration is in JSON format, easy to edit and version-control
+- ✅ **Three-gate semantic verification**: structural validation + simulation execution + semantic mapping
+- ✅ **Simulation executor**: virtual device registry + runtime variable store + virtual clock + step budget (dead-loop prevention) + audit log + per-step operator confirmation
 
 ---
 
-## 📦 目录结构
+## 📦 Directory Structure
 
 ```
 industrial_config_engine/
 ├── include/
-│   └── industrial_config_engine/        # 头文件
-│       ├── action_loader.hpp           # L1 Action加载器
-│       ├── config.hpp                  # 配置管理
-│       ├── l1_action.hpp               # L1 原子操作类
-│       ├── l2_node.hpp                 # L2 执行节点类
-│       ├── l3_group.hpp                # L3 执行组类
-│       ├── l4_flow.hpp                 # L4 流程类
-│       ├── node_loader.hpp             # L2 Node 加载器
-│       └── types.hpp                   # 数据类型定义
-├── src/                                 # 源文件
+│   └── industrial_config_engine/        # Header files
+│       ├── action_loader.hpp           # L1 Action loader
+│       ├── config.hpp                  # Configuration management
+│       ├── l1_action.hpp               # L1 Action (atomic operation) class
+│       ├── l2_node.hpp                 # L2 Node (execution node) class
+│       ├── l3_group.hpp                # L3 Group (execution group) class
+│       ├── l4_flow.hpp                 # L4 Flow class
+│       ├── node_loader.hpp             # L2 Node loader
+│       └── types.hpp                   # Data type definitions
+├── src/                                 # Source files
 │   ├── action_loader.cpp
 │   ├── config.cpp
 │   ├── l1_action.cpp
@@ -57,30 +57,30 @@ industrial_config_engine/
 │   ├── l3_group.cpp
 │   ├── l4_flow.cpp
 │   └── node_loader.cpp
-├── demos/                               # 演示程序
-│   ├── demo_l1_action_loader.cpp       # L1 Action 加载器演示
-│   ├── demo_l2_node_loader.cpp         # L2 Node 加载器演示
-│   ├── demo_l3_group_loader.cpp        # L3 Group 加载器演示
-│   ├── demo_l3_nested_group.cpp        # L3 嵌套 Group 演示
-│   ├── demo_l4_flow_loader.cpp         # L4 Flow 加载器演示
-│   └── demo_types.cpp                  # 类型系统演示
-├── examples/                            # 示例配置文件
-│   ├── config_examples/                # 原始配置示例（参考）
+├── demos/                               # Demo programs
+│   ├── demo_l1_action_loader.cpp       # L1 Action loader demo
+│   ├── demo_l2_node_loader.cpp         # L2 Node loader demo
+│   ├── demo_l3_group_loader.cpp        # L3 Group loader demo
+│   ├── demo_l3_nested_group.cpp        # L3 nested Group demo
+│   ├── demo_l4_flow_loader.cpp         # L4 Flow loader demo
+│   └── demo_types.cpp                  # Type system demo
+├── examples/                            # Example configuration files
+│   ├── config_examples/                # Original configuration examples (reference)
 │   │   ├── L1_action/modbus/iDM_actions.json
 │   │   ├── L2_node/iDM_nodes.json
 │   │   ├── L3_group/*.group.json
 │   │   └── L4_flow/main_flow.json
-│   ├── example1/                       # 示例1：真空控制流程
-│   │   ├── L1_action/                  # L1 原子操作（按目录分类）
+│   ├── example1/                       # Example 1: vacuum control flow
+│   │   ├── L1_action/                  # L1 Action (atomic operations, organized by directory)
 │   │   │   ├── control/all_actions.json
 │   │   │   ├── modbus/all_actions.json
 │   │   │   └── system/all_actions.json
-│   │   ├── L2_node/                    # L2 执行节点（按目录分类）
+│   │   ├── L2_node/                    # L2 Node (execution nodes, organized by directory)
 │   │   │   ├── control/all_nodes.json
 │   │   │   ├── data/all_nodes.json
 │   │   │   ├── system/all_nodes.json
 │   │   │   └── vacuum/all_nodes.json
-│   │   ├── L3_group/                   # L3 执行组
+│   │   ├── L3_group/                   # L3 Group (execution groups)
 │   │   │   ├── common/
 │   │   │   │   ├── emergency_stop.json
 │   │   │   │   ├── log_result.json
@@ -92,14 +92,14 @@ industrial_config_engine/
 │   │   │       └── pump_down.json
 │   │   └── L4_flow/production/
 │   │       └── vacuum_flow.json
-│   ├── example2/                       # 示例2：电机上料流程
-│   │   ├── L1_action/                  # L1 聚合文件（扁平结构）
+│   ├── example2/                       # Example 2: motor feeding flow
+│   │   ├── L1_action/                  # L1 bundle files (flat structure)
 │   │   │   ├── control_actions.json
 │   │   │   ├── data_actions.json
 │   │   │   ├── leadshine_actions.json
 │   │   │   ├── modbus_actions.json
 │   │   │   └── system_actions.json
-│   │   ├── L2_node/                    # L2 聚合文件（扁平结构）
+│   │   ├── L2_node/                    # L2 bundle files (flat structure)
 │   │   │   ├── data_nodes.json
 │   │   │   ├── leadshine_nodes.json
 │   │   │   ├── log_nodes.json
@@ -109,7 +109,7 @@ industrial_config_engine/
 │   │   │   ├── vacuum_nodes.json
 │   │   │   ├── variable_nodes.json
 │   │   │   └── wait_nodes.json
-│   │   ├── L3_group/                   # L3 执行组（扁平结构）
+│   │   ├── L3_group/                   # L3 Group (execution groups, flat structure)
 │   │   │   ├── complete_feeding.group.json
 │   │   │   ├── emergency_stop.group.json
 │   │   │   ├── jog_find_sensor.group.json
@@ -119,7 +119,7 @@ industrial_config_engine/
 │   │   │   └── write_pr_position.group.json
 │   │   └── L4_flow/
 │   │       └── main_flow.json
-│   └── example3/                       # 示例3：气密性检测流程
+│   └── example3/                       # Example 3: leak/gas-tightness testing flow
 │       ├── L1_action/leak_test/all_actions.json
 │       ├── L2_node/leak_test/all_nodes.json
 │       ├── L3_group/leak_test/
@@ -127,232 +127,232 @@ industrial_config_engine/
 │       │   └── pressure_hold.group.json
 │       └── L4_flow/leak_test/
 │           └── production_flow.json
-├── CMakeLists.txt                       # 主构建文件
-└── demos/CMakeLists.txt                 # 演示程序构建文件
+├── CMakeLists.txt                       # Main build file
+└── demos/CMakeLists.txt                 # Demo program build file
 ```
 
 ---
 
-## 🚀 编译
+## 🚀 Building
 
-### 前置条件
+### Prerequisites
 
-- **CMake** 3.14 或更高版本
-- **C++17** 编译器 (MSVC 2019+ / GCC 7+ / Clang 6+)
-- **nlohmann/json** 库 (自动下载)
+- **CMake** 3.14 or later
+- **C++17** compiler (MSVC 2019+ / GCC 7+ / Clang 6+)
+- **nlohmann/json** library (downloaded automatically)
 
 ### Windows (Visual Studio)
 
 ```bash
-# 配置
+# Configure
 cmake -B out\build\x64-Debug -S .
 
-# 编译所有
+# Build everything
 cmake --build out\build\x64-Debug
 
-# 编译特定 demo
+# Build a specific demo
 cmake --build out\build\x64-Debug --target demo_l3_group_loader
 ```
 
 ### Linux / macOS
 
 ```bash
-# 配置
+# Configure
 cmake -B out/build -S .
 
-# 编译所有
+# Build everything
 cmake --build out/build
 
-# 编译特定 demo
+# Build a specific demo
 cmake --build out/build --target demo_l3_group_loader
 ```
 
-### 输出目录
+### Output Directory
 
-编译后的可执行文件位于：
+The compiled executables are located in:
 - Windows: `out\build\x64-Debug\bin\`
 - Linux/macOS: `out/build/bin/`
 
 ---
 
-## 📋 Demo 程序列表
+## 📋 Demo Programs
 
-### 1. demo_types - 类型系统演示
+### 1. demo_types - Type System Demo
 
-演示数据类型系统的基本功能。
+Demonstrates the basic functionality of the data type system.
 
 ```bash
 ./demo_types
 ```
 
-**功能**：
-- 显示所有支持的数据类型 (u8, i8, u16, i16, u32, i32, f, bool, string, hex 等)
-- 类型转换和验证
-- 类型名称和大小信息
+**Features**:
+- Displays all supported data types (u8, i8, u16, i16, u32, i32, f, bool, string, hex, etc.)
+- Type conversion and validation
+- Type names and size information
 
 ---
 
-### 2. demo_l1_action_loader - L1 Action 加载器演示
+### 2. demo_l1_action_loader - L1 Action Loader Demo
 
-演示 L1 原子操作的加载和显示。
+Demonstrates loading and display of L1 Actions (atomic operations).
 
 ```bash
-# 默认目录（自动查找 examples/example1）
+# Default directory (auto-discovers examples/example1)
 ./demo_l1_action_loader
 
-# 指定配置目录
+# Specify a configuration directory
 ./demo_l1_action_loader D:/path/to/examples/example2
 ```
 
-**功能**：
-- 加载 `L1_action` 目录下的所有 Action 配置文件
-- 支持聚合文件 (`*_actions.json`) 和目录分类 (`category/all_actions.json`)
-- 显示 Action 的详细信息 (type, request, response, args 等)
+**Features**:
+- Loads all Action configuration files under the `L1_action` directory
+- Supports bundle files (`*_actions.json`) and directory classification (`category/all_actions.json`)
+- Displays detailed Action information (type, request, response, args, etc.)
 
 ---
 
-### 3. demo_l2_node_loader - L2 Node 加载器演示
+### 3. demo_l2_node_loader - L2 Node Loader Demo
 
-演示 L2 执行节点的加载和显示，包括对 L1 Action 的引用解析。
+Demonstrates loading and display of L2 Nodes (execution nodes), including resolution of references to L1 Actions.
 
 ```bash
-# 默认目录
+# Default directory
 ./demo_l2_node_loader
 
-# 指定配置目录
+# Specify a configuration directory
 ./demo_l2_node_loader D:/path/to/examples/example2
 ```
 
-**功能**：
-- 加载 `L2_node` 目录下的所有 Node 配置文件
-- 解析 Node 中引用的 L1 Action (template 引用)
-- 显示 Node 的完整信息 (params, judge, on_success, on_failure, on_timeout)
+**Features**:
+- Loads all Node configuration files under the `L2_node` directory
+- Resolves L1 Actions referenced by Nodes (template references)
+- Displays complete Node information (params, judge, on_success, on_failure, on_timeout)
 
 ---
 
-### 4. demo_l3_group_loader - L3 Group 加载器演示
+### 4. demo_l3_group_loader - L3 Group Loader Demo
 
-演示 L3 执行组的加载和显示，支持显示级别控制和参数填充。
+Demonstrates loading and display of L3 Groups (execution groups), with display-level control and parameter filling.
 
 ```bash
-# 基本用法
+# Basic usage
 ./demo_l3_group_loader
 
-# 指定目录
+# Specify a directory
 ./demo_l3_group_loader D:/path/to/examples/example2
 
-# 显示级别控制
-./demo_l3_group_loader --level=action      # 显示所有（包括 Action）
-./demo_l3_group_loader --level=node        # 显示 Group + Node（默认）
-./demo_l3_group_loader --level=group       # 只显示 Group
+# Display-level control
+./demo_l3_group_loader --level=action      # Show everything (including Actions)
+./demo_l3_group_loader --level=node        # Show Group + Node (default)
+./demo_l3_group_loader --level=group       # Show Groups only
 
-# 参数填充
-./demo_l3_group_loader --fill=true         # 用参数值替换变量
-./demo_l3_group_loader --fill=false        # 显示原始内容（默认）
+# Parameter filling
+./demo_l3_group_loader --fill=true         # Replace variables with parameter values
+./demo_l3_group_loader --fill=false        # Show raw content (default)
 
-# 自定义参数值
+# Custom parameter values
 ./demo_l3_group_loader --fill=true --param=instance_id="motor1"
 
-# 组合使用
+# Combined usage
 ./demo_l3_group_loader --level=action --fill=true --param=pr_number=5
 ```
 
-**功能**：
-- 加载 `L3_group` 目录下的所有 Group 配置文件
-- 支持 sequence、parallel、loop、if、switch 控制流
-- **显示级别控制**：
-  - `group`：只显示 Group 结构
-  - `node`：显示 Group + Node 详情
-  - `action`：显示所有（包括 on_success/on_failure/on_timeout 中的 Action）
-- **参数填充**：
-  - `--fill=true`：用实际值替换 `${变量}` 占位符
-  - `--fill=false`：显示原始内容（默认）
-- 自定义参数值：`--param=key=value`
+**Features**:
+- Loads all Group configuration files under the `L3_group` directory
+- Supports sequence, parallel, loop, if, switch control flow
+- **Display-level control**:
+  - `group`: shows only the Group structure
+  - `node`: shows Group + Node details
+  - `action`: shows everything (including Actions in on_success/on_failure/on_timeout)
+- **Parameter filling**:
+  - `--fill=true`: replaces `${variable}` placeholders with actual values
+  - `--fill=false`: shows raw content (default)
+- Custom parameter values: `--param=key=value`
 
 ---
 
-### 5. demo_l3_nested_group - L3 嵌套 Group 演示
+### 5. demo_l3_nested_group - L3 Nested Group Demo
 
-演示 L3 Group 的嵌套功能，展示如何构建复杂的控制流层次结构。
+Demonstrates nesting of L3 Groups, showing how to build complex control-flow hierarchies.
 
 ```bash
 ./demo_l3_nested_group
 ```
 
-**功能**：
-- 创建和显示嵌套 Group 结构
-- 演示 sequence + parallel 混合模式
-- 显示 Group 结构树
-- 验证嵌套深度限制
+**Features**:
+- Creates and displays nested Group structures
+- Demonstrates mixed sequence + parallel modes
+- Displays the Group structure tree
+- Validates nesting depth limits
 
 ---
 
-### 6. demo_l4_flow_loader - L4 Flow 加载器演示
+### 6. demo_l4_flow_loader - L4 Flow Loader Demo
 
-演示 L4 流程层的加载和执行。
+Demonstrates loading and execution of the L4 Flow layer.
 
 ```bash
-# 默认目录
+# Default directory
 ./demo_l4_flow_loader
 
-# 指定目录
+# Specify a directory
 ./demo_l4_flow_loader D:/path/to/examples/example2
 ```
 
-**功能**：
-- 加载 `L4_flow` 目录下的 Flow 配置文件
-- 解析 Flow 中引用的 L3 Group
-- 显示完整的流程结构树
-- 支持流程参数传递
+**Features**:
+- Loads Flow configuration files under the `L4_flow` directory
+- Resolves L3 Groups referenced by the Flow
+- Displays the complete flow structure tree
+- Supports flow parameter passing
 
 ---
 
-### 7. demo_simulator - 仿真运行器演示
+### 7. demo_simulator - Simulation Runner Demo
 
-演示配置的仿真执行：虚拟设备注册表 + 运行时变量存储 + 虚拟时钟 + 步数预算（死循环检测）+ 审计日志 + 操作员逐项确认。
+Demonstrates simulation execution of configurations: virtual device registry + runtime variable store + virtual clock + step budget (dead-loop detection) + audit log + per-step operator confirmation.
 
 ```bash
-./demo_simulator [配置根目录1] [配置根目录2] ...
+./demo_simulator [config root 1] [config root 2] ...
 ```
 
-**功能**：
-- 在虚拟设备（寄存器/线圈）上执行 L3/L4 配置，输出时序跟踪
-- 循环条件求值：引用未定义变量 → CONDITION_ERROR；条件恒真 → 步数预算超限（疑似死循环）
-- 引用缺失（节点/模板未定义）→ REFERENCE_ERROR
-- 全部执行决策写入审计日志；confirm_between=true 时每步记录操作员确认
-- 内置错误注入演示（拼写错误变量、恒真循环、缺失节点）
+**Features**:
+- Executes L3/L4 configurations on virtual devices (registers/coils) and outputs a timing trace
+- Loop condition evaluation: referencing an undefined variable → CONDITION_ERROR; an always-true condition → step budget exceeded (suspected infinite loop)
+- Missing reference (undefined node/template) → REFERENCE_ERROR
+- All execution decisions are written to the audit log; when confirm_between=true, operator confirmation is recorded at every step
+- Built-in fault-injection demos (misspelled variable, always-true loop, missing node)
 
 ---
 
-## 🎯 配置文件格式
+## 🎯 Configuration File Format
 
-### 目录组织方式
+### Directory Organization
 
-项目支持两种 L1/L2 配置组织方式：
+The project supports two ways of organizing L1/L2 configuration:
 
-| 方式 | 目录结构 | 适用场景 |
+| Style | Directory structure | Suitable scenario |
 |------|---------|----------|
-| **分类目录** | `L1_action/category/all_actions.json` | 按功能模块分类，适合大型项目 |
-| **聚合文件** | `L1_action/category_actions.json` | 扁平结构，适合中小型项目 |
+| **Directory classification** | `L1_action/category/all_actions.json` | Organized by functional module; suitable for large projects |
+| **Bundle files** | `L1_action/category_actions.json` | Flat structure; suitable for small-to-medium projects |
 
-两种方式可以混用，加载器会自动识别。
+The two styles can be mixed, and the loader detects them automatically.
 
-### L1 Action 命名规范
+### L1 Action Naming Convention
 
 ```
-格式: 名称.参数类型列表.r_返回值类型_返回值变量名
+Format: name.parameter_type_list.r_return_value_type_return_value_variable_name
 ```
 
-| 示例 | 说明 |
+| Example | Description |
 |------|------|
-| `log.s` | 参数: s, 无返回值 |
-| `popup.s_s` | 参数: s, s, 无返回值 |
-| `write_register.u16_u16.r_b_write_result` | 参数: u16, u16, 返回: b |
-| `read_pressure.u8_u16.r_u16_pressure` | 参数: u8, u16, 返回: u16 |
+| `log.s` | Parameters: s, no return value |
+| `popup.s_s` | Parameters: s, s, no return value |
+| `write_register.u16_u16.r_b_write_result` | Parameters: u16, u16, returns: b |
+| `read_pressure.u8_u16.r_u16_pressure` | Parameters: u8, u16, returns: u16 |
 
-### L2 Node 命名规范
+### L2 Node Naming Convention
 
-与 L1 Action 相同格式。Node 通过 `action.template` 引用 L1 Action：
+Same format as L1 Actions. Nodes reference L1 Actions via `action.template`:
 
 ```json
 "action": {
@@ -360,45 +360,45 @@ cmake --build out/build --target demo_l3_group_loader
 }
 ```
 
-### L3 Group 命名规范
+### L3 Group Naming Convention
 
-| 类型 | 格式 | 示例 |
+| Type | Format | Example |
 |------|------|------|
-| 带参数 | `名称.group.类型1_类型2.json` | `pump_down.group.u16_f.json` |
-| 无参数 | `名称.group.json` | `motor_enable.group.json` |
+| With parameters | `name.group.type1_type2.json` | `pump_down.group.u16_f.json` |
+| Without parameters | `name.group.json` | `motor_enable.group.json` |
 
-### 控制流模式
+### Control Flow Modes
 
-| 模式 | 说明 | 示例 |
+| Mode | Description | Example |
 |------|------|------|
-| `sequence` | 顺序执行 | `"mode": "sequence"` |
-| `parallel` | 并行执行 | `"mode": "parallel"` |
-| `loop` | 循环执行 | `"mode": "loop"` |
-| `if` | 条件分支 | `"mode": "if"` |
-| `switch` | 多条件分支 | `"mode": "switch"` |
+| `sequence` | Sequential execution | `"mode": "sequence"` |
+| `parallel` | Parallel execution | `"mode": "parallel"` |
+| `loop` | Loop execution | `"mode": "loop"` |
+| `if` | Conditional branch | `"mode": "if"` |
+| `switch` | Multi-condition branch | `"mode": "switch"` |
 
 ---
 
-## 🔧 引用路径规则
+## 🔧 Reference Path Rules
 
-| 引用类型 | 路径格式 | 示例 |
+| Reference type | Path format | Example |
 |---------|---------|------|
 | L4 → L3 Group | `L3_group/xxx.group.json` | `L3_group/pump_down.group.json` |
 | L3 → L2 Node | `L2_node/xxx_nodes.json/filename` | `L2_node/vacuum_nodes.json/read_pressure.r_u16_pressure` |
 | L2 → L1 Action | `L1_action/xxx_actions.json/filename` | `L1_action/modbus_actions.json/read_pressure.u8_u16.r_u16_pressure` |
 
-**注意**：
-- L3 Group 的 `body` 中只能包含 L2 Node 或 L3 Group
-- L2 Node 的 `action` 只能引用 L1 Action
-- 不支持 L3 直接引用 L1 Action
+**Note**:
+- The `body` of an L3 Group may contain only L2 Nodes or L3 Groups
+- The `action` of an L2 Node may reference only L1 Actions
+- L3 directly referencing L1 Actions is not supported
 
 ---
 
-## 🔧 常见问题
+## 🔧 FAQ
 
-### Q: 编译时提示找不到 nlohmann/json
+### Q: The build reports that nlohmann/json cannot be found
 
-**A**: CMake 会自动下载 nlohmann/json。如果网络问题导致下载失败，可以手动安装：
+**A**: CMake downloads nlohmann/json automatically. If a network problem causes the download to fail, you can install it manually:
 
 ```bash
 # Windows (vcpkg)
@@ -411,37 +411,37 @@ sudo apt install nlohmann-json3-dev
 brew install nlohmann-json
 ```
 
-### Q: 运行时提示找不到配置文件
+### Q: At runtime it reports that the configuration file cannot be found
 
-**A**: 程序默认在 `bin/examples/example1/` 目录下查找配置。可以通过命令行参数指定目录：
+**A**: By default the program looks for configuration under the `bin/examples/example1/` directory. You can specify a directory via a command-line argument:
 
 ```bash
 ./demo_l3_group_loader D:/path/to/your/config
 ```
 
-### Q: 如何选择使用哪个示例？
+### Q: How do I choose which example to use?
 
-**A**: 程序会自动查找 `examples/` 下的子目录。也可以手动指定：
+**A**: The program auto-discovers subdirectories under `examples/`. You can also specify one manually:
 
 ```bash
-# 使用 example1（真空控制）
+# Use example1 (vacuum control)
 ./demo_l3_group_loader D:/project/industrial_config_engine/examples/example1
 
-# 使用 example2（电机上料）
+# Use example2 (motor feeding)
 ./demo_l3_group_loader D:/project/industrial_config_engine/examples/example2
 ```
 
-### Q: 如何查看更详细的输出？
+### Q: How do I view more detailed output?
 
-**A**: 使用 `--level=action` 参数：
+**A**: Use the `--level=action` option:
 
 ```bash
 ./demo_l3_group_loader --level=action
 ```
 
-### Q: 如何查看填充参数后的内容？
+### Q: How do I view content after parameter filling?
 
-**A**: 使用 `--fill=true` 参数：
+**A**: Use the `--fill=true` option:
 
 ```bash
 ./demo_l3_group_loader --fill=true
@@ -449,11 +449,11 @@ brew install nlohmann-json
 
 ---
 
-## 📝 许可证
+## 📝 License
 
-本项目遵循 **GNU General Public License v3.0** 开源协议。
+This project is released under the **GNU General Public License v3.0** open-source license.
 
-Copyright (c) 2024-2026 明楚晴
+Copyright (c) 2024-2026 Chuqing Ming
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -470,69 +470,67 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ---
 
-**特别声明**：本代码为论文《数据驱动的工业控制配置语言：面向LLM安全集成的语义验证框架》的配套实验代码，仅供学术研究使用。如需商用，请联系作者获取授权。
+**Special note**: This code is the accompanying experimental code for the paper "A Data-Driven Industrial Control Configuration Language: A Semantic Verification Framework for Safe LLM Integration", provided for academic research only. For commercial use, please contact the author for authorization.
 
 ---
 
-## 👥 贡献者
+## 👥 Contributors
 
-### 作者
+### Author
 
-**明楚晴**
+**Chuqing Ming**
 
-- **单位**：东北育才学校（Northeast Yucai School）
-- **地区**：中国 辽宁（Liaoning, China）
-- **角色**：项目负责人 & 核心开发者
-- **贡献**：
-  - 四层架构（L1-L4）设计与实现
-  - L1 原子操作、L2 执行节点、L3 执行组、L4 流程层核心模块开发
-  - 配置引擎与加载器实现
-  - 论文撰写与实验验证
+- **Affiliation**: Northeast Yucai School
+- **Region**: Liaoning, China
+- **Role**: Project lead & core developer
+- **Contributions**:
+  - Design and implementation of the four-layer architecture (L1-L4)
+  - Core module development for the L1 Action (atomic operations), L2 Node (execution nodes), L3 Group (execution groups), and L4 Flow (flow layer)
+  - Implementation of the configuration engine and loaders
+  - Paper writing and experimental validation
 
 ---
 
-### 所属机构
+### Affiliation
 
-**东北育才学校**
-Northeast Yucai School
-中国 辽宁
+**Northeast Yucai School**
 Liaoning, China
 
 ---
 
-## 📖 如何引用
+## 📖 How to Cite
 
-如果您在学术研究或论文中使用了本项目，请按以下格式引用：
+If you use this project in academic research or a paper, please cite it in the following format:
 
 ```bibtex
-@article{明楚晴2026工业配置引擎,
-  title   = {数据驱动的工业控制配置语言：面向LLM安全集成的语义验证框架},
-  author  = {明楚晴},
-  school  = {东北育才学校},
+@article{ming2026industrial,
+  title   = {A Data-Driven Industrial Control Configuration Language: A Semantic Verification Framework for Safe LLM Integration},
+  author  = {Chuqing Ming},
+  school  = {Northeast Yucai School},
   year    = {2026},
-  address = {中国 辽宁}
+  address = {Liaoning, China}
 }
 ```
 
 ---
 
-## 📚 相关文档
+## 📚 Related Documentation
 
-- [四层架构设计文档](examples/docs/)
+- [Four-Layer Architecture Design Documentation](examples/docs/)
 ```
 
 ---
 
-**主要修改**：
+**Main changes**:
 
-| 修改点 | 说明 |
+| Change | Description |
 |--------|------|
-| 四层架构表格 | 增加"AI生成"列，与论文一致 |
-| 设计原则 | 新增完整的接口契约说明，体现技术人员可封装L3 Group |
-| 核心特性 | 新增"三维语义验证" |
-| 示例名称 | 与论文表格一致（真空控制流程/电机上料流程/气密性检测流程） |
-| example2 L3 | 与论文T2对应（12个Group） |
-| example3 L3 | 与论文T3对应（气密性检测，7个Group） |
-| 特别声明 | 添加论文标题 |
-| 引用格式 | 添加论文标题 |
-| L3嵌套演示 | 移除"max_nodes"（论文未提及） |
+| Four-layer architecture table | Added an "AI-Generated" column, consistent with the paper |
+| Design principles | Added a complete interface-contract description, reflecting that technicians can package L3 Groups |
+| Core features | Added "three-gate semantic verification" |
+| Example names | Consistent with the paper's table (vacuum control flow / motor feeding flow / leak/gas-tightness testing flow) |
+| example2 L3 | Corresponds to T2 in the paper (12 Groups) |
+| example3 L3 | Corresponds to T3 in the paper (leak/gas-tightness testing, 7 Groups) |
+| Special note | Added the paper title |
+| Citation format | Added the paper title |
+| L3 nesting demo | Removed "max_nodes" (not mentioned in the paper) |

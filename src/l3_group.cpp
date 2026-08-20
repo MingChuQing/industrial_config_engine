@@ -14,7 +14,7 @@ namespace industrial_config_engine {
     namespace fs = std::filesystem;
 
     // ============================================================
-    // L3Group 构造和加载
+    // L3Group constructor and load
     // ============================================================
 
     L3Group::L3Group(const nlohmann::json& json) {
@@ -77,12 +77,12 @@ namespace industrial_config_engine {
 
         filepath_ = filepath;
 
-        // 从路径提取文件名
+        // extract filename from path
         size_t pos = filepath.find_last_of("/\\");
         std::string basename = (pos != std::string::npos) ? filepath.substr(pos + 1) : filepath;
         pos = basename.find_last_of('.');
         if (pos != std::string::npos) {
-            // 去除 .group.json 或 .group.xxx.json
+            // strip .group.json or .group.xxx.json
             std::string name_part = basename.substr(0, pos);
             size_t group_pos = name_part.find(".group");
             if (group_pos != std::string::npos) {
@@ -100,7 +100,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 导出为 JSON
+    // export to JSON
     // ============================================================
 
     nlohmann::json L3Group::toJson() const {
@@ -122,7 +122,7 @@ namespace industrial_config_engine {
             json["body"] = body_;
         }
 
-        // 参数
+        // params
         if (!args_.empty()) {
             nlohmann::json args_json = nlohmann::json::array();
             for (const auto& arg : args_) {
@@ -215,7 +215,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 验证
+    // validation
     // ============================================================
 
     bool L3Group::validate() const {
@@ -232,7 +232,7 @@ namespace industrial_config_engine {
         if (body_.is_null()) return true;
         if (!body_.is_array()) return false;
 
-        // 检查 body 中的每一项
+        // check each item in body
         for (const auto& item : body_) {
             if (!item.is_object()) return false;
             if (!item.contains("type")) return false;
@@ -287,11 +287,11 @@ namespace industrial_config_engine {
     bool L3Group::validateCases() const {
         if (cases_.empty()) return true;
 
-        // 检查 case 值是否唯一
+        // check case values unique
         std::set<std::string> seen;
         for (const auto& c : cases_) {
             if (seen.find(c.case_value) != seen.end()) {
-                return false;  // 重复 case
+                return false;  // duplicate case
             }
             seen.insert(c.case_value);
             if (!c.body.is_array()) return false;
@@ -306,7 +306,7 @@ namespace industrial_config_engine {
     }
 
     bool L3Group::validateCircularReference(const std::vector<std::string>& ancestors) const {
-        // 检查 body 中的引用
+        // check references in body
         if (body_.is_null()) return true;
 
         for (const auto& item : body_) {
@@ -316,17 +316,17 @@ namespace industrial_config_engine {
             std::string type = item["type"].get<std::string>();
             if (type == "group" && item.contains("template")) {
                 std::string template_path = item["template"].get<std::string>();
-                // 检查是否循环引用
+                // check for circular reference
                 for (const auto& ancestor : ancestors) {
                     if (template_path.find(ancestor) != std::string::npos) {
                         return false;
                     }
                 }
-                // 递归检查
+                // recursive check
                 std::vector<std::string> new_ancestors = ancestors;
                 new_ancestors.push_back(template_path);
-                // 这里需要加载子 group 并递归检查
-                // 在实际实现中，需要通过 L3GroupLoader 加载
+                // needs to load child group and recurse
+                // in practice, load via L3GroupLoader
             }
         }
 
@@ -334,7 +334,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 节点计数
+    // node count
     // ============================================================
 
     int L3Group::countNodes() const {
@@ -355,18 +355,18 @@ namespace industrial_config_engine {
             }
             else if (type == "group") {
                 if (item.contains("body") && item["body"].is_array()) {
-                    // 内联 group
+                    // inline group
                     total += countNodesInJson(item["body"]);
                 }
                 else if (item.contains("then") && item["then"].is_array()) {
-                    // if 的 then 分支
+                    // if then-branch
                     total += countNodesInJson(item["then"]);
                     if (item.contains("else") && item["else"].is_array()) {
                         total += countNodesInJson(item["else"]);
                     }
                 }
                 else if (item.contains("cases") && item["cases"].is_array()) {
-                    // switch 的 cases
+                    // switch cases
                     for (const auto& case_item : item["cases"]) {
                         if (case_item.contains("body") && case_item["body"].is_array()) {
                             total += countNodesInJson(case_item["body"]);
@@ -377,10 +377,10 @@ namespace industrial_config_engine {
                     }
                 }
                 else if (item.contains("template")) {
-                    // 外部引用：需要加载并计数
-                    // 在实际实现中，需要通过 L3GroupLoader 加载
-                    // 这里假设外部引用不计数（由加载时递归计算）
-                    total += 1;  // 占位
+                    // external reference: load and count
+                    // in practice, load via L3GroupLoader
+                    // assume external references not counted here (computed recursively at load)
+                    total += 1;  // placeholder
                 }
             }
         }
@@ -389,7 +389,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 占位符处理
+    // placeholder handling
     // ============================================================
 
     std::vector<std::string> L3Group::extractPlaceholders() const {
@@ -400,7 +400,7 @@ namespace industrial_config_engine {
             result.insert(result.end(), extracted.begin(), extracted.end());
             };
 
-        // 从参数中提取
+        // extract from params
         for (const auto& arg : args_) {
             addPlaceholders(arg.name);
             if (arg.default_value.has_value()) {
@@ -408,20 +408,20 @@ namespace industrial_config_engine {
             }
         }
 
-        // 从 body 中提取（JSON 字符串值）
+        // extract from body (JSON string values)
         if (!body_.is_null() && body_.is_array()) {
             std::string body_str = body_.dump();
             addPlaceholders(body_str);
         }
 
-        // 从 loop 中提取
+        // extract from loop
         if (loop_.has_value()) {
             addPlaceholders(loop_->condition);
             addPlaceholders(loop_->items);
             addPlaceholders(loop_->item_name);
         }
 
-        // 从 condition 中提取
+        // extract from condition
         if (condition_.has_value()) {
             addPlaceholders(condition_->value);
             addPlaceholders(condition_->source);
@@ -474,7 +474,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 私有解析方法
+    // private parse methods
     // ============================================================
 
     void L3Group::parseCommonFields(const nlohmann::json& json) {
@@ -671,7 +671,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 类型转换辅助方法
+    // type conversion helpers
     // ============================================================
 
     std::string L3Group::modeToString(GroupMode mode) const {
@@ -713,7 +713,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 调试和打印
+    // debug and print
     // ============================================================
 
     std::string L3Group::toString() const {
@@ -739,7 +739,7 @@ namespace industrial_config_engine {
         os << "Delay Between: " << delay_between_ << "ms" << std::endl;
         os << "Confirm Between: " << (confirm_between_ ? "true" : "false") << std::endl;
 
-        // 参数
+        // params
         if (!args_.empty()) {
             os << "Args:" << std::endl;
             for (const auto& arg : args_) {
@@ -813,10 +813,10 @@ namespace industrial_config_engine {
             os << "Default: " << default_body_.size() << " items" << std::endl;
         }
 
-        // 节点计数
+        // node count
         os << "Total Nodes: " << countNodes() << std::endl;
 
-        // 占位符
+        // placeholder
         auto placeholders = extractPlaceholders();
         if (!placeholders.empty()) {
             os << "Placeholders: ";
@@ -835,7 +835,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // L3GroupLoader 实现
+    // L3GroupLoader implementation
     // ============================================================
 
     L3Group L3GroupLoader::loadFromFile(const std::string& filepath) {
@@ -864,7 +864,7 @@ namespace industrial_config_engine {
             }
         }
         catch (const std::exception& e) {
-            // 忽略目录扫描错误
+            // ignore directory scan errors
         }
 
         return groups;
@@ -899,7 +899,7 @@ namespace industrial_config_engine {
         const std::vector<nlohmann::json>& params) {
         std::string resolved_path = resolvePath(template_path);
 
-        // 检查缓存
+        // check cache
         if (cache_) {
             auto it = cache_->find(resolved_path);
             if (it != cache_->end()) {
@@ -907,10 +907,10 @@ namespace industrial_config_engine {
             }
         }
 
-        // 加载 Group
+        // load Group
         L3Group group = loadFromFile(resolved_path);
 
-        // 存入缓存
+        // store in cache
         if (cache_ && group.isInitialized()) {
             (*cache_)[resolved_path] = group;
         }
@@ -929,13 +929,13 @@ namespace industrial_config_engine {
     }
 
     std::string L3GroupLoader::resolvePath(const std::string& template_path) {
-        // 如果已经是绝对路径或相对路径，直接返回
+        // if already absolute or relative path, return directly
         if (template_path.find("/") != std::string::npos ||
             template_path.find("\\") != std::string::npos) {
             return template_path;
         }
 
-        // 尝试在 L3_group 目录下查找
+        // try to find under L3_group directory
         return l3_group_dir_ + "/" + template_path + ".group.json";
     }
 

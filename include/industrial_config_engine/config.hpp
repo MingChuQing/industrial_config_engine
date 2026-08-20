@@ -1,4 +1,4 @@
-﻿// include/industrial_config_engine/config.hpp
+// include/industrial_config_engine/config.hpp
 #pragma once
 
 #include <string>
@@ -8,19 +8,19 @@
 namespace industrial_config_engine {
 
     // ============================================================
-    // 配置结构体
+    // Configuration struct
     // ============================================================
     struct Config {
-        // 支持的JSON文件扩展名
+        // Supported JSON file extensions
         std::vector<std::string> supported_extensions = { ".json", ".JSON" };
 
-        // 是否启用严格模式（严格校验）
+        // Whether strict mode is enabled (strict validation)
         bool strict_mode = true;
 
-        // 是否允许覆盖已有的Action
+        // Whether overwriting existing Actions is allowed
         bool allow_overwrite = false;
 
-        // 日志级别
+        // Log level
         enum class LogLevel {
             DEBUG,
             INFO,
@@ -30,55 +30,55 @@ namespace industrial_config_engine {
         LogLevel log_level = LogLevel::INFO;
 
         // ============================================================
-        // 方法声明（在 config.cpp 中实现）
+        // Method declarations (implemented in config.cpp)
         // ============================================================
 
-        // 检查扩展名是否支持
+        // Check whether the extension is supported
         bool isExtensionSupported(const std::string& extension) const;
 
-        // 获取日志级别字符串
+        // Get the log level string
         std::string getLogLevelString() const;
 
-        // 从文件加载配置
+        // Load configuration from file
         bool loadFromFile(const std::string& filepath);
 
-        // 导出为JSON
+        // Export to JSON
         nlohmann::json toJson() const;
 
-        // 从JSON加载
+        // Load from JSON
         bool loadFromJson(const nlohmann::json& json);
     };
 
     // ============================================================
-    // 全局配置单例类
+    // Global configuration singleton class
     // ============================================================
     class GlobalConfig {
     public:
-        // 获取单例实例
+        // Get the singleton instance
         static GlobalConfig& getInstance();
 
-        // 设置配置
+        // Set the configuration
         void setConfig(const Config& config);
 
-        // 获取配置
+        // Get the configuration
         const Config& getConfig() const;
 
-        // 从文件加载配置
+        // Load configuration from file
         bool loadFromFile(const std::string& filepath);
 
-        // 重置为默认配置
+        // Reset to default configuration
         void reset();
 
     private:
-        // 私有构造函数（单例模式）
+        // Private constructor (singleton pattern)
         GlobalConfig() = default;
         ~GlobalConfig() = default;
 
-        // 禁止拷贝和赋值
+        // Disable copy and assignment
         GlobalConfig(const GlobalConfig&) = delete;
         GlobalConfig& operator=(const GlobalConfig&) = delete;
 
-        // 配置数据
+        // Configuration data
         Config config_;
     };
 

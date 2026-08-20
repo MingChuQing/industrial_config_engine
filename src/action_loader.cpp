@@ -12,13 +12,13 @@ namespace industrial_config_engine {
     namespace fs = std::filesystem;
 
     // ============================================================
-    // 静态成员初始化
+    // Static member initialization
     // ============================================================
 
     const std::vector<std::string> ActionLoader::supported_extensions_ = { ".json", ".JSON" };
 
     // ============================================================
-    // 构造函数和析构函数
+    // Constructor and destructor
     // ============================================================
 
     ActionLoader::ActionLoader() {
@@ -28,11 +28,11 @@ namespace industrial_config_engine {
     }
 
     ActionLoader::~ActionLoader() {
-        // 清理资源
+        // Clean up resources
     }
 
     // ============================================================
-    // 加载接口实现
+    // Loading interface implementations
     // ============================================================
 
     bool ActionLoader::loadSingleFile(const std::string& filepath) {
@@ -52,7 +52,7 @@ namespace industrial_config_engine {
             return false;
         }
 
-        // 检查扩展名
+        // Check extension
         std::string ext = fs::path(filepath).extension().string();
         if (!isSupportedExtension(ext)) {
             if (error_callback_) {
@@ -62,7 +62,7 @@ namespace industrial_config_engine {
             return false;
         }
 
-        // 获取父目录作为base_path
+        // Get parent directory as base_path
         std::string parent_dir = fs::path(filepath).parent_path().string();
         std::string base_path = fs::path(parent_dir).filename().string();
         if (base_path.empty()) {
@@ -91,7 +91,7 @@ namespace industrial_config_engine {
             traverseDirectory(directory_path, base_path, files);
         }
         else {
-            // 只遍历当前目录
+            // Only traverse current directory
             try {
                 for (const auto& entry : fs::directory_iterator(directory_path)) {
                     if (entry.is_regular_file()) {
@@ -119,7 +119,7 @@ namespace industrial_config_engine {
         int loaded = 0;
 
         for (const auto& file : files) {
-            // 按文件所在子目录计算 base_path（如 L2_node/leak_test）
+            // Compute base_path from the file's subdirectory (e.g. L2_node/leak_test)
             std::string file_base = base_path;
             try {
                 fs::path rel = fs::relative(fs::path(file), fs::path(directory_path));
@@ -179,7 +179,7 @@ namespace industrial_config_engine {
 
     bool ActionLoader::loadFromJson(const nlohmann::json& json, const std::string& virtual_path) {
         try {
-            // 确定base_path
+            // Determine base_path
             std::string base_path = fs::path(virtual_path).parent_path().string();
             if (base_path.empty() || base_path == ".") {
                 base_path = "virtual";
@@ -207,7 +207,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 查询接口实现
+    // Query interface implementations
     // ============================================================
 
     const L1Action* ActionLoader::getAction(const std::string& key) const {
@@ -271,7 +271,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 统计信息实现
+    // Statistics implementations
     // ============================================================
 
     std::unordered_map<std::string, int> ActionLoader::getTypeStatistics() const {
@@ -294,7 +294,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 管理接口实现
+    // Management interface implementations
     // ============================================================
 
     void ActionLoader::clear() {
@@ -308,7 +308,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 内部加载方法实现
+    // Internal loading method implementations
     // ============================================================
 
     bool ActionLoader::loadJsonFile(const std::string& filepath, const std::string& base_path) {
@@ -351,7 +351,7 @@ namespace industrial_config_engine {
             std::string name_without_ext = getBaseName(filename);
             std::string key = makeKey(base_path, "", name_without_ext);
 
-            // 检查是否已存在
+            // Check if it already exists
             if (hasAction(key)) {
                 if (!allow_overwrite_) {
                     if (error_callback_) {
@@ -363,9 +363,9 @@ namespace industrial_config_engine {
 
             L1Action action(name_without_ext, json);
 
-            // 严格模式验证
+            // Strict mode validation
             if (strict_mode_) {
-                // 验证签名是否匹配
+                // Validate whether the signature matches
                 const auto& sig = action.getSignature();
                 if (sig.name.empty()) {
                     if (error_callback_) {
@@ -379,7 +379,7 @@ namespace industrial_config_engine {
             actions_[key] = std::move(action);
             loaded_files_++;
 
-            // 触发回调
+            // Trigger callback
             if (action_loaded_callback_) {
                 action_loaded_callback_(key, actions_[key]);
             }
@@ -424,7 +424,7 @@ namespace industrial_config_engine {
                 std::string action_filename = action_json["filename"].get<std::string>();
                 std::string key = makeKey(base_path, bundle_name, action_filename);
 
-                // 检查是否已存在
+                // Check if it already exists
                 if (hasAction(key)) {
                     if (!allow_overwrite_) {
                         if (error_callback_) {
@@ -436,7 +436,7 @@ namespace industrial_config_engine {
 
                 L1Action action(action_filename, action_json);
 
-                // 严格模式验证
+                // Strict mode validation
                 if (strict_mode_) {
                     const auto& sig = action.getSignature();
                     if (sig.name.empty()) {
@@ -469,7 +469,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 辅助方法实现
+    // Helper method implementations
     // ============================================================
 
     std::string ActionLoader::makeKey(const std::string& base_path,
@@ -477,12 +477,12 @@ namespace industrial_config_engine {
         const std::string& filename) const {
         std::string key;
 
-        // 添加base_path
+        // Add base_path
         if (!base_path.empty() && base_path != ".") {
             key = normalizePath(base_path);
         }
 
-        // 添加bundle_name（如果是聚合文件）
+        // Add bundle_name (if it is a bundle file)
         if (!bundle_name.empty()) {
             if (!key.empty()) {
                 key += "/";
@@ -490,7 +490,7 @@ namespace industrial_config_engine {
             key += bundle_name;
         }
 
-        // 添加filename
+        // Add filename
         if (!filename.empty()) {
             if (!key.empty()) {
                 key += "/";
@@ -503,13 +503,13 @@ namespace industrial_config_engine {
 
     std::string ActionLoader::normalizePath(const std::string& path) const {
         std::string result = path;
-        // 替换反斜杠为正斜杠
+        // Replace backslashes with forward slashes
         std::replace(result.begin(), result.end(), '\\', '/');
-        // 移除末尾斜杠
+        // Remove trailing slashes
         while (!result.empty() && result.back() == '/') {
             result.pop_back();
         }
-        // 移除重复斜杠
+        // Remove duplicate slashes
         std::regex double_slash("/+");
         result = std::regex_replace(result, double_slash, "/");
         return result;
@@ -561,7 +561,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 流输出操作符
+    // Stream output operator
     // ============================================================
 
     std::ostream& operator<<(std::ostream& os, const ActionLoader& loader) {
@@ -574,7 +574,7 @@ namespace industrial_config_engine {
         os << "Strict mode: " << (loader.getStrictMode() ? "on" : "off") << std::endl;
         os << "Allow overwrite: " << (loader.getAllowOverwrite() ? "yes" : "no") << std::endl;
 
-        // 类型统计
+        // Type statistics
         auto type_stats = loader.getTypeStatistics();
         if (!type_stats.empty()) {
             os << "\nType statistics:" << std::endl;
@@ -583,7 +583,7 @@ namespace industrial_config_engine {
             }
         }
 
-        // Action列表
+        // Action list
         auto keys = loader.getActionKeys();
         if (!keys.empty()) {
             os << "\nAction list:" << std::endl;

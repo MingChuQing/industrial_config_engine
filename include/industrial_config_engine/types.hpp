@@ -1,4 +1,4 @@
-﻿// include/industrial_config_engine/types.hpp
+// include/industrial_config_engine/types.hpp
 #pragma once
 
 #include <string>
@@ -14,7 +14,7 @@
 namespace industrial_config_engine {
 
     // ============================================================
-    // 数据类型枚举
+    // Data type enumeration
     // ============================================================
     enum class DataType : uint8_t {
         VOIDDataType = 0,
@@ -32,7 +32,7 @@ namespace industrial_config_engine {
     };
 
     // ============================================================
-    // 类型信息结构
+    // Type information structure
     // ============================================================
     struct TypeInfo {
         DataType type;
@@ -43,7 +43,7 @@ namespace industrial_config_engine {
     };
 
     // ============================================================
-    // 类型转换函数
+    // Type conversion functions
     // ============================================================
 
     inline DataType stringToDataType(const std::string& str) {
@@ -92,7 +92,7 @@ namespace industrial_config_engine {
         return "void";
     }
 
-    // ✅ 添加缺失的函数
+    // ✅ Added the missing function
     inline bool isValidDataType(const std::string& str) {
         static const std::vector<std::string> valid_types = {
             "void", "u8", "i8", "u16", "i16", "u32", "i32",
@@ -103,7 +103,7 @@ namespace industrial_config_engine {
 
     inline TypeInfo getTypeInfo(DataType type) {
         static const std::unordered_map<DataType, TypeInfo> map = {
-            {DataType::VOIDDataType, {DataType::VOIDDataType, "void", "void", 0, "无返回值"}},
+            {DataType::VOIDDataType, {DataType::VOIDDataType, "void", "void", 0, "no return value"}},
             {DataType::U8, {DataType::U8, "u8", "uint8", 1, "0 ~ 255"}},
             {DataType::I8, {DataType::I8, "i8", "int8", 1, "-128 ~ 127"}},
             {DataType::U16, {DataType::U16, "u16", "uint16", 2, "0 ~ 65535"}},
@@ -112,20 +112,20 @@ namespace industrial_config_engine {
             {DataType::I32, {DataType::I32, "i32", "int32", 4, "-2147483648 ~ 2147483647"}},
             {DataType::F, {DataType::F, "f", "float32", 4, "±3.4e38"}},
             {DataType::B, {DataType::B, "b", "bool", 0, "true / false"}},
-            {DataType::S, {DataType::S, "s", "string", 0, "任意字符串"}},
-            {DataType::HEX, {DataType::HEX, "hex", "hex_string", 0, "十六进制字符串"}},
-            {DataType::ARR, {DataType::ARR, "arr", "array", 0, "JSON数组"}}
+            {DataType::S, {DataType::S, "s", "string", 0, "arbitrary string"}},
+            {DataType::HEX, {DataType::HEX, "hex", "hex_string", 0, "hex string"}},
+            {DataType::ARR, {DataType::ARR, "arr", "array", 0, "JSON array"}}
         };
 
         auto it = map.find(type);
         if (it != map.end()) {
             return it->second;
         }
-        return { DataType::VOIDDataType, "void", "void", 0, "未知类型" };
+        return { DataType::VOIDDataType, "void", "void", 0, "unknown type" };
     }
 
     // ============================================================
-    // 类型判断函数
+    // Type predicate functions
     // ============================================================
 
     inline bool isNumericType(DataType type) {
@@ -175,7 +175,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 类型验证函数
+    // Type validation functions
     // ============================================================
 
     template<typename T>
@@ -217,7 +217,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 类型比较
+    // Type comparison
     // ============================================================
 
     inline bool isTypeCompatible(DataType from, DataType to) {
@@ -238,7 +238,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 类型解析辅助
+    // Type parsing helpers
     // ============================================================
 
     inline std::vector<DataType> parseTypeList(const std::string& type_str) {
@@ -276,7 +276,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 类型检查（用于JSON解析）
+    // Type check (for JSON parsing)
     // ============================================================
 
     inline bool isJsonTypeMatch(const nlohmann::json& value, DataType expected_type) {
@@ -314,7 +314,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 条件操作符枚举
+    // Condition operator enumeration
     // ============================================================
 
     enum class ConditionOperator {
@@ -363,7 +363,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 打印和调试
+    // Printing and debugging
     // ============================================================
 
     inline std::string typeListToDebugString(const std::vector<DataType>& types) {

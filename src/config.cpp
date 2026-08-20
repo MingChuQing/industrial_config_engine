@@ -1,4 +1,4 @@
-﻿// src/config.cpp
+// src/config.cpp
 #include "industrial_config_engine/config.hpp"
 #include <fstream>
 #include <iostream>
@@ -6,7 +6,7 @@
 namespace industrial_config_engine {
 
     // ============================================================
-    // Config 方法实现
+    // Config method implementations
     // ============================================================
 
     bool Config::isExtensionSupported(const std::string& extension) const {
@@ -91,7 +91,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // GlobalConfig 方法实现
+    // GlobalConfig method implementations
     // ============================================================
 
     GlobalConfig& GlobalConfig::getInstance() {
@@ -112,7 +112,7 @@ namespace industrial_config_engine {
     }
 
     void GlobalConfig::reset() {
-        config_ = Config();  // 重置为默认配置
+        config_ = Config();  // reset to default config
     }
 
 } // namespace industrial_config_engine

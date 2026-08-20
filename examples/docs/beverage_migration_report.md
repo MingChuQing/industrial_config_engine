@@ -1,69 +1,69 @@
-# 饮料灌装系统：单体配置 → 四层配置 改造对比报告（公开可复现）
+# Beverage Filling System: Monolithic Configuration → Four-Layer Configuration — Migration Comparison Report (public and reproducible)
 
-> 本报告是论文《数据驱动的工业控制配置语言》中"单体配置与四层配置对比"的**公开、可复现**样本。
-> 所有数字均可由本仓库文件直接统计复现。
+> This report is the **public, reproducible** sample of the "monolithic vs. four-layer configuration comparison" in the paper "A Data-Driven Industrial Control Configuration Language".
+> All numbers can be reproduced directly by counting the files in this repository.
 
-## 1. 对比对象
+## 1. Subjects of Comparison
 
-| 方案 | 位置 | 说明 |
+| Approach | Location | Description |
 |------|------|------|
-| 旧方案（单体配置） | `examples/beverage_legacy/饮料灌装系统_旧方案.json` | 12 步工序、13 设备，全部配置在单一 JSON 中，工艺编排与设备级 Modbus 帧混杂 |
-| 新方案（四层） | `examples/example4/` | L1 21 个动作、L2 13 个节点、L3 17 个参数化组、L4 一条 12 步流程 |
+| Old approach (monolithic configuration) | `examples/beverage_legacy/beverage_filling_legacy.json` | 12-step process, 13 devices, all configuration in a single JSON, mixing process orchestration with device-level Modbus frames |
+| New approach (four-layer) | `examples/example4/` | L1 21 Actions, L2 13 Nodes, L3 17 parameterized groups, L4 one 12-step flow |
 
-## 2. 规模对比
+## 2. Size Comparison
 
-| 指标 | 旧方案（单体） | 新方案（四层） | 变化 |
+| Metric | Old approach (monolithic) | New approach (four-layer) | Change |
 |------|----------------|----------------|------|
-| 文件数 | 1 | 20 | 按层分离 |
-| 总行数 | 4082 | 1319 | **−67.7%** |
-| 总字节 | 215.0 KB | 33.7 KB | **−84.3%** |
-| Modbus 帧（`"request"` 出现次数） | 239 | 编排层(L3/L4) 0；设备层(L1/L2) 18 | 设备细节冻结于 L1/L2 |
-| 组引用 / 唯一组定义 | 逐字重复 | 29 次引用 ← 17 个参数化组 | 复用率 41.4% |
+| Number of files | 1 | 20 | Separated by layer |
+| Total lines | 4082 | 1319 | **−67.7%** |
+| Total bytes | 215.0 KB | 33.7 KB | **−84.3%** |
+| Modbus frames (occurrences of `"request"`) | 239 | 0 in the orchestration layer (L3/L4); 18 in the device layer (L1/L2) | Device details frozen in L1/L2 |
+| Group references / unique group definitions | Verbatim repetition | 29 references ← 17 parameterized groups | Reuse rate 41.4% |
 
-复用分布（L4 流程中的组引用）：
+Reuse distribution (group references in the L4 flow):
 
-| 组 | 引用次数 |
+| Group | Reference count |
 |----|----------|
-| 灌装循环 fill_cycle | 4（四工位） |
-| 四工位瓶检测 pos_detect | 4 |
-| 三轴移动 axis_move_seq | 4（四灌装工位） |
-| 四工位液位复检 level_recheck | 4 |
-| 阀控循环 rinse_cycle | 3（冲洗/消毒/排放） |
-| 其余 12 个组 | 各 1 |
+| Filling cycle fill_cycle | 4 (four stations) |
+| Four-station bottle detection pos_detect | 4 |
+| Three-axis movement axis_move_seq | 4 (four filling stations) |
+| Four-station level recheck level_recheck | 4 |
+| Valve control cycle rinse_cycle | 3 (rinse/disinfect/drain) |
+| The remaining 12 groups | 1 each |
 
-## 3. 关键结论
+## 3. Key Conclusions
 
-1. **分层隔离可度量**：编排层（L3/L4）不再出现任何 Modbus 帧，所有设备细节（寄存器地址、
-   线圈地址、十六进制报文）冻结在 L1/L2，LLM 只生成引用名称的组合。
-2. **复用即参数化**：同样的"灌装循环"（开阀→计量→关阀）定义一次、按参数复用四次，
-   取代了单体方案中的逐字重复。
-3. **行为等价**：两种方案描述同一灌装工序，控制流程一致，改造只改变知识的组织方式。
+1. **Measurable layer isolation**: the orchestration layer (L3/L4) no longer contains any Modbus frames; all device details (register addresses,
+   coil addresses, hexadecimal messages) are frozen in L1/L2, and the LLM only generates combinations of reference names.
+2. **Reuse is parameterization**: the same "filling cycle" (open valve → metering → close valve) is defined once and reused four times with different parameters,
+   replacing the verbatim repetition in the monolithic approach.
+3. **Behavioral equivalence**: the two approaches describe the same filling process with an identical control flow; the migration only changes how the knowledge is organized.
 
-## 4. 复现方式
+## 4. Reproduction
 
 ```bash
-# 统计旧方案
-python -c "import json;d=open('examples/beverage_legacy/饮料灌装系统_旧方案.json',encoding='utf-8').read();print('行数',d.count(chr(10))+1,'帧数',d.count('\"request\"'))"
+# Count the old approach
+python -c "import json;d=open('examples/beverage_legacy/beverage_filling_legacy.json',encoding='utf-8').read();print('lines',d.count(chr(10))+1,'frames',d.count('\"request\"'))"
 
-# 统计新方案（四层）
+# Count the new approach (four-layer)
 find examples/example4 -name '*.json' | xargs wc -l
 ```
 
-## 5. 坐标表（iDM-RS 绝对坐标，脉冲数）
+## 5. Coordinate Table (iDM-RS absolute coordinates, in pulses)
 
-| 工位 | X | Y | Z |
+| Station | X | Y | Z |
 |------|-------|-------|--------|
-| 原点 | 0 | 0 | 0 |
-| 上料取瓶 | 50000 | 0 | 80000 |
-| 灌装工位1 | 120000 | 60000 | 150000 |
-| 灌装工位2 | 132000 | 60000 | 150000 |
-| 灌装工位3 | 144000 | 60000 | 150000 |
-| 灌装工位4 | 156000 | 60000 | 150000 |
-| 旋盖 | 170000 | 60000 | 150000 |
-| 打码 | 220000 | 60000 | 150000 |
-| 出料 | 260000 | 120000 | 80000 |
+| Origin | 0 | 0 | 0 |
+| Bottle pickup (feeding) | 50000 | 0 | 80000 |
+| Filling station 1 | 120000 | 60000 | 150000 |
+| Filling station 2 | 132000 | 60000 | 150000 |
+| Filling station 3 | 144000 | 60000 | 150000 |
+| Filling station 4 | 156000 | 60000 | 150000 |
+| Capping | 170000 | 60000 | 150000 |
+| Coding/marking | 220000 | 60000 | 150000 |
+| Discharge | 260000 | 120000 | 80000 |
 
-> 注：四层方案中 L2 层为示意性封装（每个节点对应一个 L1 动作）；完整的绝对定位指令序列
-> （使能→PR0 模式→位置高/低位→速度→触发，见 `examples/device_examples/` 与 iDM-RS 手册）
-> 可按需在 L3 组内展开为多节点组合。本对比聚焦于知识组织的四层分离与规模压缩，不代表
-> 执行语义的逐字节等价。
+> Note: in the four-layer approach, the L2 layer is a schematic wrapping (each node corresponds to one L1 Action); the complete absolute-positioning command sequence
+> (enable → PR0 mode → position high/low → speed → trigger; see `examples/device_examples/` and the iDM-RS manual)
+> can be expanded into a multi-node combination inside L3 groups as needed. This comparison focuses on the four-layer separation of knowledge organization and size reduction, and does not imply
+> byte-for-byte equivalence of execution semantics.

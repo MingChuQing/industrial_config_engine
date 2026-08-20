@@ -29,27 +29,27 @@ using json = nlohmann::json;
 namespace fs = std::filesystem;
 
 // ============================================================
-// 显示级别枚举
+// display level enum
 // ============================================================
 enum class DisplayLevel {
-    GROUP,      // 只显示 Group 级别
-    NODE,       // 显示 Group + Node
-    ACTION      // 显示所有（Group + Node + Action）
+    GROUP,      // only show Group level
+    NODE,       // show Group + Node
+    ACTION      // show all (Group + Node + Action)
 };
 
 // ============================================================
-// 全局配置
+// global config
 // ============================================================
 struct DisplayConfig {
-    DisplayLevel level = DisplayLevel::NODE;  // 默认显示到 Node 级别
-    bool fill_params = false;                  // 默认不填充参数（显示原始内容）
-    unordered_map<string, string> param_values; // 参数值映射
+    DisplayLevel level = DisplayLevel::NODE;  // default show to Node level
+    bool fill_params = false;                  // default no param fill (show raw content)
+    unordered_map<string, string> param_values; // param value map
 };
 
 static DisplayConfig g_config;
 
 // ============================================================
-// L1 Action 缓存管理器
+// L1 Action cache manager
 // ============================================================
 class L1ActionCache {
 public:
@@ -197,7 +197,7 @@ private:
 };
 
 // ============================================================
-// L2 Node 缓存管理器
+// L2 Node cache manager
 // ============================================================
 class L2NodeCache {
 public:
@@ -313,7 +313,7 @@ private:
 };
 
 // ============================================================
-// 格式化输出工具
+// format output utilities
 // ============================================================
 class OutputFormatter {
 public:
@@ -356,7 +356,7 @@ public:
     }
 
     // ============================================================
-    // 替换占位符
+    // substitute placeholders
     // ============================================================
     static string replacePlaceholders(const string& str, const unordered_map<string, string>& values) {
         string result = str;
@@ -382,12 +382,12 @@ public:
     }
 
     // ============================================================
-    // 从 JSON 中提取参数值
+    // extract param values from JSON
     // ============================================================
     static unordered_map<string, string> extractParams(const json& item) {
         unordered_map<string, string> result;
 
-        // 从 params 中提取
+        // extract from params
         if (item.contains("params") && item["params"].is_object()) {
             for (auto& [key, value] : item["params"].items()) {
                 if (value.is_string()) {
@@ -399,7 +399,7 @@ public:
             }
         }
 
-        // 从 args 中提取（Group 级别）
+        // extract from args (Group level)
         if (item.contains("args") && item["args"].is_array()) {
             for (const auto& arg : item["args"]) {
                 if (arg.contains("name") && arg.contains("default")) {
@@ -418,7 +418,7 @@ public:
     }
 
     // ============================================================
-    // 打印 Judge
+    // print Judge
     // ============================================================
     static void printJudge(const json& judge, int indent) {
         string indent_str(indent, ' ');
@@ -472,7 +472,7 @@ public:
     }
 
     // ============================================================
-    // 打印 Condition
+    // print Condition
     // ============================================================
     static void printCondition(const json& cond, int indent) {
         string indent_str(indent, ' ');
@@ -512,12 +512,12 @@ public:
     }
 
     // ============================================================
-    // 打印 Branch (on_success/on_failure/on_timeout)
+    // print Branch (on_success/on_failure/on_timeout)
     // ============================================================
     static void printBranch(const string& label, const json& item, const string& branch_name, int indent) {
-        // 如果显示级别是 ACTION，才展开 Action
+        // expand Action only if display level is ACTION
         if (g_config.level != DisplayLevel::ACTION) {
-            // 只显示数量，不展开
+            // show count only, do not expand
             if (item.contains(branch_name) && item[branch_name].is_array()) {
                 const auto& branch = item[branch_name];
                 if (!branch.empty()) {
@@ -610,7 +610,7 @@ public:
     }
 
     // ============================================================
-    // 打印 Body Item (递归)
+    // print Body Item (recursive)
     // ============================================================
     static void printBodyItem(const json& item, int indent = 4, int index = -1) {
         string indent_str(indent, ' ');
@@ -630,7 +630,7 @@ public:
         // L2 Node
         // ============================================================
         if (type == "node") {
-            // 如果级别是 GROUP，不显示 Node
+            // if level GROUP, do not show Node
             if (g_config.level == DisplayLevel::GROUP) {
                 return;
             }
@@ -649,7 +649,7 @@ public:
                 cout << indent_str << "│  Description: " << description << endl;
             }
 
-            // 收集参数用于填充
+            // collect params for fill
             auto params = extractParams(item);
             for (auto& [key, value] : params) {
                 g_config.param_values[key] = value;
@@ -900,12 +900,12 @@ public:
             return;
         }
 
-        // 未知类型
+        // unknown type
         cout << "Unknown type: " << type << endl;
     }
 
     // ============================================================
-    // 打印 Group 详情
+    // print Group details
     // ============================================================
     static void printGroupDetails(const L3Group& group) {
         cout << endl;
@@ -921,7 +921,7 @@ public:
         cout << "  Confirm Between: " << (group.getConfirmBetween() ? "true" : "false") << endl;
         cout << "  Total Nodes Count: " << group.countNodes() << endl;
 
-        // 从 Group 的 args 中提取默认参数
+        // extract default params from Group args
         const auto& args = group.getArgs();
         if (!args.empty()) {
             for (const auto& arg : args) {
@@ -1074,7 +1074,7 @@ public:
 };
 
 // ============================================================
-// 解析命令行参数
+// parse command-line args
 // ============================================================
 static void parseCommandLine(int argc, char* argv[], string& base_dir) {
     base_dir = "";
@@ -1100,7 +1100,7 @@ static void parseCommandLine(int argc, char* argv[], string& base_dir) {
             cout << "📌 Fill parameters: " << (g_config.fill_params ? "true" : "false") << endl;
         }
         else if (arg.rfind("--param=", 0) == 0) {
-            // 格式: --param=key=value
+            // format: --param=key=value
             string kv = arg.substr(8);
             size_t eq_pos = kv.find('=');
             if (eq_pos != string::npos) {
@@ -1111,12 +1111,12 @@ static void parseCommandLine(int argc, char* argv[], string& base_dir) {
             }
         }
         else if (arg[0] != '-') {
-            // 目录参数
+            // directory arg
             base_dir = arg;
         }
     }
 
-    // 如果指定了 fill=true 但没有提供参数，使用默认测试参数
+    // if fill=true without params, use default test params
     if (g_config.fill_params && g_config.param_values.empty()) {
         g_config.param_values["instance_id"] = "\"motor1\"";
         g_config.param_values["speed"] = "1000";
@@ -1131,7 +1131,7 @@ static void parseCommandLine(int argc, char* argv[], string& base_dir) {
 }
 
 // ============================================================
-// 路径工具函数
+// path utility functions
 // ============================================================
 
 static string getExecutablePath() {
@@ -1165,7 +1165,7 @@ static string findConfigDirectory(const string& exe_dir) {
         }
     }
 
-    // 向上查找
+    // search upward
     fs::path current = fs::path(exe_dir);
     for (int i = 0; i < 6; i++) {
         current = current.parent_path();
@@ -1184,7 +1184,7 @@ static string findConfigDirectory(const string& exe_dir) {
 }
 
 // ============================================================
-// 主函数
+// main function
 // ============================================================
 int main(int argc, char* argv[]) {
 #ifdef _WIN32
@@ -1193,7 +1193,7 @@ int main(int argc, char* argv[]) {
 #endif
     string base_dir;
 
-    // 解析命令行参数
+    // parse command-line args
     parseCommandLine(argc, argv, base_dir);
 
     if (base_dir.empty()) {
@@ -1236,7 +1236,7 @@ int main(int argc, char* argv[]) {
 
     try {
         // ============================================================
-        // Step 1: 加载所有 L1 Action 到缓存
+        // Step 1: load all L1 Actions to cache
         // ============================================================
         cout << "📂 Step 1: Loading L1 Actions..." << endl;
         L1ActionCache l1_cache;
@@ -1249,7 +1249,7 @@ int main(int argc, char* argv[]) {
         l1_cache.printStats();
 
         // ============================================================
-        // Step 2: 加载所有 L2 Node 到缓存
+        // Step 2: load all L2 Nodes to cache
         // ============================================================
         cout << "📂 Step 2: Loading L2 Nodes..." << endl;
         L2NodeCache l2_cache;
@@ -1262,7 +1262,7 @@ int main(int argc, char* argv[]) {
         l2_cache.printStats();
 
         // ============================================================
-// Step 3: 加载所有 L3 Group（递归遍历所有子目录，加载所有 JSON）
+// Step 3: load all L3 Groups (recursively walk all subdirs, load all JSON)
 // ============================================================
         cout << "📂 Step 3: Loading L3 Groups..." << endl;
         vector<L3Group> groups;
@@ -1270,15 +1270,15 @@ int main(int argc, char* argv[]) {
         if (fs::exists(l3_dir) && fs::is_directory(l3_dir)) {
             cout << "📂 Scanning L3 group directory (recursive, all JSON files): " << l3_dir << endl;
             try {
-                // ✅ 递归遍历所有子目录
+                // recursively walk all subdirs
                 for (const auto& entry : fs::recursive_directory_iterator(l3_dir)) {
-                    // ✅ 所有 .json 文件都加载，不再过滤文件名
+                    // all .json files loaded, no filename filtering
                     if (entry.is_regular_file() && entry.path().extension() == ".json") {
                         string path = entry.path().string();
                         L3Group group;
                         if (group.loadFromFile(path)) {
                             groups.push_back(group);
-                            // 显示相对路径
+                            // show relative path
                             string rel_path = fs::relative(path, l3_dir).string();
                             cout << "  ✅ Loaded group: " << group.getFilename()
                                 << " (" << group.getName() << ")"
@@ -1302,7 +1302,7 @@ int main(int argc, char* argv[]) {
         cout << endl;
 
         // ============================================================
-        // Step 4: 显示每个 Group 的详细信息
+        // Step 4: show each Group details
         // ============================================================
         cout << endl;
         OutputFormatter::printSeparator('=');
@@ -1325,7 +1325,7 @@ int main(int argc, char* argv[]) {
         }
 
         // ============================================================
-        // Step 5: 完成
+        // Step 5: done
         // ============================================================
         cout << endl;
         OutputFormatter::printHeader("Load complete");

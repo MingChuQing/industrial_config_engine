@@ -20,7 +20,7 @@ using namespace industrial_config_engine;
 namespace fs = std::filesystem;
 
 // ============================================================
-// 颜色输出辅助（Windows控制台）
+// color output helper (Windows console)
 // ============================================================
 #ifdef _WIN32
 void setConsoleColor(int color) {
@@ -29,11 +29,11 @@ void setConsoleColor(int color) {
 }
 
 void initConsole() {
-    // 设置控制台代码页为UTF-8
+    // set console code page to UTF-8
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
 
-    // 启用ANSI转义序列支持（Windows 10+）
+    // enable ANSI escape sequence support (Windows 10+)
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hOut != INVALID_HANDLE_VALUE) {
         DWORD dwMode = 0;
@@ -43,11 +43,11 @@ void initConsole() {
         }
     }
 
-    // ❌ 移除这行 - 它会导致断言失败
+    // remove this line - it causes assertion failure
     // _setmode(_fileno(stdout), _O_U8TEXT);
 
-    // ✅ 使用这个替代方案 - 设置标准流为UTF-8
-    // 不需要 _setmode，使用 SetConsoleOutputCP 就足够了
+    // use this alternative - set standard streams to UTF-8
+    // no _setmode needed, SetConsoleOutputCP is enough
 }
 #else
 void setConsoleColor(int color) {}
@@ -66,7 +66,7 @@ enum ConsoleColor {
 };
 
 // ============================================================
-// 打印辅助函数
+// print helper functions
 // ============================================================
 
 void printHeader(const std::string& title) {
@@ -110,7 +110,7 @@ void printInfo(const std::string& msg) {
 }
 
 // ============================================================
-// 判断是否为有效的L1 Action文件
+// check if valid L1 Action file
 // ============================================================
 
 bool isL1ActionFile(const std::string& filepath) {
@@ -171,7 +171,7 @@ bool isL1ActionFile(const std::string& filepath) {
 }
 
 // ============================================================
-// 递归查找L1 Action文件
+// recursively find L1 Action files
 // ============================================================
 
 std::vector<std::string> findL1ActionFiles(const std::string& directory) {
@@ -201,7 +201,7 @@ std::vector<std::string> findL1ActionFiles(const std::string& directory) {
 }
 
 // ============================================================
-// 加载并显示所有L1 Action
+// load and show all L1 Actions
 // ============================================================
 
 bool loadAndDisplayActions(const std::string& directory, bool verbose = true) {
@@ -272,14 +272,14 @@ bool loadAndDisplayActions(const std::string& directory, bool verbose = true) {
     }
 
     // ============================================================
-    // ✅ 直接使用 L1Action::print() 输出详细信息
+    // directly use L1Action::print() for details
     // ============================================================
     printSubHeader("Action Details");
     for (const auto& key : keys) {
         const auto* action = loader.getAction(key);
         if (action) {
             std::cout << "\n[Key: " << key << "]" << std::endl;
-            action->print(std::cout);  // 直接使用 L1Action 的 print 方法
+            action->print(std::cout);  // directly use L1Action print method
             std::cout << std::endl;
         }
     }
@@ -288,7 +288,7 @@ bool loadAndDisplayActions(const std::string& directory, bool verbose = true) {
 }
 
 // ============================================================
-// 查找默认目录
+// find default directory
 // ============================================================
 
 std::string findDefaultDirectory() {
@@ -340,7 +340,7 @@ std::string findDefaultDirectory() {
 }
 
 // ============================================================
-// 打印使用帮助
+// print usage help
 // ============================================================
 
 void printUsage(const std::string& program_name) {
@@ -362,7 +362,7 @@ void printUsage(const std::string& program_name) {
 }
 
 // ============================================================
-// 主函数
+// main function
 // ============================================================
 
 int main(int argc, char* argv[]) {

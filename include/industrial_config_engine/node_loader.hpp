@@ -12,7 +12,7 @@
 namespace industrial_config_engine {
 
     // ============================================================
-    // 回调函数类型定义
+    // callback function type definitions
     // ============================================================
 
     using NodeProgressCallback = std::function<void(const std::string&, int, int)>;
@@ -20,7 +20,7 @@ namespace industrial_config_engine {
     using NodeLoadedCallback = std::function<void(const std::string&, const L2Node&)>;
 
     // ============================================================
-    // NodeLoader 类
+    // NodeLoader class
     // ============================================================
 
     class NodeLoader {
@@ -29,7 +29,7 @@ namespace industrial_config_engine {
         ~NodeLoader();
 
         // ============================================================
-        // 回调设置
+        // callback setters
         // ============================================================
 
         void setProgressCallback(NodeProgressCallback callback) { progress_callback_ = callback; }
@@ -37,26 +37,26 @@ namespace industrial_config_engine {
         void setNodeLoadedCallback(NodeLoadedCallback callback) { node_loaded_callback_ = callback; }
 
         // ============================================================
-        // 加载接口
+        // load interface
         // ============================================================
 
-        // 加载单个 Node 文件
+        // load single Node file
         bool loadSingleFile(const std::string& filepath);
 
-        // 加载目录（递归）
+        // load directory (recursive)
         bool loadDirectory(const std::string& directory_path, bool recursive = true);
 
-        // 加载多个路径
+        // load multiple paths
         bool loadPaths(const std::vector<std::string>& paths, bool recursive = true);
 
-        // 从JSON字符串加载（用于测试）
+        // load from JSON string (for testing)
         bool loadFromJsonString(const std::string& json_str, const std::string& virtual_path);
 
-        // 从JSON对象加载
+        // load from JSON object
         bool loadFromJson(const nlohmann::json& json, const std::string& virtual_path);
 
         // ============================================================
-        // 查询接口
+        // query interface
         // ============================================================
 
         const L2Node* getNode(const std::string& key) const;
@@ -65,14 +65,14 @@ namespace industrial_config_engine {
         std::vector<std::string> getNodeKeys() const;
         const std::unordered_map<std::string, L2Node>& getAllNodes() const { return nodes_; }
 
-        // 按前缀查找
+        // find by prefix
         std::vector<std::string> findNodesByPrefix(const std::string& prefix) const;
 
-        // 按名称查找
+        // find by name
         std::vector<std::string> findNodesByName(const std::string& name) const;
 
         // ============================================================
-        // 统计信息
+        // statistics
         // ============================================================
 
         size_t getNodeCount() const { return nodes_.size(); }
@@ -80,7 +80,7 @@ namespace industrial_config_engine {
         size_t getErrorCount() const { return error_count_; }
 
         // ============================================================
-        // 管理接口
+        // management interface
         // ============================================================
 
         void clear();
@@ -92,7 +92,7 @@ namespace industrial_config_engine {
 
     private:
         // ============================================================
-        // 内部加载方法
+        // internal load methods
         // ============================================================
 
         bool loadJsonFile(const std::string& filepath, const std::string& base_path);
@@ -104,7 +104,7 @@ namespace industrial_config_engine {
             const std::string& bundle_filename);
 
         // ============================================================
-        // 辅助方法
+        // helper methods
         // ============================================================
 
         std::string makeKey(const std::string& base_path,
@@ -121,31 +121,31 @@ namespace industrial_config_engine {
 
     private:
         // ============================================================
-        // 成员变量
+        // member variables
         // ============================================================
 
-        // Node 存储: key -> L2Node
+        // Node store: key -> L2Node
         std::unordered_map<std::string, L2Node> nodes_;
 
-        // 统计信息
+        // statistics
         size_t loaded_files_ = 0;
         size_t error_count_ = 0;
 
-        // 配置
+        // config
         bool strict_mode_ = true;
         bool allow_overwrite_ = false;
 
-        // 回调
+        // callback
         NodeProgressCallback progress_callback_;
         NodeErrorCallback error_callback_;
         NodeLoadedCallback node_loaded_callback_;
 
-        // 支持的扩展名
+        // supported extensions
         static const std::vector<std::string> supported_extensions_;
     };
 
     // ============================================================
-    // 流输出操作符
+    // stream output operator
     // ============================================================
 
     std::ostream& operator<<(std::ostream& os, const NodeLoader& loader);

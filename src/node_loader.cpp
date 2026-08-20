@@ -12,13 +12,13 @@ namespace industrial_config_engine {
     namespace fs = std::filesystem;
 
     // ============================================================
-    // 静态成员初始化
+    // Static member initialization
     // ============================================================
 
     const std::vector<std::string> NodeLoader::supported_extensions_ = { ".json", ".JSON" };
 
     // ============================================================
-    // 构造函数和析构函数
+    // Constructor and destructor
     // ============================================================
 
     NodeLoader::NodeLoader() {
@@ -32,7 +32,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 加载接口实现
+    // Loading interface implementations
     // ============================================================
 
     bool NodeLoader::loadSingleFile(const std::string& filepath) {
@@ -95,7 +95,7 @@ namespace industrial_config_engine {
         int loaded = 0;
 
         for (const auto& file : files) {
-            // 按文件所在子目录计算 base_path（如 L2_node/leak_test）
+            // Compute base_path from the file's subdirectory (e.g. L2_node/leak_test)
             std::string file_base = base_path;
             try {
                 fs::path rel = fs::relative(fs::path(file), fs::path(directory_path));
@@ -182,7 +182,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 查询接口实现
+    // Query interface implementations
     // ============================================================
 
     const L2Node* NodeLoader::getNode(const std::string& key) const {
@@ -236,7 +236,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 管理接口实现
+    // Management interface implementations
     // ============================================================
 
     void NodeLoader::clear() {
@@ -250,7 +250,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 内部加载方法实现
+    // Internal loading method implementations
     // ============================================================
 
     bool NodeLoader::loadJsonFile(const std::string& filepath, const std::string& base_path) {
@@ -408,7 +408,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 辅助方法实现
+    // Helper method implementations
     // ============================================================
 
     std::string NodeLoader::makeKey(const std::string& base_path,
@@ -505,7 +505,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 流输出操作符
+    // Stream output operator
     // ============================================================
 
     std::ostream& operator<<(std::ostream& os, const NodeLoader& loader) {

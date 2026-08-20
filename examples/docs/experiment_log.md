@@ -1,85 +1,85 @@
-# 实验记录：LLM 生成与三维验证（论文第三节存档）
+# Experiment Log: LLM Generation and Three-Gate Semantic Verification (archived for Section 3 of the paper)
 
-> 本文件存档论文《数据驱动的工业控制配置语言》第三节引用的全部原始实验记录。
-> 所有条目均可由本仓库复现；复现命令见第 6 节。
+> This file archives all the raw experimental records referenced in Section 3 of the paper "A Data-Driven Industrial Control Configuration Language".
+> All entries can be reproduced from this repository; reproduction commands are given in Section 6.
 
-## 1. 实验设置
+## 1. Experimental Setup
 
-- **LLM**：DeepSeek V4-Flash
-- **输入**：设备手册（L1/L2 能力清单，即本仓库 `examples/example1-3` 下的 `L1_action/`、`L2_node/`）+ 自然语言工艺需求（存档于 `examples/docs/论文样例1：抽真空/`、`论文样例2：上料/`、`论文样例3：气密性监测/` 下的 `.txt` 文件）
-- **输出**：L3/L4 工艺编排配置（本仓库 `examples/example1-3` 下的 `L3_group/`、`L4_flow/`）
-- **验证**：结构验证（加载时）→ 仿真执行（`demo_simulator`，部署前）→ 语义映射（人工审查）
+- **LLM**: DeepSeek V4-Flash
+- **Input**: device manuals (L1/L2 capability lists, i.e., the `L1_action/` and `L2_node/` under `examples/example1-3` in this repository) + natural-language process requirements (archived in the `.txt` files under `examples/docs/sample1_vacuum/`, `sample2_feeding/`, and `sample3_leak_test/`)
+- **Output**: L3/L4 process-orchestration configurations (the `L3_group/` and `L4_flow/` under `examples/example1-3` in this repository)
+- **Verification**: structural validation (at load time) → simulation execution (`demo_simulator`, before deployment) → semantic mapping (human review)
 
-## 2. 测试用例与配置规模（统计口径：仓库存档文件）
+## 2. Test Cases and Configuration Size (counting basis: files archived in the repository)
 
-| 用例 | 工艺 | 设备 | L1动作 | L2节点 | L3组 | L4流程 |
+| Case | Process | Devices | L1 Actions | L2 Nodes | L3 Groups | L4 Flows |
 |------|------|------|--------|--------|------|--------|
-| T1 | 真空控制 | 3 | 11 | 10 | 7 | 1 |
-| T2 | 电机上料 | 4 | 18 | 22 | 12 | 1 |
-| T3 | 泄漏测试 | 3 | 26 | 30 | 10（7 自建 + 3 复用 T2） | 1 |
+| T1 | Vacuum control | 3 | 11 | 10 | 7 | 1 |
+| T2 | Motor feeding | 4 | 18 | 22 | 12 | 1 |
+| T3 | Leak test | 3 | 26 | 30 | 10 (7 built + 3 reused from T2) | 1 |
 
-配置规模（按文件统计）：
+Configuration size (counted by file):
 
-| 用例 | L3/L4（LLM 生成） | L1/L2（冻结层，LLM 不可见） | 受控词表（L3/L4 中不重复的引用名称数） |
+| Case | L3/L4 (LLM-generated) | L1/L2 (frozen layer, not visible to the LLM) | Controlled vocabulary (number of distinct reference names in L3/L4) |
 |------|-------------------|------------------------------|------------------------------------------|
-| T1 | 8 文件 / 424 行 / 11.1 KB | 8 文件 / 445 行 / 12.3 KB | 16 |
-| T2 | 13 文件 / 537 行 / 17.0 KB | 14 文件 / 1085 行 / 32.8 KB | 30 |
-| T3 | 11 文件 / 818 行 / 27.6 KB | 19 文件 / 2175 行 / 72.1 KB | 45 |
+| T1 | 8 files / 424 lines / 11.1 KB | 8 files / 445 lines / 12.3 KB | 16 |
+| T2 | 13 files / 537 lines / 17.0 KB | 14 files / 1085 lines / 32.8 KB | 30 |
+| T3 | 11 files / 818 lines / 27.6 KB | 19 files / 2175 lines / 72.1 KB | 45 |
 
-## 3. LLM 生成记录（会话记录）
+## 3. LLM Generation Records (session records)
 
-| 用例 | 初始生成耗时（会话记录） | 修正轮次 | 最终验证 |
+| Case | Initial generation time (session records) | Correction rounds | Final verification |
 |------|--------------------------|----------|----------|
-| T1 | 约 20 秒 | 1–2 轮 | 通过 |
-| T2 | 约 45 秒 | 1–2 轮 | 通过 |
-| T3 | 约 40 秒 | 1–2 轮 | 通过 |
+| T1 | ~20 seconds | 1–2 rounds | Passed |
+| T2 | ~45 seconds | 1–2 rounds | Passed |
+| T3 | ~40 seconds | 1–2 rounds | Passed |
 
-修正方式：人工修正，或依据验证关卡的错误报告由 LLM 重新生成相应部分。
-LLM 的原始生成稿存档于 `examples/docs/论文样例1-3/` 下的文本文件。
+Correction method: manual correction, or the LLM regenerates the affected parts based on the error report from a verification gate.
+The LLM's original drafts are archived in the text files under `examples/docs/sample1-3/`.
 
-## 4. 缺陷拦截记录（三条工艺集成与验收过程中，2026-08-17）
+## 4. Defect Interception Records (during integration and acceptance of the three processes, 2026-08-17)
 
-| # | 缺陷（实例） | 发现于 | 拦截关卡 |
+| # | Defect (example) | Found in | Interception gate |
 |---|--------------|--------|----------|
-| 1 | 非法 JSON：十六进制字面量 `0x0200`/`0x0201`/`0x01` | T1、T3 | 结构验证（解析） |
-| 2 | 节点参数缺失（泵启动/停止节点未提供寄存器参数） | T2 | 结构验证（参数签名） |
-| 3 | 文件名笔误 `pump_down..json` | T1 | 结构验证（引用解析） |
-| 4 | 动作层缺失/跨目录引用（T1 data 层缺失、T3 跨目录引用 positioning/log） | T1、T3 | 结构验证（引用解析） |
-| 5 | 循环预判循环体内才产生的变量（`motion_done`、`sensor_triggered`、`pressure_rising`） | T2、T3 | 仿真执行（CONDITION_ERROR） |
-| 6 | 变量链断裂（`leak_rate`、`leak_ok`、`p_start`、`final_pressure` 未产生） | T2、T3 | 仿真执行（CONDITION_ERROR） |
-| 7 | 循环类型与意图不符（`while` 应为 `do-while`） | T2、T3 | 语义映射（人工审查意图） |
+| 1 | Illegal JSON: hexadecimal literals `0x0200`/`0x0201`/`0x01` | T1, T3 | Structural validation (parsing) |
+| 2 | Missing node parameters (pump start/stop nodes did not provide register parameters) | T2 | Structural validation (parameter signature) |
+| 3 | Filename typo `pump_down..json` | T1 | Structural validation (reference resolution) |
+| 4 | Missing action layer / cross-directory references (T1 missing data layer, T3 cross-directory references to positioning/log) | T1, T3 | Structural validation (reference resolution) |
+| 5 | Loop predicted variables that are only produced inside the loop body (`motion_done`, `sensor_triggered`, `pressure_rising`) | T2, T3 | Simulation execution (CONDITION_ERROR) |
+| 6 | Broken variable chains (`leak_rate`, `leak_ok`, `p_start`, `final_pressure` never produced) | T2, T3 | Simulation execution (CONDITION_ERROR) |
+| 7 | Loop type mismatch with intent (`while` should be `do-while`) | T2, T3 | Semantic mapping (human review of intent) |
 
-## 5. 故障注入（验证三道关卡的拦截能力，2026-08-17）
+## 5. Fault Injection (verifying the interception capability of the three gates, 2026-08-17)
 
-| 注入缺陷 | 配置片段 | 拦截结果 |
+| Injected defect | Configuration fragment | Interception result |
 |----------|----------|----------|
-| 条件引用未定义变量（拼写错误 `${pressue}`） | 循环条件 do-while `${pressue} > 5` | CONDITION_ERROR：循环条件求值失败，0 次设备写入 |
-| 恒真循环条件（`true`） | 循环条件 while `true`，迭代上限 100 | STEP_BUDGET_EXCEEDED：循环迭代超过上限（100），疑似死循环，0 次设备写入 |
-| 引用不存在的节点 | body 模板 `read_pressureX.r_u16_pressure` | REFERENCE_ERROR：节点定义缺失，0 次设备写入 |
+| Condition references an undefined variable (typo `${pressue}`) | Loop condition do-while `${pressue} > 5` | CONDITION_ERROR: loop condition evaluation failed, 0 device writes |
+| Always-true loop condition (`true`) | Loop condition while `true`, iteration cap 100 | STEP_BUDGET_EXCEEDED: loop iterations exceeded the cap (100), suspected infinite loop, 0 device writes |
+| References a nonexistent node | body template `read_pressureX.r_u16_pressure` | REFERENCE_ERROR: node definition missing, 0 device writes |
 
-## 6. 最终验证运行（demo_simulator 实测输出，2026-08-17）
+## 6. Final Verification Run (measured output of demo_simulator, 2026-08-17)
 
-复现命令（VS 2022 开发者命令提示符，仓库根目录）：
+Reproduction commands (VS 2022 Developer Command Prompt, repository root):
 
 ```
 cmake --build build\simcheck
 build\simcheck\bin\demo_simulator.exe
 ```
 
-实测结果（加载 example1/2/3 三个配置根，共 55 个 L1 动作、62 个 L2 节点）：
+Measured results (loading the three configuration roots example1/2/3, 55 L1 Actions and 62 L2 Nodes in total):
 
-| 用例 | 状态 | 仿真步数 | 虚拟时间 | 墙钟耗时 | 审计记录 | 设备写入 | 关键结果 |
+| Case | Status | Simulation steps | Virtual time | Wall-clock time | Audit records | Device writes | Key result |
 |------|------|----------|----------|----------|----------|----------|----------|
-| T1 真空控制 | SUCCESS | 923 | 88.48 s | ≈0.2 s | 192 条 | 2 次 | 压力 65000→3 Pa，泵停止，泄漏率 0.0% |
-| T2 电机上料 | SUCCESS | 104 | 0.50 s | ≈0.03 s | 46 条 | 12 次 | position_1、position_2 已保存 |
-| T3 泄漏测试 | SUCCESS | 193 | 0.84 s | ≈0.07 s | 168 条 | 14 次 | test_result=PASS，79 条 OPERATOR_CONFIRM |
-| 注入1（拼写错误） | CONDITION_ERROR | — | — | — | 1 条 | 0 次 | 加载/执行前拦截 |
-| 注入2（恒真循环） | STEP_BUDGET_EXCEEDED | — | — | — | 101 条 | 0 次 | 迭代上限拦截 |
-| 注入3（缺失节点） | REFERENCE_ERROR | — | — | — | 0 条 | 0 次 | 执行前拦截 |
+| T1 Vacuum control | SUCCESS | 923 | 88.48 s | ≈0.2 s | 192 records | 2 writes | Pressure 65000→3 Pa, pump stopped, leak rate 0.0% |
+| T2 Motor feeding | SUCCESS | 104 | 0.50 s | ≈0.03 s | 46 records | 12 writes | position_1, position_2 saved |
+| T3 Leak test | SUCCESS | 193 | 0.84 s | ≈0.07 s | 168 records | 14 writes | test_result=PASS, 79 OPERATOR_CONFIRM records |
+| Injection 1 (typo) | CONDITION_ERROR | — | — | — | 1 record | 0 writes | Intercepted before load/execution |
+| Injection 2 (always-true loop) | STEP_BUDGET_EXCEEDED | — | — | — | 101 records | 0 writes | Intercepted by iteration cap |
+| Injection 3 (missing node) | REFERENCE_ERROR | — | — | — | 0 records | 0 writes | Intercepted before execution |
 
-注：T1 步数与耗时随虚拟压力衰减模型略有波动（923 步为一次代表性运行）；审计与写入数按该次运行统计。
+Note: T1's step count and timing fluctuate slightly with the virtual pressure-decay model (923 steps is one representative run); audit and write counts are tallied for that run.
 
-## 7. 结构验证与人工审查记录
+## 7. Structural Validation and Human Review Records
 
-- **结构验证**：加载时执行（JSON 解析 + 各层 `validate()` + 全量引用解析），三条工艺均为 <1 秒。
-- **语义映射（人工审查）**：将 L3/L4 配置逆向翻译为自然语言与流程图，与原始需求比对；耗时约为 T1 2 分钟、T2 6 分钟、T3 6 分钟（含修正确认）。审查发现的主要语义问题为第 4 节第 7 条（循环类型与意图不符）。
+- **Structural validation**: performed at load time (JSON parsing + per-layer `validate()` + full reference resolution); all three processes took <1 second.
+- **Semantic mapping (human review)**: the L3/L4 configuration is reverse-translated into natural language and flowcharts and compared against the original requirements; time taken was about 2 minutes for T1, 6 minutes for T2, and 6 minutes for T3 (including correction confirmation). The main semantic issue found during review is item 7 of Section 4 (loop type mismatch with intent).

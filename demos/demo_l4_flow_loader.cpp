@@ -28,16 +28,16 @@ using json = nlohmann::json;
 namespace fs = std::filesystem;
 
 // ============================================================
-// 显示级别枚举
+// display level enum
 // ============================================================
 enum class DisplayLevel {
-    FLOW,       // 只显示 Flow 级别
-    GROUP,      // 显示 Flow + Group
-    FULL        // 显示所有（Flow + Group + Node + Action）
+    FLOW,       // only show Flow level
+    GROUP,      // show Flow + Group
+    FULL        // show all (Flow + Group + Node + Action)
 };
 
 // ============================================================
-// 全局配置
+// global config
 // ============================================================
 struct DisplayConfig {
     DisplayLevel level = DisplayLevel::GROUP;
@@ -48,7 +48,7 @@ struct DisplayConfig {
 static DisplayConfig g_config;
 
 // ============================================================
-// L1 Action 缓存管理器
+// L1 Action cache manager
 // ============================================================
 class L1ActionCache {
 public:
@@ -194,7 +194,7 @@ private:
 };
 
 // ============================================================
-// L2 Node 缓存管理器
+// L2 Node cache manager
 // ============================================================
 class L2NodeCache {
 public:
@@ -309,7 +309,7 @@ private:
 };
 
 // ============================================================
-// L3 Group 缓存管理器
+// L3 Group cache manager
 // ============================================================
 class L3GroupCache {
 public:
@@ -384,7 +384,7 @@ public:
     }
 
     // ============================================================
-    // 新增：获取缓存 Keys
+    // added: get cache keys
     // ============================================================
     vector<string> getCacheKeys() const {
         vector<string> keys;
@@ -407,7 +407,7 @@ private:
 };
 
 // ============================================================
-// 格式化输出工具
+// format output utilities
 // ============================================================
 class OutputFormatter {
 public:
@@ -598,7 +598,7 @@ public:
 };
 
 // ============================================================
-// 解析命令行参数
+// parse command-line args
 // ============================================================
 static void parseCommandLine(int argc, char* argv[], string& base_dir) {
     base_dir = "";
@@ -640,7 +640,7 @@ static void parseCommandLine(int argc, char* argv[], string& base_dir) {
 }
 
 // ============================================================
-// 路径工具函数
+// path utility functions
 // ============================================================
 
 static string getExecutablePath() {
@@ -686,7 +686,7 @@ static string findConfigDirectory(const string& exe_dir) {
 }
 
 // ============================================================
-// 主函数
+// main function
 // ============================================================
 int main(int argc, char* argv[]) {
 #ifdef _WIN32
@@ -730,7 +730,7 @@ int main(int argc, char* argv[]) {
 
     try {
         // ============================================================
-        // Step 1: 加载 L1 Actions
+        // Step 1: load L1 Actions
         // ============================================================
         cout << "[STEP] Step 1: Loading L1 Actions..." << endl;
         L1ActionCache l1_cache;
@@ -743,7 +743,7 @@ int main(int argc, char* argv[]) {
         l1_cache.printStats();
 
         // ============================================================
-        // Step 2: 加载 L2 Nodes
+        // Step 2: load L2 Nodes
         // ============================================================
         cout << "[STEP] Step 2: Loading L2 Nodes..." << endl;
         L2NodeCache l2_cache;
@@ -756,7 +756,7 @@ int main(int argc, char* argv[]) {
         l2_cache.printStats();
 
         // ============================================================
-        // Step 3: 加载 L3 Groups
+        // Step 3: load L3 Groups
         // ============================================================
         cout << "[STEP] Step 3: Loading L3 Groups..." << endl;
         L3GroupCache l3_cache;
@@ -769,7 +769,7 @@ int main(int argc, char* argv[]) {
         l3_cache.printStats();
 
         // ============================================================
-        // Step 4: 加载 L4 Flows
+        // Step 4: load L4 Flows
         // ============================================================
         cout << "[STEP] Step 4: Loading L4 Flows..." << endl;
         vector<L4Flow> flows;
@@ -828,7 +828,7 @@ int main(int argc, char* argv[]) {
         cout << endl;
 
         // ============================================================
-        // Step 5: 显示每个 Flow 的详细信息
+        // Step 5: show each Flow details
         // ============================================================
         cout << endl;
         OutputFormatter::printSeparator('=');
@@ -851,7 +851,7 @@ int main(int argc, char* argv[]) {
         }
 
         // ============================================================
-        // Step 6: 完成
+        // Step 6: done
         // ============================================================
         cout << endl;
         OutputFormatter::printHeader("Load complete");

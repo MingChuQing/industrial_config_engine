@@ -27,7 +27,7 @@ using json = nlohmann::json;
 namespace fs = std::filesystem;
 
 // ============================================================
-// L1 Action 缓存管理器
+// L1 Action cache manager
 // ============================================================
 class L1ActionCache {
 public:
@@ -187,7 +187,7 @@ private:
 };
 
 // ============================================================
-// 分支 Action 解析结果
+// branch Action parse result
 // ============================================================
 struct ResolvedBranchAction {
     enum class Type { TEMPLATE, INLINE };
@@ -198,7 +198,7 @@ struct ResolvedBranchAction {
 };
 
 // ============================================================
-// L2 Node 加载器
+// L2 Node loader
 // ============================================================
 class L2NodeLoader {
 public:
@@ -236,11 +236,11 @@ public:
         return nodes;
     }
 
-    // 解析 L2Node 的 action
+    // parse L2Node action
     pair<bool, const L1Action*> resolveActionRef(const L2Node& node) const {
         const ActionRef& action_ref = node.getAction();
 
-        // 如果是 inline action，返回 false（不从缓存查找）
+        // if inline action, return false (do not look up cache)
         if (node.isActionInline()) {
             return { false, nullptr };
         }
@@ -275,7 +275,7 @@ public:
         return { false, nullptr };
     }
 
-    // 从 inline JSON 字符串创建 L1Action
+    // create L1Action from inline JSON string
     L1Action createInlineAction(const string& inline_json) const {
         try {
             json action_json = json::parse(inline_json);
@@ -344,7 +344,7 @@ private:
 };
 
 // ============================================================
-// 格式化输出工具
+// format output utilities
 // ============================================================
 class OutputFormatter {
 public:
@@ -496,7 +496,7 @@ public:
                 }
             }
         }
-        // ✅ 新增：显示 request/response 等信息
+        // added: show request/response etc.
         if (action_json.contains("protocol")) {
             cout << indent_str << "│  Protocol: " << action_json["protocol"].get<string>() << endl;
         }
@@ -541,7 +541,7 @@ public:
             cout << "]" << endl;
         }
 
-        // ✅ 打印 Action - 区分 template 和 inline
+        // print Action - distinguish template and inline
         cout << endl;
         if (node.isActionInline()) {
             // inline action
@@ -555,7 +555,7 @@ public:
             }
         }
         else {
-            // template 引用
+            // template reference
             const ActionRef& action_ref = node.getAction();
             if (action_ref.template_path.empty()) {
                 cout << "  ACTION: (none)" << endl;
@@ -654,7 +654,7 @@ public:
             }
         }
 
-        // ✅ 新增：打印 On Timeout
+        // added: print On Timeout
         const auto& on_timeout = node.getOnTimeout();
         if (!on_timeout.empty()) {
             cout << endl;
@@ -690,7 +690,7 @@ public:
 };
 
 // ============================================================
-// 路径工具函数
+// path utility functions
 // ============================================================
 
 string getExecutablePath() {
@@ -710,7 +710,7 @@ string getExecutablePath() {
 }
 
 // ============================================================
-// 主函数
+// main function
 // ============================================================
 int main(int argc, char* argv[]) {
     string base_dir;

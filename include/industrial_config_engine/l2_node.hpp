@@ -1,4 +1,4 @@
-﻿// include/industrial_config_engine/l2_node.hpp
+// include/industrial_config_engine/l2_node.hpp
 #pragma once
 
 #include <string>
@@ -13,64 +13,64 @@
 namespace industrial_config_engine {
 
     // ============================================================
-    // Judge 类型枚举
+    // Judge type enumeration
     // ============================================================
     enum class JudgeType {
-        NONE,       // 无判断，默认成功
-        COMPARE,    // 值比较
-        EXPRESSION, // 表达式判断
-        EXISTS      // 存在性判断
+        NONE,       // No judgment, defaults to success
+        COMPARE,    // Value comparison
+        EXPRESSION, // Expression evaluation
+        EXISTS      // Existence check
     };
 
     // ============================================================
-    // Judge 配置
+    // Judge configuration
     // ============================================================
     struct JudgeConfig {
         JudgeType type = JudgeType::NONE;
         std::string condition;      // compare: eq, ne, lt, le, gt, ge, abs_ge, abs_gt, abs_le, abs_lt
-        std::string value;          // compare: 比较值; expression: 表达式
-        std::string expression;     // expression: 表达式字符串
+        std::string value;          // compare: comparison value; expression: expression
+        std::string expression;     // expression: expression string
 
-        // 判断是否为有效配置
+        // Determine whether this is a valid configuration
         bool isValid() const;
 
-        // 获取占位符
+        // Get placeholders
         std::vector<std::string> getPlaceholders() const;
     };
 
     // ============================================================
-    // Action 引用（L1 原子操作引用）
+    // Action reference (L1 atomic action reference)
     // ============================================================
     struct ActionRef {
-        std::string template_path;   // L1 Action 文件路径（template 引用）
-        std::string inline_json;     // inline action 的 JSON 字符串
-        bool is_inline = false;      // 是否为 inline action
+        std::string template_path;   // L1 Action file path (template reference)
+        std::string inline_json;     // JSON string of the inline action
+        bool is_inline = false;      // Whether this is an inline action
 
-        // 解析后的签名（从文件名推导）
+        // Resolved signature (derived from the filename)
         ActionSignature signature;
 
-        // 是否已解析
+        // Whether it has been resolved
         bool resolved = false;
 
-        // 解析签名
+        // Resolve the signature
         bool resolve();
     };
 
     // ============================================================
-    // Node 签名（从文件名解析）
+    // Node signature (parsed from the filename)
     // ============================================================
     struct NodeSignature {
-        std::string name;                    // 自定义名称
-        std::vector<DataType> params;        // 参数类型列表
+        std::string name;                    // Custom name
+        std::vector<DataType> params;        // Parameter type list
         DataType return_type = DataType::VOIDDataType;
-        std::string result_key;              // 返回值变量名
+        std::string result_key;              // Return value variable name
 
         std::string toString() const;
         bool validateParamCount(size_t count) const;
     };
 
     // ============================================================
-    // L2 执行节点
+    // L2 execution node
     // ============================================================
     class L2Node {
     public:
@@ -80,7 +80,7 @@ namespace industrial_config_engine {
         explicit L2Node(const std::string& filename, const std::string& json_str);
 
         // ============================================================
-        // 加载和保存
+        // Loading and saving
         // ============================================================
 
         bool loadFromJson(const nlohmann::json& json);
@@ -91,7 +91,7 @@ namespace industrial_config_engine {
         std::string toJsonString(bool pretty = true) const;
 
         // ============================================================
-        // 文件名解析（静态方法）
+        // Filename parsing (static methods)
         // ============================================================
 
         static NodeSignature parseSignatureFromFilename(const std::string& filename);
@@ -102,7 +102,7 @@ namespace industrial_config_engine {
             const std::string& result_key = "");
 
         // ============================================================
-        // 占位符处理
+        // Placeholder handling
         // ============================================================
 
         std::vector<std::string> extractPlaceholders() const;
@@ -110,7 +110,7 @@ namespace industrial_config_engine {
             const std::unordered_map<std::string, std::string>& values) const;
 
         // ============================================================
-        // 验证
+        // Validation
         // ============================================================
 
         bool validate() const;
@@ -138,7 +138,7 @@ namespace industrial_config_engine {
         bool isInitialized() const { return initialized_; }
 
         // ============================================================
-        // Action 类型判断（新增）
+        // Action type predicates (new)
         // ============================================================
 
         bool isActionInline() const { return action_.is_inline; }
@@ -146,7 +146,7 @@ namespace industrial_config_engine {
         bool isActionTemplate() const { return !action_.is_inline && !action_.template_path.empty(); }
 
         // ============================================================
-        // 便捷判断
+        // Convenience predicates
         // ============================================================
 
         bool hasJudge() const { return judge_.has_value() && judge_->type != JudgeType::NONE; }
@@ -156,7 +156,7 @@ namespace industrial_config_engine {
         bool hasResultKey() const { return !signature_.result_key.empty(); }
 
         // ============================================================
-        // Judge 类型判断
+        // Judge type predicates
         // ============================================================
 
         bool isCompareJudge() const { return hasJudge() && judge_->type == JudgeType::COMPARE; }
@@ -164,7 +164,7 @@ namespace industrial_config_engine {
         bool isExistsJudge() const { return hasJudge() && judge_->type == JudgeType::EXISTS; }
 
         // ============================================================
-        // 调试和打印
+        // Debugging and printing
         // ============================================================
 
         std::string toString() const;
@@ -172,7 +172,7 @@ namespace industrial_config_engine {
 
     private:
         // ============================================================
-        // 私有解析方法
+        // Private parsing methods
         // ============================================================
 
         void parseCommonFields(const nlohmann::json& json);
@@ -182,50 +182,50 @@ namespace industrial_config_engine {
         void parseBranches(const nlohmann::json& json);
 
         // ============================================================
-        // 辅助方法
+        // Helper methods
         // ============================================================
 
         std::vector<std::string> extractPlaceholdersFromString(const std::string& str) const;
 
     private:
         // ============================================================
-        // 成员变量
+        // Member variables
         // ============================================================
 
-        // 文件信息
+        // File information
         std::string filename_;
         std::string filepath_;
 
-        // 核心字段
+        // Core fields
         std::string name_;
         std::string description_;
-        std::vector<nlohmann::json> params_;    // 参数列表（JSON格式，支持各种类型）
+        std::vector<nlohmann::json> params_;    // Parameter list (JSON format, supports various types)
 
-        // 执行控制
+        // Execution control
         uint32_t timeout_ms_ = 30000;
         uint8_t max_retries_ = 0;
         uint16_t retry_interval_ = 0;
 
-        // Action 引用
+        // Action reference
         ActionRef action_;
 
-        // Judge 配置（可选）
+        // Judge configuration (optional)
         std::optional<JudgeConfig> judge_;
 
-        // 分支
+        // Branches
         std::vector<nlohmann::json> on_success_;
         std::vector<nlohmann::json> on_failure_;
         std::vector<nlohmann::json> on_timeout_;
 
-        // 签名（从文件名解析）
+        // Signature (parsed from the filename)
         NodeSignature signature_;
 
-        // 是否已初始化
+        // Whether it has been initialized
         bool initialized_ = false;
     };
 
     // ============================================================
-    // 流输出操作符
+    // Stream output operator
     // ============================================================
     std::ostream& operator<<(std::ostream& os, const L2Node& node);
 

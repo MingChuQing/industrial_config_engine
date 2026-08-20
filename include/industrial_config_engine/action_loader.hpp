@@ -13,20 +13,20 @@
 namespace industrial_config_engine {
 
     // ============================================================
-    // 回调函数类型定义
+    // callback function type definitions
     // ============================================================
 
-    // 加载进度回调: (文件路径, 已加载数量, 总数量)
+    // load progress callback: (file path, loaded count, total count)
     using LoadProgressCallback = std::function<void(const std::string&, int, int)>;
 
-    // 加载错误回调: (文件路径, 错误信息)
+    // load error callback: (file path, error message)
     using LoadErrorCallback = std::function<void(const std::string&, const std::string&)>;
 
-    // Action加载完成回调: (key, Action指针)
+    // Action load complete callback: (key, Action pointer)
     using ActionLoadedCallback = std::function<void(const std::string&, const L1Action&)>;
 
     // ============================================================
-    // ActionLoader 类
+    // ActionLoader class
     // ============================================================
 
     class ActionLoader {
@@ -35,7 +35,7 @@ namespace industrial_config_engine {
         ~ActionLoader();
 
         // ============================================================
-        // 回调设置
+        // callback setters
         // ============================================================
 
         void setProgressCallback(LoadProgressCallback callback) { progress_callback_ = callback; }
@@ -43,155 +43,155 @@ namespace industrial_config_engine {
         void setActionLoadedCallback(ActionLoadedCallback callback) { action_loaded_callback_ = callback; }
 
         // ============================================================
-        // 加载接口
+        // load interface
         // ============================================================
 
-        // 加载单个文件
+        // load single file
         bool loadSingleFile(const std::string& filepath);
 
-        // 加载目录（递归）
+        // load directory (recursive)
         bool loadDirectory(const std::string& directory_path, bool recursive = true);
 
-        // 加载多个路径
+        // load multiple paths
         bool loadPaths(const std::vector<std::string>& paths, bool recursive = true);
 
-        // 从JSON字符串加载（用于测试）
+        // load from JSON string (for testing)
         bool loadFromJsonString(const std::string& json_str, const std::string& virtual_path);
 
-        // 从JSON对象加载
+        // load from JSON object
         bool loadFromJson(const nlohmann::json& json, const std::string& virtual_path);
 
         // ============================================================
-        // 查询接口
+        // query interface
         // ============================================================
 
-        // 获取Action（const版本）
+        // get Action (const version)
         const L1Action* getAction(const std::string& key) const;
 
-        // 获取Action（非const版本）
+        // get Action (non-const version)
         L1Action* getAction(const std::string& key);
 
-        // 检查是否存在
+        // check existence
         bool hasAction(const std::string& key) const;
 
-        // 获取所有key（排序后）
+        // get all keys (sorted)
         std::vector<std::string> getActionKeys() const;
 
-        // 获取所有Action
+        // get all Actions
         const std::unordered_map<std::string, L1Action>& getAllActions() const { return actions_; }
 
-        // 按前缀查找
+        // find by prefix
         std::vector<std::string> findActionsByPrefix(const std::string& prefix) const;
 
-        // 按类型查找
+        // find by type
         std::vector<std::string> findActionsByType(const std::string& type) const;
 
-        // 按协议查找
+        // find by protocol
         std::vector<std::string> findActionsByProtocol(const std::string& protocol) const;
 
         // ============================================================
-        // 统计信息
+        // statistics
         // ============================================================
 
         size_t getActionCount() const { return actions_.size(); }
         size_t getLoadedFileCount() const { return loaded_files_; }
         size_t getErrorCount() const { return error_count_; }
 
-        // 获取类型统计
+        // get type statistics
         std::unordered_map<std::string, int> getTypeStatistics() const;
 
-        // 获取协议统计
+        // get protocol statistics
         std::unordered_map<std::string, int> getProtocolStatistics() const;
 
         // ============================================================
-        // 管理接口
+        // management interface
         // ============================================================
 
-        // 清空所有Action
+        // clear all Actions
         void clear();
 
-        // 移除指定Action
+        // remove specified Action
         bool removeAction(const std::string& key);
 
-        // 设置严格模式（是否严格校验）
+        // set strict mode (strict validation)
         void setStrictMode(bool strict) { strict_mode_ = strict; }
         bool getStrictMode() const { return strict_mode_; }
 
-        // 设置是否允许覆盖
+        // set whether overwrite allowed
         void setAllowOverwrite(bool allow) { allow_overwrite_ = allow; }
         bool getAllowOverwrite() const { return allow_overwrite_; }
 
     private:
         // ============================================================
-        // 内部加载方法
+        // internal load methods
         // ============================================================
 
-        // 加载JSON文件（自动识别单个或聚合）
+        // load JSON file (auto-detect single or bundle)
         bool loadJsonFile(const std::string& filepath, const std::string& base_path);
 
-        // 加载单个Action
+        // load single Action
         bool loadSingleActionFromJson(const nlohmann::json& json,
             const std::string& base_path,
             const std::string& filename);
 
-        // 加载聚合文件（action_bundle）
+        // load bundle file (action_bundle)
         bool loadBundleFromJson(const nlohmann::json& json,
             const std::string& base_path,
             const std::string& bundle_filename);
 
         // ============================================================
-        // 辅助方法
+        // helper methods
         // ============================================================
 
-        // 生成唯一key
+        // generate unique key
         std::string makeKey(const std::string& base_path,
             const std::string& bundle_name,
             const std::string& filename) const;
 
-        // 规范化路径
+        // normalize path
         std::string normalizePath(const std::string& path) const;
 
-        // 判断是否为聚合文件
+        // check if bundle file
         bool isBundleFile(const nlohmann::json& json) const;
 
-        // 递归遍历目录
+        // recursively walk directory
         void traverseDirectory(const std::string& directory_path,
             const std::string& base_path,
             std::vector<std::string>& files);
 
-        // 提取文件名（不含扩展名）
+        // extract filename (without extension)
         std::string getBaseName(const std::string& filename) const;
 
-        // 检查文件扩展名是否支持
+        // check if file extension supported
         bool isSupportedExtension(const std::string& ext) const;
 
     private:
         // ============================================================
-        // 成员变量
+        // member variables
         // ============================================================
 
-        // Action存储: key -> L1Action
+        // Action store: key -> L1Action
         std::unordered_map<std::string, L1Action> actions_;
 
-        // 统计信息
+        // statistics
         size_t loaded_files_ = 0;
         size_t error_count_ = 0;
 
-        // 配置
+        // config
         bool strict_mode_ = true;
         bool allow_overwrite_ = false;
 
-        // 回调
+        // callback
         LoadProgressCallback progress_callback_;
         LoadErrorCallback error_callback_;
         ActionLoadedCallback action_loaded_callback_;
 
-        // 支持的扩展名
+        // supported extensions
         static const std::vector<std::string> supported_extensions_;
     };
 
     // ============================================================
-    // 流输出操作符（打印所有Action信息）
+    // stream output operator (print all Action info)
     // ============================================================
 
     std::ostream& operator<<(std::ostream& os, const ActionLoader& loader);

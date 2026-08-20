@@ -12,7 +12,7 @@ namespace industrial_config_engine {
     namespace fs = std::filesystem;
 
     // ============================================================
-    // L4Flow 构造和加载
+    // L4Flow constructor and load
     // ============================================================
 
     L4Flow::L4Flow(const nlohmann::json& json) {
@@ -73,7 +73,7 @@ namespace industrial_config_engine {
 
         filepath_ = filepath;
 
-        // 从路径提取文件名
+        // extract filename from path
         size_t pos = filepath.find_last_of("/\\");
         std::string basename = (pos != std::string::npos) ? filepath.substr(pos + 1) : filepath;
         pos = basename.find_last_of('.');
@@ -83,7 +83,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 导出为 JSON
+    // export to JSON
     // ============================================================
 
     nlohmann::json L4Flow::toJson() const {
@@ -151,7 +151,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 验证
+    // validation
     // ============================================================
 
     bool L4Flow::validate() const {
@@ -162,9 +162,9 @@ namespace industrial_config_engine {
         if (!validateActiveProfile()) return false;
         if (!validateEmergencyCleanup()) return false;
 
-        // 如果有 on_timeout 但没有超时设置，警告但不报错
+        // if on_timeout without timeout setting, warn but do not error
         if (hasOnTimeout() && !hasTimeout()) {
-            // 可以打印警告，但不阻止加载
+            // may print warning, but do not block load
         }
 
         return true;
@@ -184,7 +184,7 @@ namespace industrial_config_engine {
     }
 
     bool L4Flow::validateProfiles() const {
-        // Profiles 是可选的
+        // Profiles are optional
         return true;
     }
 
@@ -205,7 +205,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // Profile 操作
+    // Profile operations
     // ============================================================
 
     bool L4Flow::hasProfile(const std::string& name) const {
@@ -240,7 +240,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 占位符处理
+    // placeholder handling
     // ============================================================
 
     std::vector<std::string> L4Flow::extractPlaceholders() const {
@@ -251,26 +251,26 @@ namespace industrial_config_engine {
             result.insert(result.end(), extracted.begin(), extracted.end());
             };
 
-        // 从 name, description 中提取
+        // extract from name, description
         addPlaceholders(name_);
         addPlaceholders(description_);
 
-        // 从 version 中提取
+        // extract from version
         addPlaceholders(version_);
 
-        // 从 body 中提取（JSON 字符串值）
+        // extract from body (JSON string values)
         if (!body_.is_null()) {
             std::string body_str = body_.dump();
             addPlaceholders(body_str);
         }
 
-        // 从 on_timeout 中提取
+        // extract from on_timeout
         if (!on_timeout_.is_null()) {
             std::string on_timeout_str = on_timeout_.dump();
             addPlaceholders(on_timeout_str);
         }
 
-        // 从 profile 参数中提取
+        // extract from profile params
         for (const auto& [profile_name, profile] : profiles_) {
             addPlaceholders(profile_name);
             addPlaceholders(profile.description);
@@ -280,10 +280,10 @@ namespace industrial_config_engine {
             }
         }
 
-        // 从 active_profile 中提取
+        // extract from active_profile
         addPlaceholders(active_profile_);
 
-        // 从 emergency_cleanup 中提取
+        // extract from emergency_cleanup
         if (emergency_cleanup_.has_value()) {
             addPlaceholders(emergency_cleanup_->type);
             if (!emergency_cleanup_->body.is_null()) {
@@ -355,7 +355,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 私有解析方法
+    // private parse methods
     // ============================================================
 
     void L4Flow::parseCommonFields(const nlohmann::json& json) {
@@ -452,7 +452,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // 调试和打印
+    // debug and print
     // ============================================================
 
     std::string L4Flow::toString() const {
@@ -518,7 +518,7 @@ namespace industrial_config_engine {
             }
         }
 
-        // 占位符
+        // placeholder
         auto placeholders = extractPlaceholders();
         if (!placeholders.empty()) {
             os << "Placeholders: ";
@@ -537,7 +537,7 @@ namespace industrial_config_engine {
     }
 
     // ============================================================
-    // L4FlowLoader 实现
+    // L4FlowLoader implementation
     // ============================================================
 
     L4Flow L4FlowLoader::loadFromFile(const std::string& filepath) {
@@ -553,7 +553,7 @@ namespace industrial_config_engine {
             for (const auto& entry : fs::recursive_directory_iterator(dir_path)) {
                 if (entry.is_regular_file() && entry.path().extension() == ".json") {
                     std::string path = entry.path().string();
-                    // 检查是否是 flow 文件（包含 _flow）
+                    // check if flow file (contains _flow)
                     if (path.find("_flow") != std::string::npos) {
                         L4Flow flow = loadFromFile(path);
                         if (flow.isInitialized()) {
@@ -567,7 +567,7 @@ namespace industrial_config_engine {
             }
         }
         catch (const std::exception& e) {
-            // 忽略目录扫描错误
+            // ignore directory scan errors
         }
 
         return flows;
@@ -609,13 +609,13 @@ namespace industrial_config_engine {
     }
 
     std::string L4FlowLoader::resolvePath(const std::string& template_path) {
-        // 如果已经是绝对路径或相对路径，直接返回
+        // if already absolute or relative path, return directly
         if (template_path.find("/") != std::string::npos ||
             template_path.find("\\") != std::string::npos) {
             return template_path;
         }
 
-        // 尝试在 L3_group 目录下查找
+        // try to find under L3_group directory
         return l3_group_dir_ + "/" + template_path + ".group.json";
     }
 

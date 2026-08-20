@@ -1,4 +1,4 @@
-﻿// include/industrial_config_engine/l1_action.hpp
+// include/industrial_config_engine/l1_action.hpp
 #pragma once
 
 #include <string>
@@ -14,7 +14,7 @@
 namespace industrial_config_engine {
 
     // ============================================================
-    // 参数定义
+    // Argument definition
     // ============================================================
     struct ArgDef {
         int index = 0;
@@ -33,7 +33,7 @@ namespace industrial_config_engine {
     };
 
     // ============================================================
-    // 解析配置（Modbus读寄存器）
+    // Parse configuration (Modbus read register)
     // ============================================================
     struct ParseConfig {
         int start_byte = 0;
@@ -46,7 +46,7 @@ namespace industrial_config_engine {
     };
 
     // ============================================================
-    // 检查条件配置
+    // Check condition configuration
     // ============================================================
     struct CheckConfig {
         std::string condition;
@@ -57,7 +57,7 @@ namespace industrial_config_engine {
     };
 
     // ============================================================
-    // Action签名
+    // Action signature
     // ============================================================
     struct ActionSignature {
         std::string name;
@@ -71,7 +71,7 @@ namespace industrial_config_engine {
     };
 
     // ============================================================
-    // L1Action 类
+    // L1Action class
     // ============================================================
     class L1Action {
     public:
@@ -80,16 +80,16 @@ namespace industrial_config_engine {
         explicit L1Action(const std::string& filename, const nlohmann::json& json);
         explicit L1Action(const std::string& filename, const std::string& json_str);
 
-        // 加载
+        // Loading
         bool loadFromJson(const nlohmann::json& json);
         bool loadFromJsonString(const std::string& json_str);
         bool loadFromFile(const std::string& filepath);
 
-        // 导出
+        // Export
         nlohmann::json toJson() const;
         std::string toJsonString(bool pretty = true) const;
 
-        // 文件名解析
+        // Filename parsing
         static ActionSignature parseSignatureFromFilename(const std::string& filename);
         static bool isValidFilename(const std::string& filename);
         static std::string generateFilename(const std::string& name,
@@ -97,20 +97,20 @@ namespace industrial_config_engine {
             DataType return_type,
             const std::string& result_key = "");
 
-        // 占位符处理
+        // Placeholder handling
         std::vector<std::string> extractPlaceholders() const;
         std::string replacePlaceholders(const std::string& template_str,
             const std::unordered_map<std::string, std::string>& values) const;
         L1Action resolvePlaceholders(const std::unordered_map<std::string, std::string>& values) const;
 
-        // 参数验证
+        // Argument validation
         bool validateArgValue(const std::string& arg_name, const nlohmann::json& value) const;
         bool validateArgValue(int index, const nlohmann::json& value) const;
         bool validateArgValues(const std::vector<nlohmann::json>& values) const;
         const ArgDef* getArgByName(const std::string& name) const;
         const ArgDef* getArgByIndex(int index) const;
 
-        // 类型检查
+        // Type checking
         bool checkParamTypes(const std::vector<DataType>& types) const;
         std::vector<DataType> getExpectedParamTypes() const;
 
@@ -126,7 +126,7 @@ namespace industrial_config_engine {
         const std::vector<ArgDef>& getArgs() const { return args_; }
         const ActionSignature& getSignature() const { return signature_; }
 
-        // ✅ 返回 const 引用，而不是 optional 本身
+        // ✅ Return a const reference rather than the optional itself
         const ParseConfig* getParse() const { return parse_.has_value() ? &parse_.value() : nullptr; }
         const CheckConfig* getCheck() const { return check_.has_value() ? &check_.value() : nullptr; }
 
@@ -135,7 +135,7 @@ namespace industrial_config_engine {
         const std::string& getUnit() const { return unit_; }
         bool isInitialized() const { return initialized_; }
 
-        // 便捷判断
+        // Convenience predicates
         bool hasParse() const { return parse_.has_value(); }
         bool hasCheck() const { return check_.has_value(); }
         bool hasExpression() const { return expression_.has_value(); }
@@ -145,7 +145,7 @@ namespace industrial_config_engine {
         bool hasArgs() const { return !args_.empty(); }
         bool hasReturnValue() const { return signature_.return_type != DataType::VOIDDataType; }
 
-        // Action类型判断
+        // Action type predicates
         bool isModbusWriteVerify() const { return type_ == "modbus_write_verify"; }
         bool isModbusReadCache() const { return type_ == "modbus_read_cache"; }
         bool isModbusReadCheck() const { return type_ == "modbus_read_check"; }
@@ -160,7 +160,7 @@ namespace industrial_config_engine {
         bool isPopup() const { return type_ == "popup"; }
         bool isScriptExec() const { return type_ == "script_exec"; }
 
-        // 调试
+        // Debugging
         std::string toString() const;
         void print(std::ostream& os = std::cout) const;
 
