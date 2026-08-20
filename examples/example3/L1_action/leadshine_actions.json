@@ -1,12 +1,12 @@
 ﻿{
     "type": "action_bundle",
-    "description": " 电机控制类原子操作集合",
+    "description": " motorcontrol action collection",
     "version": "1.0.0",
     "actions": [
         {
             "filename": "write_pr_position.u8_i32.r_b_write_pr_result",
             "type": "modbus_write_verify",
-            "description": "写入PR点位坐标（32位）",
+            "description": "write PR point coordinate (32-bit)",
             "protocol": "modbus",
             "request": "06 00 20 ${pr_number} ${position_high} ${position_mid} ${position_low}",
             "response": "06 00 20 ${pr_number} ${position_high} ${position_mid} ${position_low}",
@@ -19,7 +19,7 @@
         {
             "filename": "read_pr_position.u8.r_i32_pr_position",
             "type": "modbus_read_cache",
-            "description": "读取PR点位坐标",
+            "description": "read PR point coordinate",
             "protocol": "modbus",
             "request": "03 00 20 ${pr_number} 00 02",
             "parse": {
@@ -36,7 +36,7 @@
         {
             "filename": "pr_run.u8.r_b_pr_run_result",
             "type": "modbus_write_verify",
-            "description": "触发PR点位运行",
+            "description": "trigger PR point run",
             "protocol": "modbus",
             "request": "06 00 02 ${pr_number} 00 01",
             "response": "06 00 02 ${pr_number} 00 01",
@@ -48,7 +48,7 @@
         {
             "filename": "check_motion_done.r_b_motion_done",
             "type": "modbus_read_check",
-            "description": "检查电机运动是否完成",
+            "description": "check motor motion done",
             "protocol": "modbus",
             "request": "03 00 10 00 01",
             "parse": {
@@ -67,7 +67,7 @@
         {
             "filename": "jog_start.u16.r_b_jog_start_result",
             "type": "modbus_write_verify",
-            "description": "启动正向点动",
+            "description": "start forward jog",
             "protocol": "modbus",
             "request": "06 00 03 ${speed_high} ${speed_low} 06 00 04 00 01",
             "response": "06 00 03 ${speed_high} ${speed_low}",
@@ -79,7 +79,7 @@
         {
             "filename": "jog_stop.r_b_jog_stop_result",
             "type": "modbus_write_verify",
-            "description": "停止点动",
+            "description": "stop jog",
             "protocol": "modbus",
             "request": "06 00 04 00 00",
             "response": "06 00 04 00 00",
@@ -89,7 +89,7 @@
         {
             "filename": "read_sensor.u8.r_u16_sensor_value",
             "type": "modbus_read_cache",
-            "description": "读取光电开关状态",
+            "description": "read photoelectric switchstatus",
             "protocol": "modbus",
             "request": "03 ${register} 00 01",
             "parse": {
@@ -106,7 +106,7 @@
         {
             "filename": "read_current_position.r_i32_current_position",
             "type": "modbus_read_cache",
-            "description": "读取当前绝对位置（32位）",
+            "description": "read current absolute position (32-bit)",
             "protocol": "modbus",
             "request": "03 00 10 00 02",
             "parse": {

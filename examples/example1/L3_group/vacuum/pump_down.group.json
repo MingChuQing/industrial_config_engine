@@ -1,7 +1,7 @@
 ﻿{
     "type": "group",
-    "name": "抽真空",
-    "description": "完整的抽真空流程：开V1 → 关V2 → 启泵 → 循环检测 → 停泵",
+    "name": "Evacuation",
+    "description": "Complete Evacuation flow: open V1 -> close V2 -> start pump -> loop check -> stop pump",
     "mode": "sequence",
     "max_nodes": 50,
     "timeout_ms": 360000,
@@ -23,8 +23,8 @@
         },
         {
             "type": "group",
-            "name": "循环检测压力",
-            "description": "do-while 循环：先执行一次，然后条件为真时继续",
+            "name": "Pressure monitor loop",
+            "description": "do-while loop: run once, then continue while condition is true",
             "mode": "loop",
             "max_nodes": 20,
             "timeout_ms": 300000,
@@ -47,19 +47,19 @@
             "on_success": [
                 {
                     "type": "log",
-                    "message": "抽真空完成，压力已达标"
+                    "message": "Evacuationdone, pressure reached target"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "抽真空循环检测失败"
+                    "message": "Evacuationloop checkfailed"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "抽真空超时（5分钟）"
+                    "message": "Evacuationtimeout (5 min)"
                 },
                 {
                     "type": "node",
@@ -69,7 +69,7 @@
                 {
                     "type": "node",
                     "template": "L2_node/system/all_nodes.json/popup.s_s",
-                    "params": [ "抽真空超时（5分钟），已紧急停止", "error" ]
+                    "params": [ "Evacuationtimeout (5 min), emergency stopped", "error" ]
                 }
             ]
         },
@@ -82,7 +82,7 @@
     "on_timeout": [
         {
             "type": "log",
-            "message": "抽真空组整体超时（6分钟）"
+            "message": "Evacuationgroup overall timeout (6 min)"
         },
         {
             "type": "node",
@@ -91,7 +91,7 @@
         },
         {
             "type": "popup",
-            "message": "抽真空流程整体超时",
+            "message": "Evacuationflow overall timeout",
             "level": "error"
         }
     ]

@@ -1,10 +1,10 @@
 ﻿{
     "type": "device_type",
     "type_id": "iDM42_RS06",
-    "name": "  iDM42-RS06 步进电机",
-    "manufacturer": " 智能",
+    "name": "  iDM42-RS06 stepper motor",
+    "manufacturer": " Smart",
     "protocol": "modbus_rtu",
-    "description": "42机座 0.6N·m 智能驱控一体式步进电机",
+    "description": "42frame 0.6N·m Smartintegrated drive-control stepper motor",
     "register_map": {
         "control_word": 0x1801,
         "status_word": 0x1901,

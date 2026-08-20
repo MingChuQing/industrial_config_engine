@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "三轴报警自检",
+    "name": "Three-axis alarm self-check",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [],

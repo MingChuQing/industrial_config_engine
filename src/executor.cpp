@@ -273,13 +273,13 @@ namespace industrial_config_engine {
     bool Executor::evalExpression(const std::string& expr_in, VariableStore& vars,
         std::string& err) {
         std::string expr = trimStr(expr_in);
-        if (expr.empty()) { err = "空表达式"; return false; }
+        if (expr.empty()) { err = "empty expression"; return false; }
 
         // 先解析占位符（变量值若为字符串，原样嵌入后按引号/字面量处理）
         std::vector<std::string> missing;
         expr = vars.resolve(expr, &missing);
         if (!missing.empty()) {
-            err = "表达式引用了未定义变量: " + missing.front();
+            err = "expression references undefined variable: " + missing.front();
             return false;
         }
 
@@ -378,7 +378,7 @@ namespace industrial_config_engine {
 
         bool ok = false;
         if (!compareValues(toJson(lhs_str), toJson(rhs_str), op_str, ok)) {
-            err = "不支持的表达式: " + expr_in;
+            err = "unsupported expression: " + expr_in;
             return false;
         }
         return negate ? !ok : ok;
@@ -386,11 +386,11 @@ namespace industrial_config_engine {
 
     bool Executor::evalCondition(const nlohmann::json& cond_json, VariableStore& vars,
         std::string& err) {
-        if (cond_json.is_null()) { err = "缺少条件配置"; return false; }
+        if (cond_json.is_null()) { err = "missing condition config"; return false; }
         std::string type = cond_json.value("type", "");
         if (type == "expression") {
             std::string e = cond_json.value("expression", "");
-            if (e.empty()) { err = "表达式为空"; return false; }
+            if (e.empty()) { err = "expression is empty"; return false; }
             return evalExpression(e, vars, err);
         }
         if (type == "compare") {
@@ -398,15 +398,15 @@ namespace industrial_config_engine {
             nlohmann::json lhs = vars.resolveValue(cond_json.value("value", nlohmann::json("")), nullptr);
             nlohmann::json rhs = vars.resolveValue(cond_json.value("source", nlohmann::json("")), nullptr);
             bool out = false;
-            if (!compareValues(lhs, rhs, op, out)) { err = "不支持的条件比较: " + op; return false; }
+            if (!compareValues(lhs, rhs, op, out)) { err = "unsupported condition comparison: " + op; return false; }
             return out;
         }
         if (type == "exists") {
             std::string var = cond_json.value("variable", "");
-            if (var.empty()) { err = "exists 条件缺少变量名"; return false; }
+            if (var.empty()) { err = "exists condition missing variable name"; return false; }
             return vars.has(var);
         }
-        err = "未知条件类型: " + type;
+        err = "unknown condition type: " + type;
         return false;
     }
 
@@ -467,7 +467,7 @@ namespace industrial_config_engine {
         ++ctx.steps;
         if (ctx.steps > ctx.step_budget) {
             r.status = ExecStatus::STEP_BUDGET_EXCEEDED;
-            r.message = "执行步数超过预算(" + std::to_string(ctx.step_budget) + ")，疑似死循环";
+            r.message = "step budget exceeded (" + std::to_string(ctx.step_budget) + "), possible infinite loop";
             return false;
         }
         return true;
@@ -565,7 +565,7 @@ namespace industrial_config_engine {
         std::vector<std::string> missing;
         std::string r = ctx.vars.resolve(s, &missing);
         for (const auto& m : missing) {
-            ctx.audit.log(ctx.time_ms, "WARN", "占位符引用了未定义变量: ${" + m + "}");
+            ctx.audit.log(ctx.time_ms, "WARN", "placeholder references undefined variable: ${" + m + "}");
         }
         return r;
     }
@@ -574,7 +574,7 @@ namespace industrial_config_engine {
         std::vector<std::string> missing;
         nlohmann::json r = ctx.vars.resolveValue(v, &missing);
         for (const auto& m : missing) {
-            ctx.audit.log(ctx.time_ms, "WARN", "参数引用了未定义变量: ${" + m + "}");
+            ctx.audit.log(ctx.time_ms, "WARN", "parameter references undefined variable: ${" + m + "}");
         }
         return r;
     }
@@ -605,7 +605,7 @@ namespace industrial_config_engine {
         ExecResult r;
         if (body.is_null() || !body.is_array()) return r;
         for (const auto& item : body) {
-            if (parallel) trace(ctx, "∥ (并行)");
+            if (parallel) trace(ctx, "|| (parallel)");
             r = execItem(item, ctx);
             if (r.status != ExecStatus::SUCCESS) return r;
         }
@@ -615,14 +615,14 @@ namespace industrial_config_engine {
     ExecResult Executor::execItem(const nlohmann::json& item, ExecContext& ctx) {
         ExecResult r;
         if (!checkSteps(ctx, r)) return r;
-        if (!item.is_object()) { r.status = ExecStatus::INTERNAL_ERROR; r.message = "非法条目"; return r; }
+        if (!item.is_object()) { r.status = ExecStatus::INTERNAL_ERROR; r.message = "invalid item"; return r; }
         std::string type = item.value("type", "");
         std::string name = item.value("name", "");
 
         // 操作员逐项确认（安全机制：所有更改在执行前经操作员确认，仿真中自动确认并记审计）
         if (ctx.confirm_between && (type == "node" || type == "group")) {
             ctx.audit.log(ctx.time_ms, "OPERATOR_CONFIRM",
-                "步骤已由操作员确认: " + (name.empty() ? type : name),
+                "step confirmed by operator: " + (name.empty() ? type : name),
                 { {"template", item.contains("template") ? item["template"] : item.value("node", nlohmann::json()) } });
         }
 
@@ -634,29 +634,29 @@ namespace industrial_config_engine {
         }
         else if (type == "log") {
             std::string msg = resolveStr(item.value("message", ""), ctx);
-            trace(ctx, "• 日志: " + msg);
+            trace(ctx, "* log: " + msg);
             ctx.audit.log(ctx.time_ms, "INFO", msg);
         }
         else if (type == "popup") {
             std::string msg = resolveStr(item.value("message", ""), ctx);
             std::string level = item.value("level", "info");
-            trace(ctx, "• 弹窗[" + level + "]: " + msg);
-            ctx.audit.log(ctx.time_ms, "ERROR", "HMI 弹窗: " + msg);
+            trace(ctx, "* popup[" + level + "]: " + msg);
+            ctx.audit.log(ctx.time_ms, "ERROR", "HMI popup: " + msg);
         }
         else if (type == "if") {
             std::string err;
             bool cond = evalCondition(item.value("condition", nlohmann::json()), ctx.vars, err);
             if (!err.empty()) {
                 r.status = ExecStatus::CONDITION_ERROR;
-                r.message = "条件求值失败: " + err;
+                r.message = "condition evaluation failed: " + err;
                 return r;
             }
-            trace(ctx, std::string("◆ 条件分支 → ") + (cond ? "then" : "else"));
+            trace(ctx, std::string("> condition branch -> ") + (cond ? "then" : "else"));
             r = execBody(cond ? item.value("then", nlohmann::json()) : item.value("else", nlohmann::json()), ctx, false);
         }
         else {
             r.status = ExecStatus::INTERNAL_ERROR;
-            r.message = "未知条目类型: " + type;
+            r.message = "unknown item type: " + type;
         }
         return r;
     }
@@ -666,7 +666,7 @@ namespace industrial_config_engine {
         std::string templ = item.value("template", "");
         if (templ.empty()) {
             // 内联组定义（无 template 引用）：直接执行条目自身
-            trace(ctx, "▶ 组(内联) [" + item.value("name", std::string("?")) + "]");
+            trace(ctx, "> inline group [" + item.value("name", std::string("?")) + "]");
             ctx.indent++;
             r = runGroupJson(item, item.value("params", nlohmann::json::array()), ctx);
             ctx.indent--;
@@ -675,10 +675,10 @@ namespace industrial_config_engine {
         nlohmann::json g;
         if (!loadGroupJson(templ, g)) {
             r.status = ExecStatus::REFERENCE_ERROR;
-            r.message = "引用的 L3 模板未找到: " + templ;
+            r.message = "referenced L3 template not found: " + templ;
             return r;
         }
-        trace(ctx, "▶ 组 [" + g.value("name", std::string("?")) + "] ← " + templ);
+        trace(ctx, "> group [" + g.value("name", std::string("?")) + "] <- " + templ);
         ctx.indent++;
         r = runGroupJson(g, item.value("params", nlohmann::json::array()), ctx);
         ctx.indent--;
@@ -693,7 +693,7 @@ namespace industrial_config_engine {
         else if (item.contains("node") && item["node"].is_object() && item["node"].contains("template")) {
             templ = item["node"]["template"].get<std::string>();
         }
-        if (templ.empty()) { r.status = ExecStatus::FAILED; r.message = "节点条目缺少 template"; return r; }
+        if (templ.empty()) { r.status = ExecStatus::FAILED; r.message = "node item missing template"; return r; }
 
         const L2Node* node = nullptr;
         for (const auto& key : refKeyCandidates(templ)) {
@@ -702,18 +702,18 @@ namespace industrial_config_engine {
         }
         if (!node) {
             r.status = ExecStatus::REFERENCE_ERROR;
-            r.message = "节点定义缺失: " + templ;
+            r.message = "node definition missing: " + templ;
             return r;
         }
         if (!node->validate()) {
             r.status = ExecStatus::FAILED;
-            r.message = "节点结构校验失败: " + templ;
+            r.message = "node structural validation failed: " + templ;
             return r;
         }
 
         std::string name = item.contains("name") && !item["name"].get<std::string>().empty()
             ? item["name"].get<std::string>() : node->getName();
-        trace(ctx, "▸ 节点: " + name + " [" + templ + "]");
+        trace(ctx, "> node: " + name + " [" + templ + "]");
 
         // 参数：条目级优先，为空则用节点默认参数
         nlohmann::json params;
@@ -756,7 +756,7 @@ namespace industrial_config_engine {
             }
             if (!act) {
                 r.status = ExecStatus::REFERENCE_ERROR;
-                r.message = "L1 动作模板未找到: " + act_tmpl;
+                r.message = "L1 action template not found: " + act_tmpl;
                 return r;
             }
         }
@@ -772,7 +772,7 @@ namespace industrial_config_engine {
                 }
                 catch (const std::exception& e) {
                     r.status = ExecStatus::INTERNAL_ERROR;
-                    r.message = std::string("动作执行异常 [") + act->getType() + "] " + e.what()
+                    r.message = std::string("action execution exception [") + act->getType() + "] " + e.what()
                         + " (params=" + params.dump() + ")";
                     return r;
                 }
@@ -780,7 +780,7 @@ namespace industrial_config_engine {
             }
             else {
                 out = true;
-                trace(ctx, "  (内联动作，仿真直接成功)");
+                trace(ctx, "  (inline action, simulated success)");
             }
             if (timed_out) break;
             if (!out.is_null()) break;
@@ -805,7 +805,7 @@ namespace industrial_config_engine {
                 catch (...) { rhs = nlohmann::json(rhs_str); }
                 if (!compareValues(out, rhs, j.condition, success)) {
                     r.status = ExecStatus::CONDITION_ERROR;
-                    r.message = "judge 比较不支持: " + j.condition;
+                    r.message = "judge comparison unsupported: " + j.condition;
                     return r;
                 }
                 break;
@@ -815,7 +815,7 @@ namespace industrial_config_engine {
                 success = evalExpression(resolveStr(j.expression, ctx), ctx.vars, err);
                 if (!err.empty()) {
                     r.status = ExecStatus::CONDITION_ERROR;
-                    r.message = "judge 表达式错误: " + err;
+                    r.message = "judge expression error: " + err;
                     return r;
                 }
                 break;
@@ -843,7 +843,7 @@ namespace industrial_config_engine {
             nlohmann::json rv = out;
             if (node->getSignature().return_type == DataType::B) rv = nlohmann::json(success);
             ctx.vars.set(result_key, rv);
-            trace(ctx, "  ↳ " + result_key + " = " + jsonToStr(rv));
+            trace(ctx, "  -> " + result_key + " = " + jsonToStr(rv));
         }
         // 仿真语义约定：set_test_result 节点写 test_result 变量
         if (node->getFilename().find("set_test_result") != std::string::npos &&
@@ -852,15 +852,15 @@ namespace industrial_config_engine {
         }
 
         if (timed_out) {
-            trace(ctx, "  ⏱ 超时（设备无响应），执行 on_timeout");
-            ctx.audit.log(ctx.time_ms, "WARN", "节点超时: " + name);
+            trace(ctx, "  timeout (no response), running on_timeout");
+            ctx.audit.log(ctx.time_ms, "WARN", "node timeout: " + name);
             r = execBranchItems(node->getOnTimeout(), ctx);
         }
         else if (success) {
             r = execBranchItems(node->getOnSuccess(), ctx);
         }
         else {
-            ctx.audit.log(ctx.time_ms, "ERROR", "节点执行失败: " + name);
+            ctx.audit.log(ctx.time_ms, "ERROR", "node failed: " + name);
             r = execBranchItems(node->getOnFailure(), ctx);
         }
         return r;
@@ -961,7 +961,7 @@ namespace industrial_config_engine {
                 bool on = parseHexToken(tok[3], ok) != 0;
                 ctx.devices.setCoil(device, static_cast<uint16_t>(addr), on);
                 out = true;
-                trace(ctx, "  ⇄ 写线圈 dev=" + device + " addr=0x" + formatArgHex(nlohmann::json(addr), 0) +
+                trace(ctx, "  <=> write coil dev=" + device + " addr=0x" + formatArgHex(nlohmann::json(addr), 0) +
                     " val=" + (on ? "ON" : "OFF"));
             }
             else if (tok.size() >= 5 && fn == 6) {
@@ -969,14 +969,14 @@ namespace industrial_config_engine {
                 int64_t val = (parseHexToken(tok[3], ok) << 8) | parseHexToken(tok[4], ok);
                 ctx.devices.setRegister(device, static_cast<uint16_t>(addr), val);
                 out = true;
-                trace(ctx, "  ⇄ 写寄存器 dev=" + device + " addr=0x" + formatArgHex(nlohmann::json(addr), 0) +
+                trace(ctx, "  <=> write register dev=" + device + " addr=0x" + formatArgHex(nlohmann::json(addr), 0) +
                     " value=" + std::to_string(val));
-                ctx.audit.log(ctx.time_ms, "CHANGE", "写寄存器", {
+                ctx.audit.log(ctx.time_ms, "CHANGE", "register write", {
                     {"device", device}, {"register", addr}, {"value", val}, {"request", req} });
             }
             else {
                 out = true;
-                trace(ctx, "  ⇄ 写操作(仿真): " + req);
+                trace(ctx, "  <-> write (simulated): " + req);
             }
             advanceComm(5);
             return r;
@@ -1012,7 +1012,7 @@ namespace industrial_config_engine {
             if (pc && pc->type == "uint16" && out.is_number_integer()) {
                 out = nlohmann::json(static_cast<int64_t>(out.get<int64_t>() & 0xFFFF));
             }
-            trace(ctx, "  ⇄ 读寄存器 dev=" + device + " addr=0x" + formatArgHex(nlohmann::json(addr), 0) +
+            trace(ctx, "  <=> read register dev=" + device + " addr=0x" + formatArgHex(nlohmann::json(addr), 0) +
                 " → " + jsonToStr(out));
             if (type == "modbus_read_check" && act.getCheck() != nullptr) {
                 nlohmann::json cv = resolveValue(nlohmann::json(act.getCheck()->value), ctx);
@@ -1039,13 +1039,13 @@ namespace industrial_config_engine {
             }
             advanceTime(ctx, dt);
             out = true;
-            trace(ctx, "  ⏳ 等待 " + std::to_string(dt) + "ms");
+            trace(ctx, "  waiting " + std::to_string(dt) + "ms");
             return r;
         }
 
         if (type == "log") {
             std::string msg = args.is_array() && !args.empty() ? jsonToStr(args[0]) : act.getDescription();
-            trace(ctx, "  • 日志: " + resolveStr(msg, ctx));
+            trace(ctx, "  * log: " + resolveStr(msg, ctx));
             ctx.audit.log(ctx.time_ms, "INFO", resolveStr(msg, ctx));
             out = true;
             return r;
@@ -1054,8 +1054,8 @@ namespace industrial_config_engine {
         if (type == "popup") {
             std::string msg = args.is_array() && !args.empty() ? jsonToStr(args[0]) : act.getDescription();
             std::string level = args.is_array() && args.size() > 1 ? jsonToStr(args[1]) : "info";
-            trace(ctx, "  • 弹窗[" + level + "]: " + resolveStr(msg, ctx));
-            ctx.audit.log(ctx.time_ms, "ERROR", "HMI 弹窗: " + resolveStr(msg, ctx));
+            trace(ctx, "  * popup[" + level + "]: " + resolveStr(msg, ctx));
+            ctx.audit.log(ctx.time_ms, "ERROR", "HMI popup: " + resolveStr(msg, ctx));
             out = true;
             return r;
         }
@@ -1063,14 +1063,14 @@ namespace industrial_config_engine {
         if (type == "set_variable" || type == "set") {
             if (args.is_array() && args.size() >= 2) {
                 ctx.vars.set(jsonToStr(args[0]), resolveValue(args[1], ctx));
-                trace(ctx, "  ↦ 变量 " + jsonToStr(args[0]) + " = " + jsonToStr(ctx.vars.get(jsonToStr(args[0])) ? *ctx.vars.get(jsonToStr(args[0])) : nlohmann::json()));
+                trace(ctx, "  => variable " + jsonToStr(args[0]) + " = " + jsonToStr(ctx.vars.get(jsonToStr(args[0])) ? *ctx.vars.get(jsonToStr(args[0])) : nlohmann::json()));
             }
             else if (args.is_array() && args.size() == 1) {
                 ctx.vars.set("result", resolveValue(args[0], ctx));
-                trace(ctx, "  ↦ 变量 result = " + jsonToStr(args[0]));
+                trace(ctx, "  => variable result = " + jsonToStr(args[0]));
             }
             out = true;
-            ctx.audit.log(ctx.time_ms, "CHANGE", "设置变量", { {"args", args} });
+            ctx.audit.log(ctx.time_ms, "CHANGE", "variable set", { {"args", args} });
             return r;
         }
 
@@ -1078,7 +1078,7 @@ namespace industrial_config_engine {
             const nlohmann::json* v = args.is_array() && !args.empty()
                 ? ctx.vars.get(jsonToStr(args[0])) : nullptr;
             out = v ? *v : nlohmann::json(false);
-            trace(ctx, "  ↤ 读变量 → " + jsonToStr(out));
+            trace(ctx, "  <= read variable -> " + jsonToStr(out));
             return r;
         }
 
@@ -1093,7 +1093,7 @@ namespace industrial_config_engine {
                     std::string err;
                     bool b = evalExpression(*act.getExpression(), ctx.vars, err);
                     out = nlohmann::json(b);
-                    if (!err.empty()) trace(ctx, "  (计算表达式: " + err + ")");
+                    if (!err.empty()) trace(ctx, "  (calc expression: " + err + ")");
                 }
                 else {
                     double v = 0;
@@ -1114,17 +1114,17 @@ namespace industrial_config_engine {
                 }
             }
             else out = true;
-            trace(ctx, "  ∑ 计算 → " + jsonToStr(out));
+            trace(ctx, "  = compute -> " + jsonToStr(out));
             return r;
         }
 
         // 通用动作（ui_action / user_decision / script_exec / 数字IO / 阀门 / 夹具等）：
         // 仿真中按成功处理并记审计，推进小段时间
         if (type == "user_decision" && ctx.confirm_between) {
-            ctx.audit.log(ctx.time_ms, "OPERATOR_CONFIRM", "操作员决策已确认: " + act.getDescription());
+            ctx.audit.log(ctx.time_ms, "OPERATOR_CONFIRM", "operator decision confirmed: " + act.getDescription());
         }
-        trace(ctx, "  ◇ 虚拟执行 " + type + ": " + act.getDescription());
-        ctx.audit.log(ctx.time_ms, "INFO", "仿真执行动作 " + type, { {"description", act.getDescription()} });
+        trace(ctx, "  ~ virtual exec " + type + ": " + act.getDescription());
+        ctx.audit.log(ctx.time_ms, "INFO", "simulated action " + type, { {"description", act.getDescription()} });
         out = true;
         advanceTime(ctx, 10);
         return r;
@@ -1135,7 +1135,7 @@ namespace industrial_config_engine {
         L3Group vg(g);
         if (!vg.validate()) {
             r.status = ExecStatus::FAILED;
-            r.message = "L3 结构校验失败: " + g.value("name", std::string("?"));
+            r.message = "L3 structural validation failed: " + g.value("name", std::string("?"));
             return r;
         }
         std::string mode = g.value("mode", "sequence");
@@ -1150,7 +1150,7 @@ namespace industrial_config_engine {
             r = execBody(g.value("body", nlohmann::json()), ctx, mode == "parallel");
             if (checkGroupTimeout() && r.status == ExecStatus::SUCCESS) {
                 r.status = ExecStatus::TIMEOUT;
-                r.message = "组超时: " + g.value("name", std::string("?"));
+                r.message = "group timeout: " + g.value("name", std::string("?"));
             }
             return r;
         }
@@ -1160,10 +1160,10 @@ namespace industrial_config_engine {
             bool cond = evalCondition(g.value("condition", nlohmann::json()), ctx.vars, err);
             if (!err.empty()) {
                 r.status = ExecStatus::CONDITION_ERROR;
-                r.message = "条件求值失败: " + err;
+                r.message = "condition evaluation failed: " + err;
                 return r;
             }
-            trace(ctx, std::string("◆ 条件分支 → ") + (cond ? "then" : "else"));
+            trace(ctx, std::string("> condition branch -> ") + (cond ? "then" : "else"));
             return execBody(cond ? g.value("then", nlohmann::json()) : g.value("else", nlohmann::json()),
                 ctx, false);
         }
@@ -1199,7 +1199,7 @@ namespace industrial_config_engine {
                 if (!err.empty()) {
                     ok = false;
                     r.status = ExecStatus::CONDITION_ERROR;
-                    r.message = "循环条件求值失败: " + err;
+                    r.message = "loop condition evaluation failed: " + err;
                     return false;
                 }
                 ok = true;
@@ -1211,18 +1211,18 @@ namespace industrial_config_engine {
             auto guard = [&]() -> bool {
                 if (iter >= max_iter) {
                     r.status = ExecStatus::STEP_BUDGET_EXCEEDED;
-                    r.message = "循环迭代超过上限(" + std::to_string(max_iter) + ")，疑似死循环";
+                    r.message = "loop iterations exceeded limit (" + std::to_string(max_iter) + "), possible infinite loop";
                     return false;
                 }
                 if (loop_timeout > 0 && (ctx.time_ms - start) > loop_timeout) {
                     r.status = ExecStatus::TIMEOUT;
-                    r.message = "循环超时(" + std::to_string(loop_timeout) + "ms): " + g.value("name", std::string("?"));
+                    r.message = "loop timeout (" + std::to_string(loop_timeout) + "ms): " + g.value("name", std::string("?"));
                     return false;
                 }
                 return true;
             };
 
-            trace(ctx, "↻ 循环 " + ltype + " [" +
+            trace(ctx, "loop " + ltype + " [" +
                 (loop.contains("condition") ? loop["condition"].get<std::string>() : std::to_string(count)) + "]");
             ctx.indent++;
             if (ltype == "count") {
@@ -1274,7 +1274,7 @@ namespace industrial_config_engine {
                 const nlohmann::json* items = ctx.vars.get(items_name);
                 if (!items || !items->is_array()) {
                     r.status = ExecStatus::CONDITION_ERROR;
-                    r.message = "foreach 列表变量未定义或非数组: " + items_name;
+                    r.message = "foreach list variable undefined or not an array: " + items_name;
                 }
                 else {
                     for (iter = 0; iter < static_cast<int64_t>(items->size()); ++iter) {
@@ -1287,11 +1287,11 @@ namespace industrial_config_engine {
             }
             else {
                 r.status = ExecStatus::INTERNAL_ERROR;
-                r.message = "未知循环类型: " + ltype;
+                r.message = "unknown loop type: " + ltype;
             }
             ctx.indent--;
             if (r.status == ExecStatus::TIMEOUT || r.status == ExecStatus::STEP_BUDGET_EXCEEDED) {
-                trace(ctx, "  " + r.message + "，执行 on_timeout");
+                trace(ctx, "  " + r.message + ", running on_timeout");
                 ctx.audit.log(ctx.time_ms, "WARN", r.message);
                 ExecResult br = execBranchItems(g.value("on_timeout", nlohmann::json()), ctx);
                 if (br.status != ExecStatus::SUCCESS) r = br;
@@ -1300,7 +1300,7 @@ namespace industrial_config_engine {
         }
 
         r.status = ExecStatus::INTERNAL_ERROR;
-        r.message = "未知组模式: " + mode;
+        r.message = "unknown group mode: " + mode;
         return r;
     }
 
@@ -1310,7 +1310,7 @@ namespace industrial_config_engine {
         L3Group vg(group_json);
         if (!vg.validate()) {
             r.status = ExecStatus::FAILED;
-            r.message = "L3 结构校验失败: " + group_json.value("name", std::string("?"));
+            r.message = "L3 structural validation failed: " + group_json.value("name", std::string("?"));
             return r;
         }
         // 绑定调用参数到参数名
@@ -1339,14 +1339,14 @@ namespace industrial_config_engine {
         if (flow_json.is_null() || !flow_json.contains("body") || !flow_json["body"].is_array() ||
             flow_json["body"].empty()) {
             r.status = ExecStatus::FAILED;
-            r.message = "L4 结构校验失败（缺少 body）: " + name;
+            r.message = "L4 structural validation failed (missing body): " + name;
             return r;
         }
         if (!f.validate()) {
             // 结构校验未通过：记审计警告后继续仿真执行，以暴露更深层问题
-            ctx.audit.log(ctx.time_ms, "WARN", "L4 结构校验未通过（继续仿真执行）: " + name);
+            ctx.audit.log(ctx.time_ms, "WARN", "L4 structural validation not passed (continuing simulation): " + name);
         }
-        trace(ctx, "▶▶ 流程: " + name + (f.getVersion().empty() ? "" : " v" + f.getVersion()));
+        trace(ctx, "▶▶ Flow: " + name + (f.getVersion().empty() ? "" : " v" + f.getVersion()));
         // 应用当前 profile 参数
         for (const auto& kv : f.getCurrentProfileParams()) {
             ctx.vars.set(kv.first, nlohmann::json(kv.second));
@@ -1358,10 +1358,10 @@ namespace industrial_config_engine {
         ctx.indent--;
         if (f.hasTimeout() && ctx.time_ms - start > f.getTimeoutMs() && r.status == ExecStatus::SUCCESS) {
             r.status = ExecStatus::TIMEOUT;
-            r.message = "流程超时: " + name;
+            r.message = "flow timeout: " + name;
         }
         if ((r.status == ExecStatus::TIMEOUT) && f.hasOnTimeout()) {
-            trace(ctx, "流程超时，执行 on_timeout");
+            trace(ctx, "flow timeout, running on_timeout");
             r = execBranchItems(f.getOnTimeout(), ctx);
         }
         r.steps = ctx.steps;
@@ -1384,7 +1384,7 @@ namespace industrial_config_engine {
         }
         catch (const std::exception& e) {
             r.status = ExecStatus::INTERNAL_ERROR;
-            r.message = std::string("解析失败: ") + e.what();
+            r.message = std::string("parse failed: ") + e.what();
         }
         r.steps = ctx.steps;
         r.sim_time_ms = ctx.time_ms;
@@ -1405,7 +1405,7 @@ namespace industrial_config_engine {
         }
         catch (const std::exception& e) {
             r.status = ExecStatus::INTERNAL_ERROR;
-            r.message = std::string("解析失败: ") + e.what();
+            r.message = std::string("parse failed: ") + e.what();
         }
         r.steps = ctx.steps;
         r.sim_time_ms = ctx.time_ms;

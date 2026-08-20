@@ -1,13 +1,13 @@
 {
     "type": "node_bundle",
-    "description": "系统控制类执行节点集合",
+    "description": "system control node collection",
     "version": "1.0.0",
     "nodes": [
         {
             "filename": "log.s",
             "type": "node",
-            "name": "日志记录",
-            "description": "记录日志信息",
+            "name": "log record",
+            "description": "record log message",
             "params": ["message"],
             "timeout_ms": 2000,
             "max_retries": 0,
@@ -15,20 +15,20 @@
             "action": {
                 "template": "L1_action/system/all_actions.json/log.s"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [],
             "on_failure": [],
             "on_timeout": [
-                { "type": "log", "message": "日志记录超时" }
+                { "type": "log", "message": "log record timeout" }
             ]
         },
         {
             "filename": "popup.s_s",
             "type": "node",
-            "name": "弹窗提示",
-            "description": "弹出提示对话框",
+            "name": "popup prompt",
+            "description": "show prompt dialog",
             "params": ["message", "level"],
             "timeout_ms": 3000,
             "max_retries": 0,
@@ -36,14 +36,14 @@
             "action": {
                 "template": "L1_action/system/all_actions.json/popup.s_s"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [],
             "on_failure": [],
             "on_timeout": [
-                { "type": "log", "message": "弹窗提示超时" },
-                { "type": "popup", "message": "弹窗提示超时", "level": "error" }
+                { "type": "log", "message": "popup prompt timeout" },
+                { "type": "popup", "message": "popup prompt timeout", "level": "error" }
             ]
         }
     ]

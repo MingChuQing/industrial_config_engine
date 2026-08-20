@@ -1,7 +1,7 @@
 {
     "type": "group",
-    "name": "气密性检测准备阶段",
-    "description": "检查气源、密封圈，闭合夹具，启动气泵",
+    "name": "Leak test - preparation stage",
+    "description": "Check air/ring, clamp, start pump",
     "mode": "sequence",
     "max_nodes": 20,
     "delay_between": 500,
@@ -9,7 +9,7 @@
     "body": [
         {
             "type": "node",
-            "name": "检查气源压力",
+            "name": "Check air pressure",
             "params": ["${pressure_channel}"],
             "timeout_ms": 2000,
             "max_retries": 3,
@@ -22,7 +22,7 @@
         },
         {
             "type": "node",
-            "name": "检查夹具是否打开",
+            "name": "check fixture open",
             "params": [],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -35,7 +35,7 @@
         },
         {
             "type": "node",
-            "name": "检查密封圈是否在位",
+            "name": "check seal ring in place",
             "params": ["${seal_sensor_register}"],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -48,7 +48,7 @@
         },
         {
             "type": "node",
-            "name": "启动气泵",
+            "name": "start pump",
             "params": ["${pump_output_register}"],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -61,7 +61,7 @@
         },
         {
             "type": "node",
-            "name": "闭合夹具",
+            "name": "close fixture",
             "params": [],
             "timeout_ms": 2000,
             "max_retries": 3,
@@ -74,7 +74,7 @@
         },
         {
             "type": "node",
-            "name": "确认夹具闭合到位",
+            "name": "confirm fixture fully closed",
             "params": [],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -87,8 +87,8 @@
         }
     ],
     "args": [
-        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
-        { "index": 1, "name": "seal_sensor_register", "type": "u8", "default": "0x0101", "desc": "密封圈传感器寄存器" },
-        { "index": 2, "name": "pump_output_register", "type": "u8", "default": "0x0201", "desc": "气泵控制输出" }
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "pressure sensor channel" },
+        { "index": 1, "name": "seal_sensor_register", "type": "u8", "default": "0x0101", "desc": "seal sensor register" },
+        { "index": 2, "name": "pump_output_register", "type": "u8", "default": "0x0201", "desc": "pump control output" }
     ]
 }

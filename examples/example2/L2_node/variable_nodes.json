@@ -1,13 +1,13 @@
 {
     "type": "node_bundle",
-    "description": "变量操作类执行节点集合",
+    "description": "variable operation node collection",
     "version": "1.0.0",
     "nodes": [
         {
             "filename": "set_variable.s_s",
             "type": "node",
-            "name": "设置变量",
-            "description": "设置指定变量的值",
+            "name": "Set variable",
+            "description": "Set variable value",
             "params": ["position_1", "0"],
             "timeout_ms": 1000,
             "max_retries": 0,
@@ -15,25 +15,25 @@
             "action": {
                 "template": "L1_action/system_actions.json/set_variable.s_s"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "type": "log",
-                    "message": "变量${param_0}设置为：${param_1}"
+                    "message": "Variable ${param_0} set to: ${param_1}"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "设置变量失败"
+                    "message": "Set variablefailed"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "设置变量超时"
+                    "message": "Set variabletimeout"
                 }
             ]
         }

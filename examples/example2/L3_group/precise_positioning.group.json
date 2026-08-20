@@ -1,15 +1,15 @@
 {
     "type": "group",
-    "name": "PR点位精确定位",
-    "description": "运行PR点位 → 点动找光电 → 保存精确位置",
+    "name": "PR precise positioning",
+    "description": "Run PR -> jog to sensor -> save precise position",
     "mode": "sequence",
     "max_nodes": 30,
     "timeout_ms": 90000,
     "args": [
-        { "index": 0, "name": "pr_number", "type": "u8", "desc": "PR点位号" },
-        { "index": 1, "name": "sensor_register", "type": "u8", "desc": "光电开关寄存器地址" },
-        { "index": 2, "name": "result_key", "type": "s", "desc": "结果保存的变量名" },
-        { "index": 3, "name": "timeout", "type": "u16", "default": 30000, "desc": "超时(毫秒)" }
+        { "index": 0, "name": "pr_number", "type": "u8", "desc": "PR point number" },
+        { "index": 1, "name": "sensor_register", "type": "u8", "desc": "photoelectric switch register address" },
+        { "index": 2, "name": "result_key", "type": "s", "desc": "variable name for result" },
+        { "index": 3, "name": "timeout", "type": "u16", "default": 30000, "desc": "timeout(ms)" }
     ],
     "body": [
         {
@@ -30,11 +30,11 @@
         {
             "type": "node",
             "template": "L2_node/log_nodes.json/print.s",
-            "params": ["PR${pr_number}精确定位完成，位置已保存到${result_key}：${current_position}"]
+            "params": ["PR${pr_number} done, saved to ${result_key}: ${current_position}"]
         }
     ],
     "on_timeout": [
-        { "type": "log", "message": "PR${pr_number}精确定位超时" },
-        { "type": "popup", "message": "PR${pr_number}精确定位超时", "level": "error" }
+        { "type": "log", "message": "PR${pr_number} positioning timeout" },
+        { "type": "popup", "message": "PR${pr_number} positioning timeout", "level": "error" }
     ]
 }

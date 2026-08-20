@@ -1,7 +1,7 @@
 {
     "type": "protocol_config",
     "protocol": "modbus_rtu",
-    "description": "Modbus RTU 协议设备映射",
+    "description": "Modbus RTU protocol device mapping",
     "devices": [
         {
             "instance_id": "X_Axis",
@@ -9,7 +9,7 @@
             "link_id": 1,
             "modbus_address": 1,
             "enabled": true,
-            "description": "X轴 - 取料/定位电机"
+            "description": "Xaxis  - pick/positioning motor"
         },
         {
             "instance_id": "Y_Axis",
@@ -17,7 +17,7 @@
             "link_id": 1,
             "modbus_address": 2,
             "enabled": true,
-            "description": "Y轴 - 搬运/装配电机"
+            "description": "Yaxis  - transfer/assembly motor"
         }
     ]
 }

@@ -1,13 +1,13 @@
 {
 "type": "node_bundle",
-"description": "真空控制类执行节点集合",
+"description": "Vacuum control node bundle",
 "version": "1.0.0",
 "nodes": [
 {
 "filename": "start_pump.r_b_pump_start",
 "type": "node",
-"name": "启动真空泵",
-"description": "发送启动指令启动真空泵",
+"name": "Start Pump",
+"description": "send start command Start Pump",
 "params": [],
 "timeout_ms": 5000,
 "max_retries": 3,
@@ -15,27 +15,27 @@
 "action": {
 "template": "L1_action/modbus/all_actions.json/write_register_fixed.r_b_pump_start"
 },
-"judge": {
+"judge ": {
 "type": "compare",
 "condition": "eq",
 "value": true
 },
 "on_success": [
-{ "type": "log", "message": "真空泵已启动" }
+{ "type": "log", "message": "Pump started" }
 ],
 "on_failure": [
-{ "type": "popup", "message": "真空泵启动失败", "level": "error" }
+{ "type": "popup", "message": "Failed to start pump", "level": "error" }
 ],
 "on_timeout": [
-{ "type": "log", "message": "启动真空泵超时" },
-{ "type": "popup", "message": "启动真空泵超时，请检查通讯", "level": "error" }
+{ "type": "log", "message": "Start Pumptimeout" },
+{ "type": "popup", "message": "Start Pumptimeout, check communication", "level": "error" }
 ]
 },
 {
 "filename": "stop_pump.r_b_pump_stop",
 "type": "node",
-"name": "停止真空泵",
-"description": "发送停止指令停止真空泵",
+"name": "Stop Pump",
+"description": "send stop command Stop Pump",
 "params": [],
 "timeout_ms": 3000,
 "max_retries": 3,
@@ -43,27 +43,27 @@
 "action": {
 "template": "L1_action/modbus/all_actions.json/write_register_fixed_stop.r_b_pump_stop"
 },
-"judge": {
+"judge ": {
 "type": "compare",
 "condition": "eq",
 "value": true
 },
 "on_success": [
-{ "type": "log", "message": "真空泵已停止" }
+{ "type": "log", "message": "Pump stopped" }
 ],
 "on_failure": [
-{ "type": "popup", "message": "真空泵停止失败", "level": "error" }
+{ "type": "popup", "message": "Failed to stop pump", "level": "error" }
 ],
 "on_timeout": [
-{ "type": "log", "message": "停止真空泵超时" },
-{ "type": "popup", "message": "停止真空泵超时，请检查通讯", "level": "error" }
+{ "type": "log", "message": "Stop Pumptimeout" },
+{ "type": "popup", "message": "Stop Pumptimeout, check communication", "level": "error" }
 ]
 },
 {
 "filename": "read_pressure.r_u16_pressure",
 "type": "node",
-"name": "读取压力",
-"description": "从压力传感器读取当前压力值",
+"name": "Read Pressure",
+"description": "Read current pressure from the sensor",
 "params": [1, 2000],
 "timeout_ms": 3000,
 "max_retries": 2,
@@ -71,25 +71,25 @@
 "action": {
 "template": "L1_action/modbus/all_actions.json/read_register.u8_u16.r_u16_pressure"
 },
-"judge": {
+"judge ": {
 "type": "exists"
 },
 "on_success": [
-{ "type": "log", "message": "当前压力=${pressure}Pa" }
+{ "type": "log", "message": "Current pressure=${pressure}Pa" }
 ],
 "on_failure": [
-{ "type": "popup", "message": "压力读取失败", "level": "error" }
+{ "type": "popup", "message": "Pressure read failed", "level": "error" }
 ],
 "on_timeout": [
-{ "type": "log", "message": "读取压力超时" },
-{ "type": "popup", "message": "压力传感器通讯超时", "level": "error" }
+{ "type": "log", "message": "Read Pressuretimeout" },
+{ "type": "popup", "message": "Pressure sensor communication timeout", "level": "error" }
 ]
 },
 {
 "filename": "open_valve.r_b_valve_open",
 "type": "node",
-"name": "开阀门",
-"description": "打开指定阀门",
+"name": "Open Valve",
+"description": "Open the specified valve",
 "params": [1],
 "timeout_ms": 3000,
 "max_retries": 3,
@@ -97,27 +97,27 @@
 "action": {
 "template": "L1_action/modbus/all_actions.json/write_coil_on.r_b_coil_on_result"
 },
-"judge": {
+"judge ": {
 "type": "compare",
 "condition": "eq",
 "value": true
 },
 "on_success": [
-{ "type": "log", "message": "阀门已打开" }
+{ "type": "log", "message": "Valve opened" }
 ],
 "on_failure": [
-{ "type": "popup", "message": "阀门打开失败", "level": "error" }
+{ "type": "popup", "message": "Failed to open valve", "level": "error" }
 ],
 "on_timeout": [
-{ "type": "log", "message": "开阀门超时" },
-{ "type": "popup", "message": "开阀门超时，请检查通讯", "level": "error" }
+{ "type": "log", "message": "Open Valvetimeout" },
+{ "type": "popup", "message": "Open Valvetimeout, check communication", "level": "error" }
 ]
 },
 {
 "filename": "close_valve.r_b_valve_close",
 "type": "node",
-"name": "关阀门",
-"description": "关闭指定阀门",
+"name": "Close Valve",
+"description": "Close the specified valve",
 "params": [2],
 "timeout_ms": 3000,
 "max_retries": 3,
@@ -125,20 +125,20 @@
 "action": {
 "template": "L1_action/modbus/all_actions.json/write_coil_off.r_b_coil_off_result"
 },
-"judge": {
+"judge ": {
 "type": "compare",
 "condition": "eq",
 "value": true
 },
 "on_success": [
-{ "type": "log", "message": "阀门已关闭" }
+{ "type": "log", "message": "Valve closed" }
 ],
 "on_failure": [
-{ "type": "popup", "message": "阀门关闭失败", "level": "error" }
+{ "type": "popup", "message": "Failed to close valve", "level": "error" }
 ],
 "on_timeout": [
-{ "type": "log", "message": "关阀门超时" },
-{ "type": "popup", "message": "关阀门超时，请检查通讯", "level": "error" }
+{ "type": "log", "message": "Close Valvetimeout" },
+{ "type": "popup", "message": "Close Valvetimeout, check communication", "level": "error" }
 ]
 }
 ]

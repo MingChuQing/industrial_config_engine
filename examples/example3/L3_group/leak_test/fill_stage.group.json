@@ -1,7 +1,7 @@
 {
     "type": "group",
-    "name": "气密性检测充气阶段",
-    "description": "打开充气阀，充气至目标压力，检测大漏",
+    "name": "Leak testingFilling stage",
+    "description": "open fill valve, fill to target pressure, detect large leak",
     "mode": "loop",
     "max_nodes": 20,
     "loop": {
@@ -12,7 +12,7 @@
     "body": [
         {
             "type": "node",
-            "name": "打开充气阀",
+            "name": "open fill valve",
             "params": [],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -25,7 +25,7 @@
         },
         {
             "type": "node",
-            "name": "监测压力上升",
+            "name": "monitor pressure rise",
             "params": ["${pressure_channel}", "${target_pressure}", "${fill_timeout}"],
             "timeout_ms": "${fill_timeout}",
             "max_retries": 0,
@@ -33,21 +33,21 @@
             "node": {
                 "template": "L2_node/leak_test/all_nodes.json/monitor_pressure_rising.u8_f_u16.r_b_pressure_rising"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "充气完成" }
+                { "type": "log", "message": "fill done" }
             ],
             "on_failure": [
-                { "type": "log", "message": "充气失败，继续检查大漏" }
+                { "type": "log", "message": "fillfailed, continue large-leak check" }
             ]
         },
         {
             "type": "node",
-            "name": "检查大漏",
+            "name": "check large leak",
             "params": ["${pressure_channel}", "${large_leak_threshold}", "${fill_timeout}"],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -55,19 +55,19 @@
             "node": {
                 "template": "L2_node/leak_test/all_nodes.json/check_large_leak.u8_f_f.r_b_large_leak"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "检测到大漏" }
+                { "type": "log", "message": "large leak detected" }
             ],
             "on_failure": []
         },
         {
             "type": "node",
-            "name": "等待100ms",
+            "name": "wait 100ms",
             "params": [100],
             "timeout_ms": 2000,
             "max_retries": 0,
@@ -80,9 +80,9 @@
         }
     ],
     "args": [
-        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
-        { "index": 1, "name": "target_pressure", "type": "f", "default": 100.0, "desc": "目标压力(kPa)" },
-        { "index": 2, "name": "fill_timeout", "type": "u16", "default": 10000, "desc": "充气超时(ms)" },
-        { "index": 3, "name": "large_leak_threshold", "type": "f", "default": 5.0, "desc": "大漏阈值(kPa/s)" }
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "pressure sensor channel" },
+        { "index": 1, "name": "target_pressure", "type": "f", "default": 100.0, "desc": "target pressure(kPa)" },
+        { "index": 2, "name": "fill_timeout", "type": "u16", "default": 10000, "desc": "filltimeout(ms)" },
+        { "index": 3, "name": "large_leak_threshold", "type": "f", "default": 5.0, "desc": "large leak threshold(kPa/s)" }
     ]
 }

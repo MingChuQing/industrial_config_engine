@@ -1,11 +1,11 @@
 {
     "type": "node_bundle",
-    "description": "饮料灌装线 L2 执行节点",
+    "description": "Beverage Filling line L2 execution nodes",
     "nodes": [
         {
             "filename": "axis_home.u8.r_b_homed",
             "type": "node",
-            "name": "轴回零",
+            "name": "axis homing",
             "params": [
                 1
             ],
@@ -17,7 +17,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "轴回零失败",
+                    "message": "axis homingfailed",
                     "level": "error"
                 }
             ],
@@ -26,7 +26,7 @@
         {
             "filename": "axis_move_abs.u8_u32.r_b_arrived",
             "type": "node",
-            "name": "轴绝对定位",
+            "name": "axis absolute move",
             "params": [
                 1,
                 0
@@ -39,7 +39,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "轴绝对定位失败",
+                    "message": "axis absolute movefailed",
                     "level": "error"
                 }
             ],
@@ -48,7 +48,7 @@
         {
             "filename": "axis_alarm.u8.r_b_ok",
             "type": "node",
-            "name": "轴报警检查",
+            "name": "axis alarm check",
             "params": [
                 1
             ],
@@ -57,7 +57,7 @@
             "action": {
                 "template": "L1_action/all_actions.json/motor_alarm.r_u16_alarm"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": 0
@@ -65,7 +65,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "轴报警检查失败",
+                    "message": "axis alarm checkfailed",
                     "level": "error"
                 }
             ],
@@ -74,7 +74,7 @@
         {
             "filename": "coil_set.u16_b.r_b_done",
             "type": "node",
-            "name": "线圈/气缸控制",
+            "name": "coil/cylinder control",
             "params": [
                 1,
                 true
@@ -87,7 +87,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "线圈/气缸控制失败",
+                    "message": "coil/cylinder controlfailed",
                     "level": "error"
                 }
             ],
@@ -96,7 +96,7 @@
         {
             "filename": "sensor_wait.u16_u16.r_b_triggered",
             "type": "node",
-            "name": "光电等待触发",
+            "name": "sensor wait trigger",
             "params": [
                 1,
                 5000
@@ -109,7 +109,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "光电等待触发失败",
+                    "message": "sensor wait triggerfailed",
                     "level": "error"
                 }
             ],
@@ -118,7 +118,7 @@
         {
             "filename": "flow_ge.f.r_b_ok",
             "type": "node",
-            "name": "流量达标判断",
+            "name": "flow qualification check",
             "params": [
                 500
             ],
@@ -127,7 +127,7 @@
             "action": {
                 "template": "L1_action/all_actions.json/reg_read_float.u16.r_f_value"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "ge",
                 "value": 500
@@ -135,7 +135,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "流量达标判断失败",
+                    "message": "flow qualification checkfailed",
                     "level": "error"
                 }
             ],
@@ -144,7 +144,7 @@
         {
             "filename": "pressure_ge.f.r_b_ok",
             "type": "node",
-            "name": "压力达标判断",
+            "name": "pressure qualification check",
             "params": [
                 0.2
             ],
@@ -153,7 +153,7 @@
             "action": {
                 "template": "L1_action/all_actions.json/reg_read_float.u16.r_f_value"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "ge",
                 "value": 0.2
@@ -161,7 +161,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "压力达标判断失败",
+                    "message": "pressure qualification checkfailed",
                     "level": "error"
                 }
             ],
@@ -170,7 +170,7 @@
         {
             "filename": "torque_ge.f.r_b_ok",
             "type": "node",
-            "name": "扭矩达标判断",
+            "name": "torque qualification check",
             "params": [
                 2.0
             ],
@@ -179,7 +179,7 @@
             "action": {
                 "template": "L1_action/all_actions.json/reg_read_float.u16.r_f_value"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "ge",
                 "value": 2.0
@@ -187,7 +187,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "扭矩达标判断失败",
+                    "message": "torque qualification checkfailed",
                     "level": "error"
                 }
             ],
@@ -196,7 +196,7 @@
         {
             "filename": "conveyor_run.u16.r_b_run",
             "type": "node",
-            "name": "输送带运行",
+            "name": "conveyor run",
             "params": [
                 300
             ],
@@ -208,7 +208,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "输送带运行失败",
+                    "message": "conveyor runfailed",
                     "level": "error"
                 }
             ],
@@ -217,7 +217,7 @@
         {
             "filename": "conveyor_stop.r_b_stop",
             "type": "node",
-            "name": "输送带停止",
+            "name": "Conveyor stop",
             "params": [],
             "timeout_ms": 3000,
             "max_retries": 2,
@@ -227,7 +227,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "输送带停止失败",
+                    "message": "Conveyor stopfailed",
                     "level": "error"
                 }
             ],
@@ -236,7 +236,7 @@
         {
             "filename": "wait_ms.u16.r_b_wait_done",
             "type": "node",
-            "name": "等待",
+            "name": "wait ",
             "params": [
                 1000
             ],
@@ -248,7 +248,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "等待失败",
+                    "message": "Wait failed",
                     "level": "error"
                 }
             ],
@@ -257,9 +257,9 @@
         {
             "filename": "popup.s_s",
             "type": "node",
-            "name": "弹窗",
+            "name": "popup",
             "params": [
-                "提示",
+                "prompt",
                 "info"
             ],
             "timeout_ms": 5000,
@@ -270,7 +270,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "弹窗失败",
+                    "message": "popupfailed",
                     "level": "error"
                 }
             ],
@@ -279,7 +279,7 @@
         {
             "filename": "log.s",
             "type": "node",
-            "name": "日志",
+            "name": "log",
             "params": [
                 ""
             ],
@@ -291,7 +291,7 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "日志失败",
+                    "message": "logfailed",
                     "level": "error"
                 }
             ],

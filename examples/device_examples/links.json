@@ -1,6 +1,6 @@
 ﻿{
     "type": "link_config",
-    "description": "物理通信链路配置",
+    "description": "Physical communication link configuration",
     "version": "1.0.0",
     "links": [
         {
@@ -13,7 +13,7 @@
             "parity": "none",
             "timeout_ms": 1000,
             "enabled": true,
-            "description": "  iDM 驱动器 RS485 网络"
+            "description": "  iDM driver RS485 network"
         }
     ]
 }

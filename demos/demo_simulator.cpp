@@ -1,6 +1,6 @@
 // demos/demo_simulator.cpp
-// 仿真运行器演示：三条工艺（T1真空控制 / T2电机上料 / T3泄漏测试）+ 故障注入
-// 虚拟设备 + 运行时变量存储 + 虚拟时钟 + 步数预算 + 审计日志 + 操作员逐项确认
+// Simulator demo: three processes (T1 vacuum / T2 motor feed / T3 leak test) + fault injection
+// Virtual devices + runtime variable store + virtual clock + step budget + audit log + operator per-item confirm
 #include "industrial_config_engine/executor.hpp"
 #include <iostream>
 #include <string>
@@ -16,15 +16,15 @@ static std::string jsonToStrP(const nlohmann::json& v) {
     return v.dump();
 }
 
-// 虚拟设备与行为模型：slave 1 = 真空计（example2），default = 泵/阀/光电/真空计（example1）
+// Virtual devices and behavior model: slave 1 = vacuum gauge (example2), default = pump/valve/sensor/vacuum gauge (example1)
 static void setupDevices(ExecContext& ctx) {
     ctx.devices.setOnline("default", true);
     ctx.devices.setOnline("1", true);
-    ctx.devices.setRegister("default", 0x6000, 0);   // 泵控制寄存器 0=停 1=启
-    ctx.devices.setRegister("default", 512, 1);      // 光电开关：已触发
-    ctx.devices.setRegister("default", 1, 65000);    // 压力 65000 Pa（example1 真空计寄存器 1）
-    ctx.devices.setRegister("default", 2000, 65000); // 压力 65000 Pa（无从站读法）
-    ctx.devices.setRegister("1", 2000, 65000);       // 压力 65000 Pa（slave 1 读法）
+    ctx.devices.setRegister("default", 0x6000, 0);   // pump control register 0=stop 1=start
+    ctx.devices.setRegister("default", 512, 1);      // sensor: triggered
+    ctx.devices.setRegister("default", 1, 65000);    // pressure 65000 Pa (example1 vacuum register 1)
+    ctx.devices.setRegister("default", 2000, 65000); // pressure 65000 Pa (no-slave read)
+    ctx.devices.setRegister("1", 2000, 65000);       // pressure 65000 Pa (slave 1 read)
     ctx.devices.setBehavior("default", [&ctx](uint64_t) {
         if (ctx.devices.getRegister("default", 0x6000) == 1) {
             for (uint16_t addr : { uint16_t(1), uint16_t(2000) }) {
@@ -54,13 +54,13 @@ static size_t countLevel(ExecContext& ctx, const std::string& level) {
 static void printResult(const std::string& title, const ExecResult& r, ExecContext& ctx,
     const std::vector<std::string>& extra = {}) {
     std::cout << "\n========================================" << std::endl;
-    std::cout << "【" << title << "】" << std::endl;
-    std::cout << "  状态: " << execStatusToString(r.status);
+    std::cout << "[" << title << "]" << std::endl;
+    std::cout << "  Status: " << execStatusToString(r.status);
     if (!r.message.empty()) std::cout << "  (" << r.message << ")";
     std::cout << std::endl;
-    std::cout << "  仿真步数: " << r.steps << "  虚拟时间: " << r.sim_time_ms
-        << "ms  墙钟耗时: " << r.elapsed_ms << "ms  审计记录: " << ctx.audit.entries().size()
-        << " 条（设备写入 " << countLevel(ctx, "CHANGE") << " 条）" << std::endl;
+    std::cout << "  Steps: " << r.steps << "  Sim time: " << r.sim_time_ms
+        << "ms  Wall time: " << r.elapsed_ms << "ms  Audit records: " << ctx.audit.entries().size()
+        << " (device writes " << countLevel(ctx, "CHANGE") << ")" << std::endl;
     for (const auto& s : extra) std::cout << "  " << s << std::endl;
 }
 
@@ -78,11 +78,11 @@ int main(int argc, char** argv) {
     Executor ex;
     for (const auto& r : roots) ex.addRoot(r);
     ex.loadLayers();
-    std::cout << "已加载 L1 动作: " << ex.actions().getActionCount()
-        << " 个, L2 节点: " << ex.nodes().getNodeCount() << " 个" << std::endl;
+    std::cout << "Loaded L1 actions: " << ex.actions().getActionCount()
+        << ", L2 nodes: " << ex.nodes().getNodeCount() << "" << std::endl;
 
     // ============================================================
-    // T1 真空控制工艺（example1，多模式 profile）
+    // T1 vacuum control process (example1, multi-mode profile)
     // ============================================================
     {
         ExecContext ctx;
@@ -90,16 +90,16 @@ int main(int argc, char** argv) {
         ExecResult r = ex.runFlowFile("examples/example1/L4_flow/production/vacuum_flow.json", ctx);
         std::vector<std::string> extra;
         if (ctx.vars.has("pressure")) {
-            extra.push_back("最终压力 pressure = " + jsonToStrP(*ctx.vars.get("pressure")) + " Pa");
+            extra.push_back("Final pressure pressure = " + jsonToStrP(*ctx.vars.get("pressure")) + " Pa");
         }
         if (ctx.devices.getRegister("default", 0x6000) == 0) {
-            extra.push_back("泵控制寄存器 0x6000 = 0（已停止）");
+            extra.push_back("Pump register 0x6000 = 0 (stopped)");
         }
-        printResult("T1 真空控制工艺（example1）", r, ctx, extra);
+        printResult("T1 vacuum control process (example1)", r, ctx, extra);
     }
 
     // ============================================================
-    // T2 电机上料工艺（example2 完整上料主组）
+    // T2 motor feeding process (example2 complete feeding group)
     // ============================================================
     {
         ExecContext ctx;
@@ -109,11 +109,11 @@ int main(int argc, char** argv) {
         std::vector<std::string> extra;
         if (ctx.vars.has("position_1")) extra.push_back("position_1 = " + jsonToStrP(*ctx.vars.get("position_1")));
         if (ctx.vars.has("position_2")) extra.push_back("position_2 = " + jsonToStrP(*ctx.vars.get("position_2")));
-        printResult("T2 电机上料工艺（example2）", r, ctx, extra);
+        printResult("T2 motor feeding process (example2)", r, ctx, extra);
     }
 
     // ============================================================
-    // T3 泄漏测试工艺（example3，操作员逐项确认 + 审计）
+    // T3 leak test process (example3, per-item confirm + audit)
     // ============================================================
     {
         ExecContext ctx;
@@ -122,19 +122,19 @@ int main(int argc, char** argv) {
         ExecResult r = ex.runFlowFile("examples/example3/L4_flow/leak_test/production_flow.json", ctx);
         std::vector<std::string> extra;
         if (ctx.vars.has("test_result")) {
-            extra.push_back("测试结果 test_result = " + jsonToStrP(*ctx.vars.get("test_result")));
+            extra.push_back("Test result test_result = " + jsonToStrP(*ctx.vars.get("test_result")));
         }
-        extra.push_back("操作员确认记录: " + std::to_string(countLevel(ctx, "OPERATOR_CONFIRM")) + " 条");
-        printResult("T3 泄漏测试工艺（example3，逐项确认）", r, ctx, extra);
+        extra.push_back("Operator confirm records: " + std::to_string(countLevel(ctx, "OPERATOR_CONFIRM")) + "");
+        printResult("T3 leak test process (example3, per-item confirm)", r, ctx, extra);
     }
 
     // ============================================================
-    // 故障注入：验证三个验证关卡的拦截能力
+    // Fault injection: verify interception of the three gates
     // ============================================================
     std::cout << "\n========================================" << std::endl;
-    std::cout << "【故障注入：三维验证拦截演示】" << std::endl;
+    std::cout << "[Fault injection: three-gate interception demo]" << std::endl;
 
-    // (a) 循环条件引用未定义变量（拼写错误）→ CONDITION_ERROR
+    // (a) loop condition references undefined variable (typo) -> CONDITION_ERROR
     {
         ExecContext ctx;
         setupDevices(ctx);
@@ -146,10 +146,10 @@ int main(int argc, char** argv) {
             })}
         };
         ExecResult r = ex.runGroupJson(bug, nlohmann::json::array(), ctx);
-        printResult("注入1: 条件引用未定义变量（拼写错误）", r, ctx);
+        printResult("Fault 1: condition references undefined variable (typo)", r, ctx);
     }
 
-    // (b) 恒真循环条件 → 步数预算超限（疑似死循环）
+    // (b) always-true loop condition -> step budget exceeded (suspected infinite loop)
     {
         ExecContext ctx;
         setupDevices(ctx);
@@ -161,10 +161,10 @@ int main(int argc, char** argv) {
             })}
         };
         ExecResult r = ex.runGroupJson(bug, nlohmann::json::array(), ctx);
-        printResult("注入2: 恒真循环（疑似死循环）", r, ctx);
+        printResult("Fault 2: always-true loop (suspected infinite loop)", r, ctx);
     }
 
-    // (c) 引用不存在的节点 → REFERENCE_ERROR
+    // (c) reference to nonexistent node -> REFERENCE_ERROR
     {
         ExecContext ctx;
         setupDevices(ctx);
@@ -176,9 +176,9 @@ int main(int argc, char** argv) {
             })}
         };
         ExecResult r = ex.runGroupJson(bug, nlohmann::json::array(), ctx);
-        printResult("注入3: 引用的节点定义缺失", r, ctx);
+        printResult("Fault 3: referenced node definition missing", r, ctx);
     }
 
-    std::cout << "\n全部场景执行完毕。可运行 build\\simcheck\\bin\\demo_simulator.exe [根目录...] 复现。" << std::endl;
+    std::cout << "\nAll scenarios finished. Reproduce with: build\\simcheck\\bin\\demo_simulator.exe [root...]" << std::endl;
     return 0;
 }

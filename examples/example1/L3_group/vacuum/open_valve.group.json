@@ -1,7 +1,7 @@
 ﻿{
     "type": "group",
-    "name": "开阀门工序",
-    "description": "完整的开阀门操作流程",
+    "name": "Open Valveoperation",
+    "description": "Complete Open Valve operation flow",
     "mode": "sequence",
     "max_nodes": 20,
     "timeout_ms": 15000,
@@ -15,11 +15,11 @@
     "on_timeout": [
         {
             "type": "log",
-            "message": "开阀门工序超时"
+            "message": "Open Valveoperationtimeout"
         },
         {
             "type": "popup",
-            "message": "开阀门工序超时",
+            "message": "Open Valveoperationtimeout",
             "level": "error"
         }
     ]

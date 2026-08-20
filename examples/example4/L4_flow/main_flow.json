@@ -1,36 +1,36 @@
 {
     "type": "flow",
-    "name": "饮料灌装主流程",
+    "name": "Beverage Filling main flow",
     "mode": "sequence",
     "timeout_ms": 36000000,
     "body": [
         {
             "type": "group",
-            "name": "步骤1 系统初始化",
+            "name": "Step 1 System initialization",
             "template": "L3_group/axis_home_seq.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "步骤1 报警自检",
+            "name": "Step 1 alarm self-check",
             "template": "L3_group/alarm_check_seq.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "步骤1 阀门复位",
+            "name": "Step 1 valve reset",
             "template": "L3_group/valve_reset_seq.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "步骤1 气缸复位",
+            "name": "Step 1 Cylinder reset",
             "template": "L3_group/cylinder_reset_seq.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "步骤2 输送启动",
+            "name": "Step 2 conveyor start",
             "template": "L3_group/conveyor_run_seq.group.json",
             "params": [
                 300
@@ -38,7 +38,7 @@
         },
         {
             "type": "group",
-            "name": "步骤2 推瓶检测",
+            "name": "Step 2 push bottle check",
             "template": "L3_group/bottle_feed.group.json",
             "params": [
                 8,
@@ -47,13 +47,13 @@
         },
         {
             "type": "group",
-            "name": "步骤2 输送停止",
+            "name": "Step 2 conveyor stop",
             "template": "L3_group/conveyor_stop_seq.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "步骤3 瓶位1检测",
+            "name": "Step 3 Station 1 detect",
             "template": "L3_group/pos_detect.group.json",
             "params": [
                 52
@@ -61,7 +61,7 @@
         },
         {
             "type": "group",
-            "name": "步骤3 瓶位2检测",
+            "name": "Step 3 Station 2 detect",
             "template": "L3_group/pos_detect.group.json",
             "params": [
                 53
@@ -69,7 +69,7 @@
         },
         {
             "type": "group",
-            "name": "步骤3 瓶位3检测",
+            "name": "Step 3 Station 3 detect",
             "template": "L3_group/pos_detect.group.json",
             "params": [
                 54
@@ -77,7 +77,7 @@
         },
         {
             "type": "group",
-            "name": "步骤3 瓶位4检测",
+            "name": "Step 3 Station 4 detect",
             "template": "L3_group/pos_detect.group.json",
             "params": [
                 55
@@ -85,7 +85,7 @@
         },
         {
             "type": "group",
-            "name": "步骤4 冲洗",
+            "name": "Step 4 Rinse",
             "template": "L3_group/rinse_cycle.group.json",
             "params": [
                 18,
@@ -94,7 +94,7 @@
         },
         {
             "type": "group",
-            "name": "步骤4 消毒",
+            "name": "Step 4 Sanitize",
             "template": "L3_group/rinse_cycle.group.json",
             "params": [
                 19,
@@ -103,7 +103,7 @@
         },
         {
             "type": "group",
-            "name": "步骤4 排放",
+            "name": "Step 4 Drain",
             "template": "L3_group/rinse_cycle.group.json",
             "params": [
                 20,
@@ -112,7 +112,7 @@
         },
         {
             "type": "group",
-            "name": "步骤5 灌装定位1",
+            "name": "Step 5 Filling positioning1",
             "template": "L3_group/axis_move_seq.group.json",
             "params": [
                 120000,
@@ -122,7 +122,7 @@
         },
         {
             "type": "group",
-            "name": "步骤5 灌装定位2",
+            "name": "Step 5 Filling positioning2",
             "template": "L3_group/axis_move_seq.group.json",
             "params": [
                 132000,
@@ -132,7 +132,7 @@
         },
         {
             "type": "group",
-            "name": "步骤5 灌装定位3",
+            "name": "Step 5 Filling positioning3",
             "template": "L3_group/axis_move_seq.group.json",
             "params": [
                 144000,
@@ -142,7 +142,7 @@
         },
         {
             "type": "group",
-            "name": "步骤5 灌装定位4",
+            "name": "Step 5 Filling positioning4",
             "template": "L3_group/axis_move_seq.group.json",
             "params": [
                 156000,
@@ -152,7 +152,7 @@
         },
         {
             "type": "group",
-            "name": "步骤6 灌装工位1",
+            "name": "Step 6 Filling station1",
             "template": "L3_group/fill_cycle.group.json",
             "params": [
                 17,
@@ -161,7 +161,7 @@
         },
         {
             "type": "group",
-            "name": "步骤6 灌装工位2",
+            "name": "Step 6 Filling station2",
             "template": "L3_group/fill_cycle.group.json",
             "params": [
                 17,
@@ -170,7 +170,7 @@
         },
         {
             "type": "group",
-            "name": "步骤6 灌装工位3",
+            "name": "Step 6 Filling station3",
             "template": "L3_group/fill_cycle.group.json",
             "params": [
                 17,
@@ -179,7 +179,7 @@
         },
         {
             "type": "group",
-            "name": "步骤6 灌装工位4",
+            "name": "Step 6 Filling station4",
             "template": "L3_group/fill_cycle.group.json",
             "params": [
                 17,
@@ -188,7 +188,7 @@
         },
         {
             "type": "group",
-            "name": "步骤7 液位复检1",
+            "name": "Step 7 Level recheck1",
             "template": "L3_group/level_recheck.group.json",
             "params": [
                 56
@@ -196,7 +196,7 @@
         },
         {
             "type": "group",
-            "name": "步骤7 液位复检2",
+            "name": "Step 7 Level recheck2",
             "template": "L3_group/level_recheck.group.json",
             "params": [
                 57
@@ -204,31 +204,31 @@
         },
         {
             "type": "group",
-            "name": "步骤8 旋盖",
+            "name": "Step 8 Capping",
             "template": "L3_group/capping_cycle.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "步骤9 打码贴标",
+            "name": "Step 9 coding/labeling",
             "template": "L3_group/coding_cycle.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "步骤10 推瓶出料",
+            "name": "Step 10 Push bottle discharge",
             "template": "L3_group/unload.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "步骤11 CIP清洗",
+            "name": "Step 11 CIP cleaning",
             "template": "L3_group/cip_cycle.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "步骤12 归零待机",
+            "name": "Step 12 Homing and standby",
             "template": "L3_group/home_standby.group.json",
             "params": []
         }

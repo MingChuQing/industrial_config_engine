@@ -39,7 +39,7 @@ namespace industrial_config_engine {
             file >> json;
         }
         catch (const std::exception& e) {
-            std::cerr << "加载配置文件失败: " << e.what() << std::endl;
+            std::cerr << "Failed to load config file: " << e.what() << std::endl;
             return false;
         }
 
@@ -76,7 +76,7 @@ namespace industrial_config_engine {
             return true;
         }
         catch (const std::exception& e) {
-            std::cerr << "解析配置JSON失败: " << e.what() << std::endl;
+            std::cerr << "Failed to parse config JSON: " << e.what() << std::endl;
             return false;
         }
     }

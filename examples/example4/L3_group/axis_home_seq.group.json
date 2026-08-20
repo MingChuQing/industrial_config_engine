@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "三轴回零",
+    "name": "Three-axis homing",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [],

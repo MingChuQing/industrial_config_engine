@@ -1,13 +1,13 @@
 {
     "type": "node_bundle",
-    "description": "数据计算类执行节点集合",
+    "description": "data computation node collection",
     "version": "1.0.0",
     "nodes": [
         {
             "filename": "calculate.s.r_f_calc_result",
             "type": "node",
-            "name": "计算表达式",
-            "description": "计算数学表达式并返回浮点结果",
+            "name": "calculate expression",
+            "description": "calculate math expression and return float",
             "params": ["0"],
             "timeout_ms": 5000,
             "max_retries": 0,
@@ -15,25 +15,25 @@
             "action": {
                 "template": "L1_action/data_actions.json/calculate.s.r_f_calc_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "type": "log",
-                    "message": "计算结果：${calc_result}"
+                    "message": "calculate result: ${calc_result}"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "计算失败"
+                    "message": "calculate failed"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "计算超时"
+                    "message": "calculate timeout"
                 }
             ]
         }

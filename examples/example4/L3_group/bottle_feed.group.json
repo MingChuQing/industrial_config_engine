@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "推瓶并检测到位",
+    "name": "Push bottle and detect position",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [

@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "CIP清洗循环",
+    "name": "CIP cleaning cycle",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [],

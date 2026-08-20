@@ -740,7 +740,7 @@ public:
             // confirm_between
             if (item.contains("confirm_between") && item["confirm_between"].is_boolean()) {
                 if (item["confirm_between"].get<bool>()) {
-                    cout << indent_str << "│  Confirm Between: true (需要用户确认)" << endl;
+                    cout << indent_str << "│  Confirm Between: true (user confirmation required)" << endl;
                 }
             }
 
@@ -1328,7 +1328,7 @@ int main(int argc, char* argv[]) {
         // Step 5: 完成
         // ============================================================
         cout << endl;
-        OutputFormatter::printHeader("加载完成");
+        OutputFormatter::printHeader("Load complete");
         cout << "  Total L1 Actions cached: " << l1_cache.getCacheKeys().size() << endl;
         cout << "  Total L2 Nodes cached: " << l2_cache.getCacheKeys().size() << endl;
         cout << "  Total L3 Groups loaded: " << groups.size() << endl;

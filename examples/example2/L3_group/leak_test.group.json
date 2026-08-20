@@ -1,7 +1,7 @@
 {
     "type": "group",
-    "name": "泄漏检测",
-    "description": "根据保压前后压力计算泄漏率并判断是否合格",
+    "name": "Leak Test",
+    "description": "Compute leak rate from hold pressures and judge ",
     "mode": "sequence",
     "max_nodes": 30,
     "timeout_ms": 120000,
@@ -14,7 +14,7 @@
         },
         {
             "type": "group",
-            "name": "判断泄漏率是否合格",
+            "name": "Judge if leak rate is qualified",
             "mode": "if",
             "max_nodes": 10,
             "timeout_ms": 10000,
@@ -23,28 +23,28 @@
                 "expression": "${leak_rate} <= 0.5"
             },
             "then": [
-                { "type": "log", "message": "泄漏检测合格" },
+                { "type": "log", "message": "Leak Testqualified" },
                 {
                     "type": "node",
                     "template": "L2_node/system_nodes.json/log.s",
-                    "params": ["泄漏检测合格，泄漏率=${leak_rate}%"]
+                    "params": ["Leak Testqualified, leak rate=${leak_rate}%"]
                 }
             ],
             "else": [
-                { "type": "log", "message": "泄漏检测不合格" },
+                { "type": "log", "message": "Leak Testunqualified" },
                 {
                     "type": "node",
                     "template": "L2_node/system_nodes.json/popup.s_s",
-                    "params": ["泄漏率${leak_rate}%，超过阈值0.5%", "error"]
+                    "params": ["Leak rate ${leak_rate}% exceeds 0.5% threshold", "error"]
                 }
             ],
             "on_timeout": [
-                { "type": "log", "message": "判断泄漏率超时" }
+                { "type": "log", "message": "Leak judgment timeout" }
             ]
         }
     ],
     "on_timeout": [
-        { "type": "log", "message": "泄漏检测超时" },
-        { "type": "popup", "message": "泄漏检测超时", "level": "error" }
+        { "type": "log", "message": "Leak Testtimeout" },
+        { "type": "popup", "message": "Leak Testtimeout", "level": "error" }
     ]
 }

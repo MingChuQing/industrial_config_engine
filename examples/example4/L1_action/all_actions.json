@@ -1,6 +1,6 @@
 {
     "type": "action_bundle",
-    "description": "饮料灌装线 L1 原子动作（iDM-RS 步进 + Modbus 设备）",
+    "description": "Beverage Filling line L1 atomic actions(iDM-RS stepper + Modbus device)",
     "actions": [
         {
             "filename": "motor_enable.r_b_enable_done",
@@ -11,7 +11,7 @@
             "filename": "motor_pr_abs.r_b_abs_done",
             "type": "modbus_write_verify",
             "request": "06 62 00 00 01",
-            "remark": "PR0=绝对位置"
+            "remark": "PR0=absolute position"
         },
         {
             "filename": "motor_pos_h.u16.r_b_pos_h",
@@ -50,19 +50,19 @@
             "filename": "motor_trigger.r_b_trigger_done",
             "type": "modbus_write_verify",
             "request": "06 60 02 00 10",
-            "remark": "触发路径0"
+            "remark": "trigger path 0"
         },
         {
             "filename": "motor_home_mode.r_b_home_mode",
             "type": "modbus_write_verify",
             "request": "06 60 0A 00 02",
-            "remark": "限位回零"
+            "remark": "limit homing"
         },
         {
             "filename": "motor_home_trigger.r_b_home_done",
             "type": "modbus_write_verify",
             "request": "06 60 02 00 20",
-            "remark": "触发回零"
+            "remark": "trigger homing"
         },
         {
             "filename": "motor_status.r_u16_status",
@@ -90,7 +90,7 @@
             "filename": "conveyor_speed_mode.r_b_speed_mode",
             "type": "modbus_write_verify",
             "request": "06 62 00 00 02",
-            "remark": "PR0=速度模式"
+            "remark": "PR0=speed mode"
         },
         {
             "filename": "conveyor_speed.u16.r_b_speed",
@@ -112,7 +112,7 @@
             "filename": "conveyor_stop.r_b_stop_done",
             "type": "modbus_write_verify",
             "request": "06 60 02 00 40",
-            "remark": "急停"
+            "remark": "emergency stop"
         },
         {
             "filename": "coil_write.u16_b.r_b_done",

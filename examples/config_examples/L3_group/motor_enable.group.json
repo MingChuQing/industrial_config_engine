@@ -1,13 +1,13 @@
 ﻿{
     "type": "group",
-    "name": "电机使能组",
-    "description": "使能指定的电机",
+    "name": "Motor enable group",
+    "description": "enable specified motor",
     "mode": "sequence",
     "max_nodes": 5,
     "body": [
         {
             "type": "node",
-            "name": "使能电机",
+            "name": "enable motor",
             "result_key": "enable_result",
             "params": {
                 "instance_id": "${instance_id}"
@@ -18,7 +18,7 @@
             "node": {
                 "template": "L2_node/motor_enable.r_b_enable_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -26,22 +26,22 @@
             "on_success": [
                 {
                     "type": "log",
-                    "message": "电机 ${instance_id} 使能成功"
+                    "message": "motor ${instance_id} enable success"
                 },
                 {
                     "type": "popup",
-                    "message": "电机 ${instance_id} 已使能",
+                    "message": "motor ${instance_id} enabled",
                     "level": "info"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "电机 ${instance_id} 使能失败"
+                    "message": "motor ${instance_id} enable failed"
                 },
                 {
                     "type": "popup",
-                    "message": "电机 ${instance_id} 使能失败，请检查通信",
+                    "message": "motor ${instance_id} enablefailed, check communication",
                     "level": "error"
                 }
             ]
@@ -52,7 +52,7 @@
             "index": 0,
             "name": "instance_id",
             "type": "s",
-            "desc": "设备实例 ID"
+            "desc": "device instance ID"
         }
     ]
 }

@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "输送带启动",
+    "name": "Conveyor start",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [

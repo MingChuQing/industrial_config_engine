@@ -1,12 +1,12 @@
 ﻿{
     "type": "action_bundle",
-    "description": "控制类原子操作集合 - 抽真空系统",
+    "description": "control action collection - Evacuationsystem",
     "version": "1.0.0",
     "actions": [
         {
             "filename": "wait.u16_s.r_b_wait_done",
             "type": "wait",
-            "description": "等待指定时间",
+            "description": "wait specified duration",
             "duration": "${duration}",
             "unit": "${unit}",
             "args": [
@@ -16,7 +16,7 @@
                     "type": "u16",
                     "min": 1,
                     "max": 65535,
-                    "desc": "等待时长"
+                    "desc": "wait duration"
                 },
                 {
                     "index": 1,
@@ -24,14 +24,14 @@
                     "type": "s",
                     "enum": [ "ms", "seconds", "minutes" ],
                     "default": "seconds",
-                    "desc": "时间单位"
+                    "desc": "time unit"
                 }
             ]
         },
         {
             "filename": "wait_ms.u16.r_b_wait_done",
             "type": "wait",
-            "description": "等待指定毫秒数（简化版）",
+            "description": "Wait milliseconds(simplified)",
             "duration": "${duration}",
             "unit": "ms",
             "args": [
@@ -41,7 +41,7 @@
                     "type": "u16",
                     "min": 1,
                     "max": 65535,
-                    "desc": "等待毫秒数"
+                    "desc": "wait milliseconds"
                 }
             ]
         }

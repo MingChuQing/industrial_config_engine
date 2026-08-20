@@ -1,12 +1,12 @@
 {
     "type": "action_bundle",
-    "description": "数据计算类原子操作集合",
+    "description": "data computation action collection",
     "version": "1.0.0",
     "actions": [
         {
             "filename": "calculate.s.r_f_calc_result",
             "type": "calculate",
-            "description": "计算数学表达式并返回浮点结果",
+            "description": "calculate math expression and return float",
             "args": [
                 { "index": 0, "name": "expression", "type": "s" }
             ]

@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "阀控循环(开-计时-关)",
+    "name": "Valve cycle (open-timer-close)",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [

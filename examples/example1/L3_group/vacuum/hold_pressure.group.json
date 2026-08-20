@@ -1,7 +1,7 @@
 {
     "type": "group",
-    "name": "保压测试",
-    "description": "关闭所有阀门，保压指定时间",
+    "name": "Pressure Hold",
+    "description": "close all valves, hold pressure for specified time",
     "mode": "sequence",
     "max_nodes": 20,
     "timeout_ms": 180000,
@@ -32,11 +32,11 @@
     "on_timeout": [
         {
             "type": "log",
-            "message": "保压测试超时"
+            "message": "Pressure Holdtimeout"
         },
         {
             "type": "popup",
-            "message": "保压测试超时",
+            "message": "Pressure Holdtimeout",
             "level": "error"
         }
     ]

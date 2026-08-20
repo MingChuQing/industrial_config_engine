@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "气缸复位",
+    "name": "Cylinder reset",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [],

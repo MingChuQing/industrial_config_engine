@@ -1,13 +1,13 @@
 {
     "type": "group",
-    "name": "点动找光电开关",
-    "description": "点动前进直到触发光电开关，返回精确位置",
+    "name": "Jog to find sensor",
+    "description": "Jog forward until sensor triggers, return precise position",
     "mode": "sequence",
     "max_nodes": 30,
     "timeout_ms": 60000,
     "args": [
-        { "index": 0, "name": "sensor_register", "type": "u8", "desc": "光电开关寄存器地址" },
-        { "index": 1, "name": "timeout", "type": "u16", "default": 10000, "desc": "超时(毫秒)" }
+        { "index": 0, "name": "sensor_register", "type": "u8", "desc": "photoelectric switch register address" },
+        { "index": 1, "name": "timeout", "type": "u16", "default": 10000, "desc": "timeout(ms)" }
     ],
     "body": [
         {
@@ -17,7 +17,7 @@
         },
         {
             "type": "group",
-            "name": "循环检测光电开关",
+            "name": "Loop sensor detection",
             "mode": "loop",
             "max_nodes": 20,
             "timeout_ms": "${timeout}",
@@ -38,16 +38,16 @@
                 }
             ],
             "on_success": [
-                { "type": "log", "message": "光电开关已触发" }
+                { "type": "log", "message": "Sensor triggered" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "检测光电开关超时" },
+                { "type": "log", "message": "Sensor detection timeout" },
                 {
                     "type": "node",
                     "template": "L2_node/leadshine_nodes.json/stop_jog.r_b_jog_stop_result",
                     "params": []
                 },
-                { "type": "popup", "message": "未检测到光电开关触发", "level": "error" }
+                { "type": "popup", "message": "Sensor not triggered", "level": "error" }
             ]
         },
         {
@@ -62,12 +62,12 @@
         }
     ],
     "on_timeout": [
-        { "type": "log", "message": "点动找光电开关组超时" },
+        { "type": "log", "message": "Jog to find sensorgroup timeout" },
         {
             "type": "node",
             "template": "L2_node/leadshine_nodes.json/stop_jog.r_b_jog_stop_result",
             "params": []
         },
-        { "type": "popup", "message": "点动找光电开关超时", "level": "error" }
+        { "type": "popup", "message": "Jog to find sensortimeout", "level": "error" }
     ]
 }

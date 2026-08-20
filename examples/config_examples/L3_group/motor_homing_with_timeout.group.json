@@ -1,7 +1,7 @@
 {
     "type": "group",
-    "name": "电机回零（带超时检测）",
-    "description": "触发电机回零，循环检测状态直到完成或30秒超时",
+    "name": "Motor homing (with timeout check)",
+    "description": "trigger motor homing, loop check statusuntildoneor 30 s timeout",
     "mode": "sequence",
     "max_nodes": 10,
     "delay_between": 0,
@@ -9,8 +9,8 @@
     "body": [
         {
             "type": "node",
-            "name": "设置回零模式",
-            "description": "设置为原点回零模式 (0x600A = 0x0002)",
+            "name": "set homing mode",
+            "description": "set to origin homing mode (0x600A = 0x0002)",
             "params": {
                 "instance_id": "${instance_id}",
                 "mode": "0x0002"
@@ -21,7 +21,7 @@
             "node": {
                 "template": "L2_node/set_homing_mode.u16.r_b_mode_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -29,25 +29,25 @@
             "on_success": [
                 {
                     "type": "log",
-                    "message": "${instance_id} 回零模式已设置（原点回零）"
+                    "message": "${instance_id} homing mode set (origin homing)"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "${instance_id} 回零模式设置失败"
+                    "message": "${instance_id} homing mode set failed"
                 },
                 {
                     "type": "popup",
-                    "message": "回零模式设置失败，请检查通信",
+                    "message": "homing mode set failed, check communication",
                     "level": "error"
                 }
             ]
         },
         {
             "type": "node",
-            "name": "触发回零",
-            "description": "发送回零触发命令 (0x6002 = 0x0020)",
+            "name": "trigger homing",
+            "description": "send homing trigger command (0x6002 = 0x0020)",
             "params": {
                 "instance_id": "${instance_id}"
             },
@@ -57,7 +57,7 @@
             "node": {
                 "template": "L2_node/trigger_homing.r_b_homing_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -65,13 +65,13 @@
             "on_success": [
                 {
                     "type": "log",
-                    "message": "${instance_id} 回零已触发"
+                    "message": "${instance_id} homing triggered"
                 },
                 {
                     "type": "ui_action",
                     "action": "update_status",
                     "data": {
-                        "text": "回零中...",
+                        "text": "homing...",
                         "color": "yellow"
                     }
                 }
@@ -79,19 +79,19 @@
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "${instance_id} 回零触发失败"
+                    "message": "${instance_id} homing trigger failed"
                 },
                 {
                     "type": "popup",
-                    "message": "回零触发失败，请检查通信",
+                    "message": "homingtrigger failed, check communication",
                     "level": "error"
                 }
             ]
         },
         {
             "type": "node",
-            "name": "等待回零完成（循环检测，30秒超时）",
-            "description": "循环读取运行状态 (0x1003)，检查 Bit6（回零完成）",
+            "name": "Wait homing done (loop check, 30 s timeout)",
+            "description": "loop read running status (0x1003), check  Bit6(homing done)",
             "params": {
                 "instance_id": "${instance_id}"
             },
@@ -101,45 +101,45 @@
             "node": {
                 "template": "L2_node/read_status.r_u16_motor_status"
             },
-            "judge": {
+            "judge ": {
                 "type": "expression",
                 "expression": "(${motor_status} & 0x40) != 0"
             },
             "on_success": [
                 {
                     "type": "log",
-                    "message": "${instance_id} 回零完成！状态: ${motor_status}"
+                    "message": "${instance_id} homingdone! status: ${motor_status}"
                 },
                 {
                     "type": "ui_action",
                     "action": "update_status",
                     "data": {
-                        "text": "回零完成",
+                        "text": "homing done",
                         "color": "green"
                     }
                 },
                 {
                     "type": "popup",
-                    "message": "电机 ${instance_id} 回零完成",
+                    "message": "motor ${instance_id} homing done",
                     "level": "info"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "${instance_id} 回零超时（30秒），当前状态: ${motor_status}"
+                    "message": "${instance_id} homing timeout (30 s), current status: ${motor_status}"
                 },
                 {
                     "type": "ui_action",
                     "action": "update_status",
                     "data": {
-                        "text": "回零超时",
+                        "text": "homing timeout",
                         "color": "red"
                     }
                 },
                 {
                     "type": "popup",
-                    "message": "电机 ${instance_id} 回零超时！请检查机械或传感器",
+                    "message": "motor ${instance_id} homing timeout！, check mechanics or sensor",
                     "level": "error"
                 }
             ]
@@ -150,7 +150,7 @@
             "index": 0,
             "name": "instance_id",
             "type": "s",
-            "desc": "设备实例 ID（如 X_Axis、Y_Axis）"
+            "desc": "device instance ID (e.g. X_Axis, Y_Axis)"
         }
     ]
 }

@@ -1,7 +1,7 @@
 {
     "type": "group",
-    "name": "气密性检测保压阶段",
-    "description": "等待压力稳定，记录初始压力",
+    "name": "Leak testingHold stage",
+    "description": "wait pressure stable, record initial pressure",
     "mode": "sequence",
     "max_nodes": 10,
     "delay_between": 0,
@@ -9,7 +9,7 @@
     "body": [
         {
             "type": "node",
-            "name": "等待压力稳定",
+            "name": "wait pressure stable",
             "params": ["${pressure_channel}", "${stable_threshold}", "${dwell_time}"],
             "timeout_ms": "${dwell_time}",
             "max_retries": 3,
@@ -22,7 +22,7 @@
         },
         {
             "type": "node",
-            "name": "记录稳定压力P_start",
+            "name": "record stable pressureP_start",
             "result_key": "p_start",
             "params": ["${pressure_channel}"],
             "timeout_ms": 1000,
@@ -38,8 +38,8 @@
         }
     ],
     "args": [
-        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
-        { "index": 1, "name": "dwell_time", "type": "u16", "default": 5000, "desc": "保压时间(ms)" },
-        { "index": 2, "name": "stable_threshold", "type": "f", "default": 0.1, "desc": "稳定阈值(kPa/s)" }
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "pressure sensor channel" },
+        { "index": 1, "name": "dwell_time", "type": "u16", "default": 5000, "desc": "pressure hold time(ms)" },
+        { "index": 2, "name": "stable_threshold", "type": "f", "default": 0.1, "desc": "stability threshold(kPa/s)" }
     ]
 }

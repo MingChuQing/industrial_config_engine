@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "四工位瓶检测",
+    "name": "Four-station bottle detection",
     "mode": "loop",
     "timeout_ms": 60000,
     "args": [

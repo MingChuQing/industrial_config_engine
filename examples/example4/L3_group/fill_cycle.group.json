@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "灌装循环",
+    "name": "Fillingloop ",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [

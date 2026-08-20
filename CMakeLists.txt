@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # ============================================================
-# 编译选项 - 添加 UTF-8 支持
+# Compile options - add UTF-8 support
 # ============================================================
 if(MSVC)
     add_compile_options(/utf-8)
@@ -17,12 +17,12 @@ else()
 endif()
 
 # ============================================================
-# 选项
+# Options
 # ============================================================
-option(BUILD_DEMOS "构建演示程序" ON)
+option(BUILD_DEMOS "Build demo programs" ON)
 
 # ============================================================
-# 主库 - 只包含库源文件，不包含 demo
+# Main library - library sources only, no demos
 # ============================================================
 set(LIB_SOURCES
     src/l1_action.cpp
@@ -37,17 +37,17 @@ set(LIB_SOURCES
 
 add_library(industrial_config_engine STATIC ${LIB_SOURCES})
 
-# 包含目录
+# Include directories
 target_include_directories(industrial_config_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party
 )
 
 # ============================================================
-# 演示程序 - 每个 demo 只包含自己的源文件
+# Demo programs - each demo contains only its own source
 # ============================================================
 if(BUILD_DEMOS)
-    # 1. demo_types - 类型系统演示
+    # 1. demo_types - type system demo
     add_executable(demo_types
         demos/demo_types.cpp
     )
@@ -58,7 +58,7 @@ if(BUILD_DEMOS)
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     )
 
-    # 2. demo_l1_action_loader - L1 Action加载器演示
+    # 2. demo_l1_action_loader - L1 Action loader demo
     add_executable(demo_l1_action_loader
         demos/demo_l1_action_loader.cpp
     )
@@ -69,7 +69,7 @@ if(BUILD_DEMOS)
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     )
 
-    # 3. demo_l2_node_loader - L2 Node加载器演示
+    # 3. demo_l2_node_loader - L2 Node loader demo
     add_executable(demo_l2_node_loader
         demos/demo_l2_node_loader.cpp
     )
@@ -80,7 +80,7 @@ if(BUILD_DEMOS)
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     )
 
-    # 4. demo_l3_group_loader - L3 Group加载器演示
+    # 4. demo_l3_group_loader - L3 Group loader demo
     add_executable(demo_l3_group_loader
         demos/demo_l3_group_loader.cpp
     )
@@ -91,7 +91,7 @@ if(BUILD_DEMOS)
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     )
 
-    # 5. demo_l3_nested_group - L3嵌套Group演示
+    # 5. demo_l3_nested_group - L3 nested Group demo
     add_executable(demo_l3_nested_group
         demos/demo_l3_nested_group.cpp
     )
@@ -102,7 +102,7 @@ if(BUILD_DEMOS)
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     )
 
-    # 6. demo_l4_flow_loader - L4 Flow加载器演示
+    # 6. demo_l4_flow_loader - L4 Flow loader demo
     add_executable(demo_l4_flow_loader
         demos/demo_l4_flow_loader.cpp
     )
@@ -113,7 +113,7 @@ if(BUILD_DEMOS)
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     )
 
-    # 7. demo_simulator - 仿真运行器演示（虚拟设备 + 变量存储 + 审计日志 + 错误注入）
+    # 7. demo_simulator - simulator demo (virtual devices + variable store + audit log + fault injection)
     add_executable(demo_simulator
         demos/demo_simulator.cpp
     )
@@ -123,28 +123,40 @@ if(BUILD_DEMOS)
     set_target_properties(demo_simulator PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     )
+
+    # 8. demo_summary - one-click run of all paper conclusions (English output)
+    add_executable(demo_summary
+        demos/demo_summary.cpp
+    )
+    target_link_libraries(demo_summary
+        industrial_config_engine
+    )
+    set_target_properties(demo_summary PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    )
 endif()
 
 # ============================================================
-# 打印信息
+# Print info
 # ============================================================
 message(STATUS "========================================")
-message(STATUS "工业配置引擎 v${PROJECT_VERSION}")
+message(STATUS "Industrial Config Engine v${PROJECT_VERSION}")
 message(STATUS "========================================")
-message(STATUS "C++ 标准: ${CMAKE_CXX_STANDARD}")
-message(STATUS "源文件: ${LIB_SOURCES}")
-message(STATUS "包含路径: ${CMAKE_CURRENT_SOURCE_DIR}/third_party")
+message(STATUS "C++ standard: ${CMAKE_CXX_STANDARD}")
+message(STATUS "Sources: ${LIB_SOURCES}")
+message(STATUS "Include path: ${CMAKE_CURRENT_SOURCE_DIR}/third_party")
 message(STATUS "========================================")
 
 if(BUILD_DEMOS)
-    message(STATUS "演示程序:")
-    message(STATUS "  - demo_types: 类型系统演示")
-    message(STATUS "  - demo_l1_action_loader: L1 Action加载器演示")
-    message(STATUS "  - demo_l2_node_loader: L2 Node加载器演示")
-    message(STATUS "  - demo_l3_group_loader: L3 Group加载器演示")
-    message(STATUS "  - demo_l3_nested_group: L3嵌套Group演示")
-    message(STATUS "  - demo_l4_flow_loader: L4 Flow加载器演示")
-    message(STATUS "  - demo_simulator: 仿真运行器演示")
-    message(STATUS "输出目录: ${CMAKE_BINARY_DIR}/bin")
+    message(STATUS "Demo programs:")
+    message(STATUS "  - demo_types: type system demo")
+    message(STATUS "  - demo_l1_action_loader: L1 Action loader demo")
+    message(STATUS "  - demo_l2_node_loader: L2 Node loader demo")
+    message(STATUS "  - demo_l3_group_loader: L3 Group loader demo")
+    message(STATUS "  - demo_l3_nested_group: L3 nested Group demo")
+    message(STATUS "  - demo_l4_flow_loader: L4 Flow loader demo")
+    message(STATUS "  - demo_simulator: simulator demo")
+    message(STATUS "  - demo_summary: one-click run of all paper conclusions")
+    message(STATUS "Output directory: ${CMAKE_BINARY_DIR}/bin")
     message(STATUS "========================================")
 endif()

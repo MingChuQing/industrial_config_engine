@@ -1,12 +1,12 @@
 {
     "type": "action_bundle",
-    "description": "Modbus通信类原子操作集合",
+    "description": "Modbus communicationaction collection",
     "version": "1.0.0",
     "actions": [
         {
             "filename": "read_pressure.u8_u16.r_u16_pressure",
             "type": "modbus_read_cache",
-            "description": "读取压力传感器值",
+            "description": "Read Pressure sensor value",
             "protocol": "modbus",
             "request": "03 ${slave_id} ${register} 00 01",
             "parse": {
@@ -24,7 +24,7 @@
         {
             "filename": "write_coil_on.r_b_coil_on_result",
             "type": "modbus_write_verify",
-            "description": "写线圈开",
+            "description": "write coil on",
             "protocol": "modbus",
             "request": "05 ${coil} FF 00",
             "response": "05 ${coil} FF 00",
@@ -36,7 +36,7 @@
         {
             "filename": "write_coil_off.r_b_coil_off_result",
             "type": "modbus_write_verify",
-            "description": "写线圈关",
+            "description": "write coil off",
             "protocol": "modbus",
             "request": "05 ${coil} 00 00",
             "response": "05 ${coil} 00 00",
@@ -48,7 +48,7 @@
         {
             "filename": "write_register.u16_u16.r_b_write_register_result",
             "type": "modbus_write_verify",
-            "description": "写寄存器",
+            "description": "write register",
             "protocol": "modbus",
             "request": "06 ${register} ${value_high} ${value_low}",
             "response": "06 ${register} ${value_high} ${value_low}",

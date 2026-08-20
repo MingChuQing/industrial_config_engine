@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "推瓶出料",
+    "name": "Push bottle discharge",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [],

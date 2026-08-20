@@ -38,7 +38,7 @@ namespace industrial_config_engine {
     bool ActionLoader::loadSingleFile(const std::string& filepath) {
         if (!fs::exists(filepath)) {
             if (error_callback_) {
-                error_callback_(filepath, "文件不存在");
+                error_callback_(filepath, "file does not exist");
             }
             error_count_++;
             return false;
@@ -46,7 +46,7 @@ namespace industrial_config_engine {
 
         if (!fs::is_regular_file(filepath)) {
             if (error_callback_) {
-                error_callback_(filepath, "不是普通文件");
+                error_callback_(filepath, "not a regular file");
             }
             error_count_++;
             return false;
@@ -56,7 +56,7 @@ namespace industrial_config_engine {
         std::string ext = fs::path(filepath).extension().string();
         if (!isSupportedExtension(ext)) {
             if (error_callback_) {
-                error_callback_(filepath, "不支持的文件类型: " + ext);
+                error_callback_(filepath, "unsupported file type: " + ext);
             }
             error_count_++;
             return false;
@@ -75,7 +75,7 @@ namespace industrial_config_engine {
     bool ActionLoader::loadDirectory(const std::string& directory_path, bool recursive) {
         if (!fs::exists(directory_path) || !fs::is_directory(directory_path)) {
             if (error_callback_) {
-                error_callback_(directory_path, "目录不存在或不是目录");
+                error_callback_(directory_path, "directory does not exist or is not a directory");
             }
             error_count_++;
             return false;
@@ -104,7 +104,7 @@ namespace industrial_config_engine {
             }
             catch (const std::exception& e) {
                 if (error_callback_) {
-                    error_callback_(directory_path, std::string("遍历目录失败: ") + e.what());
+                    error_callback_(directory_path, std::string("failed to iterate directory: ") + e.what());
                 }
                 error_count_++;
                 return false;
@@ -155,7 +155,7 @@ namespace industrial_config_engine {
             }
             else {
                 if (error_callback_) {
-                    error_callback_(path, "路径不存在或不是文件/目录");
+                    error_callback_(path, "path does not exist or is not a file/directory");
                 }
                 all_success = false;
             }
@@ -170,7 +170,7 @@ namespace industrial_config_engine {
         }
         catch (const std::exception& e) {
             if (error_callback_) {
-                error_callback_(virtual_path, std::string("JSON解析错误: ") + e.what());
+                error_callback_(virtual_path, std::string("JSON parse error: ") + e.what());
             }
             error_count_++;
             return false;
@@ -199,7 +199,7 @@ namespace industrial_config_engine {
         }
         catch (const std::exception& e) {
             if (error_callback_) {
-                error_callback_(virtual_path, std::string("加载失败: ") + e.what());
+                error_callback_(virtual_path, std::string("load failed: ") + e.what());
             }
             error_count_++;
             return false;
@@ -316,7 +316,7 @@ namespace industrial_config_engine {
             std::ifstream file(filepath);
             if (!file.is_open()) {
                 if (error_callback_) {
-                    error_callback_(filepath, "无法打开文件");
+                    error_callback_(filepath, "cannot open file");
                 }
                 error_count_++;
                 return false;
@@ -337,7 +337,7 @@ namespace industrial_config_engine {
         }
         catch (const std::exception& e) {
             if (error_callback_) {
-                error_callback_(filepath, std::string("加载失败: ") + e.what());
+                error_callback_(filepath, std::string("load failed: ") + e.what());
             }
             error_count_++;
             return false;
@@ -355,7 +355,7 @@ namespace industrial_config_engine {
             if (hasAction(key)) {
                 if (!allow_overwrite_) {
                     if (error_callback_) {
-                        error_callback_(key, "Action已存在，跳过加载（allow_overwrite=false）");
+                        error_callback_(key, "Action already exists, skipping load (allow_overwrite=false)");
                     }
                     return false;
                 }
@@ -369,7 +369,7 @@ namespace industrial_config_engine {
                 const auto& sig = action.getSignature();
                 if (sig.name.empty()) {
                     if (error_callback_) {
-                        error_callback_(filename, "无效的Action签名");
+                        error_callback_(filename, "invalid Action signature");
                     }
                     error_count_++;
                     return false;
@@ -388,7 +388,7 @@ namespace industrial_config_engine {
         }
         catch (const std::exception& e) {
             if (error_callback_) {
-                error_callback_(base_path + "/" + filename, std::string("加载Action失败: ") + e.what());
+                error_callback_(base_path + "/" + filename, std::string("failed to load Action: ") + e.what());
             }
             error_count_++;
             return false;
@@ -401,7 +401,7 @@ namespace industrial_config_engine {
         try {
             if (!json.contains("actions") || !json["actions"].is_array()) {
                 if (error_callback_) {
-                    error_callback_(base_path + "/" + bundle_filename, "聚合文件缺少actions数组");
+                    error_callback_(base_path + "/" + bundle_filename, "bundle file missing actions array");
                 }
                 error_count_++;
                 return false;
@@ -415,7 +415,7 @@ namespace industrial_config_engine {
             for (const auto& action_json : json["actions"]) {
                 if (!action_json.contains("filename") || !action_json["filename"].is_string()) {
                     if (error_callback_) {
-                        error_callback_(base_path + "/" + bundle_filename, "action缺少filename字段");
+                        error_callback_(base_path + "/" + bundle_filename, "action missing filename field");
                     }
                     error_count_++;
                     continue;
@@ -428,7 +428,7 @@ namespace industrial_config_engine {
                 if (hasAction(key)) {
                     if (!allow_overwrite_) {
                         if (error_callback_) {
-                            error_callback_(key, "Action已存在，跳过加载");
+                            error_callback_(key, "Action already exists, skipping load");
                         }
                         continue;
                     }
@@ -441,7 +441,7 @@ namespace industrial_config_engine {
                     const auto& sig = action.getSignature();
                     if (sig.name.empty()) {
                         if (error_callback_) {
-                            error_callback_(action_filename, "无效的Action签名");
+                            error_callback_(action_filename, "invalid Action signature");
                         }
                         error_count_++;
                         continue;
@@ -461,7 +461,7 @@ namespace industrial_config_engine {
         }
         catch (const std::exception& e) {
             if (error_callback_) {
-                error_callback_(base_path + "/" + bundle_filename, std::string("加载聚合文件失败: ") + e.what());
+                error_callback_(base_path + "/" + bundle_filename, std::string("failed to load bundle file: ") + e.what());
             }
             error_count_++;
             return false;
@@ -541,7 +541,7 @@ namespace industrial_config_engine {
         }
         catch (const std::exception& e) {
             if (error_callback_) {
-                error_callback_(directory_path, std::string("遍历目录失败: ") + e.what());
+                error_callback_(directory_path, std::string("failed to iterate directory: ") + e.what());
             }
         }
     }
@@ -566,27 +566,27 @@ namespace industrial_config_engine {
 
     std::ostream& operator<<(std::ostream& os, const ActionLoader& loader) {
         os << "========================================" << std::endl;
-        os << "ActionLoader 信息" << std::endl;
+        os << "ActionLoader info" << std::endl;
         os << "========================================" << std::endl;
-        os << "Action总数: " << loader.getActionCount() << std::endl;
-        os << "加载文件数: " << loader.getLoadedFileCount() << std::endl;
-        os << "错误数: " << loader.getErrorCount() << std::endl;
-        os << "严格模式: " << (loader.getStrictMode() ? "开启" : "关闭") << std::endl;
-        os << "允许覆盖: " << (loader.getAllowOverwrite() ? "是" : "否") << std::endl;
+        os << "Action total: " << loader.getActionCount() << std::endl;
+        os << "Loaded files: " << loader.getLoadedFileCount() << std::endl;
+        os << "Errors: " << loader.getErrorCount() << std::endl;
+        os << "Strict mode: " << (loader.getStrictMode() ? "on" : "off") << std::endl;
+        os << "Allow overwrite: " << (loader.getAllowOverwrite() ? "yes" : "no") << std::endl;
 
         // 类型统计
         auto type_stats = loader.getTypeStatistics();
         if (!type_stats.empty()) {
-            os << "\n类型统计:" << std::endl;
+            os << "\nType statistics:" << std::endl;
             for (const auto& [type, count] : type_stats) {
-                os << "  " << type << ": " << count << " 个" << std::endl;
+                os << "  " << type << ": " << count << "" << std::endl;
             }
         }
 
         // Action列表
         auto keys = loader.getActionKeys();
         if (!keys.empty()) {
-            os << "\nAction列表:" << std::endl;
+            os << "\nAction list:" << std::endl;
             for (const auto& key : keys) {
                 os << "  - " << key << std::endl;
             }

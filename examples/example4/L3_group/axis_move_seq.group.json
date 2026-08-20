@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "三轴移动到工位",
+    "name": "Move three axes to station",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [

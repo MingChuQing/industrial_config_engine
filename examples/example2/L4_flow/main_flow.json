@@ -1,7 +1,7 @@
 {
     "type": "flow",
-    "name": "真空工艺主流程",
-    "description": "完整的真空工艺流程：系统自检 → 抽真空 → 保压 → 泄漏检测 → 结果记录",
+    "name": "Vacuum Process Main Flow",
+    "description": "Complete Vacuum Process Flow: System Check -> Evacuation -> pressure hold -> Leak Test -> Result Log",
     "mode": "sequence",
     "max_nodes": 50,
     "timeout_ms": 600000,
@@ -33,7 +33,7 @@
         }
     ],
     "on_timeout": [
-        { "type": "log", "message": "主流程超时" },
-        { "type": "popup", "message": "真空工艺主流程执行超时", "level": "error" }
+        { "type": "log", "message": "Main flow timeout" },
+        { "type": "popup", "message": "Vacuum Process Main Flowexecution timeout", "level": "error" }
     ]
 }

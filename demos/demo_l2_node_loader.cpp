@@ -813,7 +813,7 @@ int main(int argc, char* argv[]) {
         }
 
         cout << endl;
-        OutputFormatter::printHeader("加载完成");
+        OutputFormatter::printHeader("Load complete");
         cout << "  Total L1 Actions cached: " << cache.getCacheKeys().size() << endl;
         cout << "  Total L2 Nodes loaded: " << nodes.size() << endl;
         cout << endl;

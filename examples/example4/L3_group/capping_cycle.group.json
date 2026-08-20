@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "旋盖循环",
+    "name": "Cappingloop ",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [],

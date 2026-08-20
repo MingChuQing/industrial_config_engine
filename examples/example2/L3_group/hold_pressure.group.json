@@ -1,7 +1,7 @@
 {
     "type": "group",
-    "name": "保压测试",
-    "description": "关闭所有阀门，记录初始压力，保压指定时间后读取保压后压力",
+    "name": "Pressure Hold",
+    "description": "Close all valves, record initial pressure, hold, read final pressure",
     "mode": "sequence",
     "max_nodes": 20,
     "timeout_ms": 180000,
@@ -30,7 +30,7 @@
         }
     ],
     "on_timeout": [
-        { "type": "log", "message": "保压测试超时" },
-        { "type": "popup", "message": "保压测试超时", "level": "error" }
+        { "type": "log", "message": "Pressure Holdtimeout" },
+        { "type": "popup", "message": "Pressure Holdtimeout", "level": "error" }
     ]
 }

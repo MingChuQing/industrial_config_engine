@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "全部阀门关闭",
+    "name": "Close all valves",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [],

@@ -1,7 +1,7 @@
 ﻿{
 	"type": "group",
-	"name": "紧急停止",
-	"description": "紧急停止所有设备",
+	"name": "emergency stop",
+	"description": "emergency stop all devices",
 	"mode": "parallel",
 	"max_nodes": 20,
 	"timeout_ms": 10000,
@@ -20,7 +20,7 @@
 	"on_timeout": [
 		{
 			"type": "log",
-			"message": "[EMERGENCY] 紧急停止超时"
+			"message": "[EMERGENCY] emergency stop timeout"
 		}
 	]
 }

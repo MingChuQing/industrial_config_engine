@@ -1,12 +1,12 @@
 ﻿{
     "type": "flow",
-    "name": "主生产流程",
-    "description": " 步进电机测试流程",
+    "name": "Main production flow",
+    "description": " stepper motor test flow",
     "version": "1.0.0",
     "timeout_ms": 60000,
     "profiles": {
         "production": {
-            "description": "生产模式",
+            "description": "production mode",
             "params": {
                 "target_axis": "X_Axis"
             }
@@ -16,19 +16,19 @@
     "body": [
         {
             "type": "group",
-            "name": "步骤1：使能电机",
+            "name": "Step 1: enable motor",
             "template": "L3_group/motor_enable.group",
             "params": ["${profile.target_axis}"]
         },
         {
             "type": "group",
-            "name": "步骤2：电机回零（带超时检测）",
+            "name": "Step 2: Motor homing (with timeout check)",
             "template": "L3_group/motor_homing_with_timeout.group",
             "params": ["${profile.target_axis}"]
         },
         {
             "type": "group",
-            "name": "步骤3：读取最终状态",
+            "name": "Step 3: read final status",
             "template": "L3_group/read_status.group",
             "params": ["${profile.target_axis}"]
         }

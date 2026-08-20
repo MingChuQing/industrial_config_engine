@@ -1,12 +1,12 @@
 {
     "type": "action_bundle",
-    "description": "控制类原子操作集合",
+    "description": "control action collection",
     "version": "1.0.0",
     "actions": [
         {
             "filename": "wait.u16.r_b_wait_done",
             "type": "wait",
-            "description": "等待指定毫秒数",
+            "description": "Wait milliseconds",
             "args": [
                 { "index": 0, "name": "ms", "type": "u16", "min": 0, "max": 60000 }
             ]
@@ -14,7 +14,7 @@
         {
             "filename": "wait_seconds.u16.r_b_wait_done",
             "type": "wait",
-            "description": "等待指定秒数",
+            "description": "Wait seconds",
             "args": [
                 { "index": 0, "name": "seconds", "type": "u16", "min": 0, "max": 3600 }
             ]

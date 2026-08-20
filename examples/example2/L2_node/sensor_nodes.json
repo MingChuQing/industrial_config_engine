@@ -1,13 +1,13 @@
 {
     "type": "node_bundle",
-    "description": "传感器类执行节点集合",
+    "description": "sensor node collection",
     "version": "1.0.0",
     "nodes": [
         {
             "filename": "check_sensor_triggered.u8.r_b_sensor_triggered",
             "type": "node",
-            "name": "检查光电开关是否触发",
-            "description": "读取光电开关状态，判断是否触发（值为1）",
+            "name": "Check sensor trigger",
+            "description": "Read sensor state, judge  triggered (value 1)",
             "params": [512],
             "timeout_ms": 2000,
             "max_retries": 0,
@@ -15,7 +15,7 @@
             "action": {
                 "template": "L1_action/leadshine_actions.json/read_sensor.u8.r_u16_sensor_value"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": 1
@@ -23,27 +23,27 @@
             "on_success": [
                 {
                     "type": "log",
-                    "message": "光电开关已触发，值：${sensor_value}"
+                    "message": "Sensor triggered, value: ${sensor_value}"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "光电开关未触发，值：${sensor_value}"
+                    "message": "Sensor not triggered, value: ${sensor_value}"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "检查光电开关超时"
+                    "message": "Sensor check timeout"
                 }
             ]
         },
         {
             "filename": "read_sensor_value.u8.r_u16_sensor_value",
             "type": "node",
-            "name": "读取光电开关值",
-            "description": "读取光电开关当前数值",
+            "name": "Read sensor value",
+            "description": "Read current sensor value",
             "params": [512],
             "timeout_ms": 2000,
             "max_retries": 0,
@@ -51,25 +51,25 @@
             "action": {
                 "template": "L1_action/leadshine_actions.json/read_sensor.u8.r_u16_sensor_value"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "type": "log",
-                    "message": "光电开关值：${sensor_value}"
+                    "message": "Sensor value: ${sensor_value}"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "读取光电开关失败"
+                    "message": "Failed to read sensor"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "读取光电开关超时"
+                    "message": "read photoelectric switch timeout"
                 }
             ]
         }

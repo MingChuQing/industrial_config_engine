@@ -1,7 +1,7 @@
 {
     "type": "group",
-    "name": "读取状态组",
-    "description": "读取指定电机的运行状态",
+    "name": "Read status group",
+    "description": "read specified motor running status",
     "mode": "sequence",
     "max_nodes": 5,
     "delay_between": 0,
@@ -9,7 +9,7 @@
     "body": [
         {
             "type": "node",
-            "name": "读取状态",
+            "name": "read status",
             "result_key": "status_result",
             "params": {
                 "instance_id": "${instance_id}"
@@ -20,19 +20,19 @@
             "node": {
                 "template": "L2_node/read_status.r_u16_motor_status"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "type": "log",
-                    "message": "电机 ${instance_id} 状态: ${status_result}"
+                    "message": "motor ${instance_id} status: ${status_result}"
                 },
                 {
                     "type": "ui_action",
                     "action": "update_status",
                     "data": {
-                        "text": "状态: ${status_result}",
+                        "text": "status: ${status_result}",
                         "color": "blue"
                     }
                 }
@@ -40,11 +40,11 @@
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "电机 ${instance_id} 状态读取失败"
+                    "message": "motor ${instance_id} status read failed"
                 },
                 {
                     "type": "popup",
-                    "message": "读取状态失败，请检查通信",
+                    "message": "read statusfailed, check communication",
                     "level": "warning"
                 }
             ]
@@ -55,7 +55,7 @@
             "index": 0,
             "name": "instance_id",
             "type": "s",
-            "desc": "设备实例 ID"
+            "desc": "device instance ID"
         }
     ]
 }

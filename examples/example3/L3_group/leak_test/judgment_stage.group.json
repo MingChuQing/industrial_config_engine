@@ -1,7 +1,7 @@
 {
     "type": "group",
-    "name": "气密性检测判断阶段",
-    "description": "判断泄漏率是否合格，输出结果",
+    "name": "Leak testingJudgment stage",
+    "description": "Judge if leak rate is qualified, output result",
     "mode": "if",
     "max_nodes": 20,
     "condition": {
@@ -11,7 +11,7 @@
     "then": [
         {
             "type": "node",
-            "name": "设置结果PASS",
+            "name": "set result PASS",
             "params": ["PASS"],
             "timeout_ms": 1000,
             "max_retries": 0,
@@ -24,7 +24,7 @@
         },
         {
             "type": "node",
-            "name": "设置绿灯",
+            "name": "set green light",
             "params": ["green"],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -37,7 +37,7 @@
         },
         {
             "type": "node",
-            "name": "保存PASS记录",
+            "name": "save PASS record",
             "params": ["${product_id}", "${leak_rate}", "PASS", "${timestamp}"],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -50,8 +50,8 @@
         },
         {
             "type": "node",
-            "name": "显示PASS弹窗",
-            "params": ["气密性检测通过！泄漏率=${leak_rate}kPa/min", "success"],
+            "name": "show PASS popup",
+            "params": ["Leak testingpassed!leak rate=${leak_rate}kPa/min", "success"],
             "timeout_ms": 5000,
             "max_retries": 0,
             "retry_interval": 0,
@@ -65,7 +65,7 @@
     "else": [
         {
             "type": "node",
-            "name": "设置结果FAIL",
+            "name": "set result FAIL",
             "params": ["FAIL"],
             "timeout_ms": 1000,
             "max_retries": 0,
@@ -78,7 +78,7 @@
         },
         {
             "type": "node",
-            "name": "设置红灯",
+            "name": "set red light",
             "params": ["red"],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -91,7 +91,7 @@
         },
         {
             "type": "node",
-            "name": "蜂鸣报警3秒",
+            "name": "buzzer alarm3s",
             "params": [3],
             "timeout_ms": 4000,
             "max_retries": 3,
@@ -104,7 +104,7 @@
         },
         {
             "type": "node",
-            "name": "保存FAIL记录",
+            "name": "save FAIL record",
             "params": ["${product_id}", "${leak_rate}", "FAIL", "${timestamp}"],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -117,8 +117,8 @@
         },
         {
             "type": "node",
-            "name": "显示FAIL弹窗",
-            "params": ["气密性检测不通过！泄漏率=${leak_rate}kPa/min，标准≤${leak_rate_standard}", "error"],
+            "name": "show FAIL popup",
+            "params": ["Leak testingfailed!leak rate=${leak_rate}kPa/min, standard <=${leak_rate_standard}", "error"],
             "timeout_ms": 5000,
             "max_retries": 0,
             "retry_interval": 0,
@@ -130,7 +130,7 @@
         }
     ],
     "args": [
-        { "index": 0, "name": "leak_rate_standard", "type": "f", "default": 0.5, "desc": "泄漏率标准(kPa/min)" },
-        { "index": 1, "name": "product_id", "type": "s", "default": "UNKNOWN", "desc": "产品ID" }
+        { "index": 0, "name": "leak_rate_standard", "type": "f", "default": 0.5, "desc": "leak rate standard(kPa/min)" },
+        { "index": 1, "name": "product_id", "type": "s", "default": "UNKNOWN", "desc": "product ID" }
     ]
 }

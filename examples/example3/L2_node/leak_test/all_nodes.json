@@ -1,12 +1,12 @@
 {
     "type": "node_bundle",
-    "description": "气密性检测系统 L2 执行节点集合",
+    "description": "Leak test L2 node bundle",
     "version": "1.0.0",
     "nodes": [
         {
             "filename": "check_air_pressure.u8.r_b_air_ok",
-            "name": "检查气源压力",
-            "description": "检查气源压力是否 ≥ 0.4MPa",
+            "name": "Check air pressure",
+            "description": "Check air pressureif >= 0.4MPa",
             "params": ["${pressure_channel}"],
             "timeout_ms": 2000,
             "max_retries": 3,
@@ -14,27 +14,27 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/read_pressure.u8.r_f_pressure"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "ge",
                 "value": 0.4
             },
             "on_success": [
-                { "type": "log", "message": "气源压力正常: ${pressure} MPa" }
+                { "type": "log", "message": "Air pressure OK: ${pressure} MPa" }
             ],
             "on_failure": [
-                { "type": "log", "message": "气源压力异常: ${pressure} MPa" },
-                { "type": "popup", "message": "气源压力不足，请检查气源", "level": "error" }
+                { "type": "log", "message": "Air pressure abnormal: ${pressure} MPa" },
+                { "type": "popup", "message": "Air pressure low, check air supply", "level": "error" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "读取气源压力超时" },
-                { "type": "popup", "message": "读取气源压力超时，请检查传感器", "level": "error" }
+                { "type": "log", "message": "Air pressure read timeout" },
+                { "type": "popup", "message": "Air pressure read timeout, , check sensor", "level": "error" }
             ]
         },
         {
             "filename": "check_clamp_open.r_b_clamp_open_ok",
-            "name": "检查夹具是否打开",
-            "description": "检查夹具是否在打开状态",
+            "name": "check fixture open",
+            "description": "check if fixture is open",
             "params": [],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -42,26 +42,26 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/check_clamp_closed.r_b_clamp_closed"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": false
             },
             "on_success": [
-                { "type": "log", "message": "夹具已打开" }
+                { "type": "log", "message": "fixture opened" }
             ],
             "on_failure": [
-                { "type": "log", "message": "夹具未打开" },
-                { "type": "popup", "message": "夹具未打开，请检查", "level": "warning" }
+                { "type": "log", "message": "fixture not open" },
+                { "type": "popup", "message": "fixture not open, check ", "level": "warning" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "检查夹具状态超时" }
+                { "type": "log", "message": "check fixture status timeout" }
             ]
         },
         {
             "filename": "check_seal_ring.u8.r_b_seal_ok",
-            "name": "检查密封圈是否在位",
-            "description": "检查密封圈是否安装到位",
+            "name": "check seal ring in place",
+            "description": "check seal ring installed",
             "params": ["${seal_sensor_register}"],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -69,26 +69,26 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/digital_read.u8.r_b_digital_state"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "密封圈在位正常" }
+                { "type": "log", "message": "seal ring in place" }
             ],
             "on_failure": [
-                { "type": "log", "message": "密封圈未在位" },
-                { "type": "popup", "message": "密封圈未安装到位，请检查", "level": "error" }
+                { "type": "log", "message": "seal ring not in place" },
+                { "type": "popup", "message": "seal ring not installed, check ", "level": "error" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "检查密封圈超时" }
+                { "type": "log", "message": "check seal ring timeout" }
             ]
         },
         {
             "filename": "start_air_pump.r_b_pump_start_result",
-            "name": "启动气泵",
-            "description": "启动气泵建立气源",
+            "name": "start pump",
+            "description": "start pump to build air supply",
             "params": ["${pump_output_register}"],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -96,26 +96,26 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/digital_write_on.u8.r_b_write_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "气泵已启动" }
+                { "type": "log", "message": "pump started" }
             ],
             "on_failure": [
-                { "type": "log", "message": "气泵启动失败" },
-                { "type": "popup", "message": "气泵启动失败，请检查", "level": "error" }
+                { "type": "log", "message": "pump start failed" },
+                { "type": "popup", "message": "pump start failed, check ", "level": "error" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "气泵启动超时" }
+                { "type": "log", "message": "pump start timeout" }
             ]
         },
         {
             "filename": "clamp_workpiece.r_b_clamp_result",
-            "name": "闭合夹具",
-            "description": "闭合夹具密封产品",
+            "name": "close fixture",
+            "description": "close fixture to seal product",
             "params": [],
             "timeout_ms": 2000,
             "max_retries": 3,
@@ -123,26 +123,26 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/clamp_close.r_b_clamp_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "夹具已闭合" }
+                { "type": "log", "message": "fixture closed" }
             ],
             "on_failure": [
-                { "type": "log", "message": "夹具闭合失败" },
-                { "type": "popup", "message": "夹具闭合失败，请检查", "level": "error" }
+                { "type": "log", "message": "fixture close failed" },
+                { "type": "popup", "message": "fixture close failed, check ", "level": "error" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "夹具闭合超时" }
+                { "type": "log", "message": "fixture close timeout" }
             ]
         },
         {
             "filename": "check_clamp_closed.r_b_clamp_closed",
-            "name": "确认夹具闭合到位",
-            "description": "确认夹具是否完全闭合",
+            "name": "confirm fixture fully closed",
+            "description": "confirm fixture fully closed",
             "params": [],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -150,26 +150,26 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/check_clamp_closed.r_b_clamp_closed"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "夹具闭合到位" }
+                { "type": "log", "message": "fixture fully closed" }
             ],
             "on_failure": [
-                { "type": "log", "message": "夹具未闭合到位" },
-                { "type": "popup", "message": "夹具未闭合到位，请检查", "level": "error" }
+                { "type": "log", "message": "fixture not fully closed" },
+                { "type": "popup", "message": "fixture not fully closed, check ", "level": "error" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "检查夹具到位超时" }
+                { "type": "log", "message": "check fixture position timeout" }
             ]
         },
         {
             "filename": "open_fill_valve.r_b_valve_result",
-            "name": "打开充气阀",
-            "description": "打开充气电磁阀",
+            "name": "open fill valve",
+            "description": "open fill solenoid valve",
             "params": [],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -177,26 +177,26 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/open_fill_valve.r_b_valve_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "充气阀已打开" }
+                { "type": "log", "message": "fill valve opened" }
             ],
             "on_failure": [
-                { "type": "log", "message": "打开充气阀失败" },
-                { "type": "popup", "message": "打开充气阀失败，请检查", "level": "error" }
+                { "type": "log", "message": "open fill valve failed" },
+                { "type": "popup", "message": "open fill valve failed, check ", "level": "error" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "打开充气阀超时" }
+                { "type": "log", "message": "open fill valve timeout" }
             ]
         },
         {
             "filename": "monitor_pressure_rising.u8_f_u16.r_b_pressure_rising",
-            "name": "监测压力上升",
-            "description": "监测压力是否上升至目标值",
+            "name": "monitor pressure rise",
+            "description": "monitor if pressure rises to target",
             "params": ["${pressure_channel}", "${target_pressure}", "${fill_timeout}"],
             "timeout_ms": "${fill_timeout}",
             "max_retries": 0,
@@ -204,25 +204,25 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/read_pressure.u8.r_f_pressure"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "ge",
                 "value": "${target_pressure}"
             },
             "on_success": [
-                { "type": "log", "message": "压力达到目标值: ${pressure} kPa" }
+                { "type": "log", "message": "pressure reached target: ${pressure} kPa" }
             ],
             "on_failure": [
-                { "type": "log", "message": "压力未达到目标值: ${pressure} kPa" }
+                { "type": "log", "message": "pressure below target: ${pressure} kPa" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "充气超时" }
+                { "type": "log", "message": "fill timeout" }
             ]
         },
         {
             "filename": "check_large_leak.u8_f_f.r_b_large_leak",
-            "name": "检查大漏",
-            "description": "检测充气阶段压力上升速率判断大漏",
+            "name": "check large leak",
+            "description": "detect Filling stage pressurerise ratejudge  large leak",
             "params": ["${pressure_channel}", "${large_leak_threshold}", "${fill_timeout}"],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -230,25 +230,25 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/read_pressure.u8.r_f_pressure"
             },
-            "judge": {
+            "judge ": {
                 "type": "expression",
                 "expression": "${pressure} / (${fill_timeout} / 1000) < ${large_leak_threshold}"
             },
             "on_success": [
-                { "type": "log", "message": "检测到大漏: 压力上升缓慢" },
-                { "type": "popup", "message": "检测到大漏，请检查密封", "level": "error" }
+                { "type": "log", "message": "large leak detected: pressure rises slowly" },
+                { "type": "popup", "message": "large leak detected, , check seal", "level": "error" }
             ],
             "on_failure": [
-                { "type": "log", "message": "未检测到大漏，继续充气" }
+                { "type": "log", "message": "no large leak detected, continue fill" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "大漏检测超时" }
+                { "type": "log", "message": "large-leak detection timeout" }
             ]
         },
         {
             "filename": "close_fill_valve.r_b_valve_result",
-            "name": "关闭充气阀",
-            "description": "关闭充气电磁阀",
+            "name": "close fill valve",
+            "description": "close fill solenoid valve",
             "params": [],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -256,26 +256,26 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/close_fill_valve.r_b_valve_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "充气阀已关闭" }
+                { "type": "log", "message": "fill valve closed" }
             ],
             "on_failure": [
-                { "type": "log", "message": "关闭充气阀失败" },
-                { "type": "popup", "message": "关闭充气阀失败，请检查", "level": "error" }
+                { "type": "log", "message": "close fill valve failed" },
+                { "type": "popup", "message": "close fill valve failed, check ", "level": "error" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "关闭充气阀超时" }
+                { "type": "log", "message": "close fill valve timeout" }
             ]
         },
         {
             "filename": "wait.u16.r_b_wait_done",
-            "name": "等待",
-            "description": "等待指定时间",
+            "name": "wait ",
+            "description": "wait specified duration",
             "params": ["${duration}"],
             "timeout_ms": "${duration} + 1000",
             "max_retries": 0,
@@ -283,21 +283,21 @@
             "action": {
                 "template": "L1_action/control/wait.u16_s.r_b_wait_done"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "等待 ${duration} ms 完成" }
+                { "type": "log", "message": "wait  ${duration} ms done" }
             ],
             "on_failure": [],
             "on_timeout": []
         },
         {
             "filename": "read_stable_pressure.u8.r_f_stable_pressure",
-            "name": "读取稳定压力",
-            "description": "读取稳定后的压力值 P_start",
+            "name": "read stable pressure",
+            "description": "read stable pressure value P_start",
             "params": ["${pressure_channel}"],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -305,24 +305,24 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/read_pressure.u8.r_f_pressure"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 { "type": "log", "message": "P_start = ${stable_pressure} kPa" }
             ],
             "on_failure": [
-                { "type": "log", "message": "读取稳定压力失败" },
-                { "type": "popup", "message": "读取稳定压力失败", "level": "error" }
+                { "type": "log", "message": "read stable pressurefailed" },
+                { "type": "popup", "message": "read stable pressurefailed", "level": "error" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "读取稳定压力超时" }
+                { "type": "log", "message": "read stable pressuretimeout" }
             ]
         },
         {
             "filename": "check_pressure_stable.u8_f_u16.r_b_stable",
-            "name": "检查压力稳定",
-            "description": "检查压力波动是否稳定",
+            "name": "check pressure stability",
+            "description": "check if pressure fluctuation stable",
             "params": ["${pressure_channel}", "${stable_threshold}", "${dwell_time}"],
             "timeout_ms": "${dwell_time}",
             "max_retries": 3,
@@ -330,26 +330,26 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/read_pressure.u8.r_f_pressure"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "le",
                 "value": "${stable_threshold}"
             },
             "on_success": [
-                { "type": "log", "message": "压力已稳定" }
+                { "type": "log", "message": "pressure stable" }
             ],
             "on_failure": [
-                { "type": "log", "message": "压力未稳定" },
-                { "type": "popup", "message": "压力未稳定，请检查密封", "level": "warning" }
+                { "type": "log", "message": "pressure unstable" },
+                { "type": "popup", "message": "pressure unstable, , check seal", "level": "warning" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "压力稳定等待超时" }
+                { "type": "log", "message": "pressure stabilize wait timeout" }
             ]
         },
         {
             "filename": "read_pressure_value.u8.r_f_pressure_value",
-            "name": "读取压力值",
-            "description": "读取当前压力值",
+            "name": "Read Pressure value",
+            "description": "read current pressure value",
             "params": ["${pressure_channel}"],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -357,23 +357,23 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/read_pressure.u8.r_f_pressure"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
-                { "type": "log", "message": "当前压力: ${pressure_value} kPa" }
+                { "type": "log", "message": "current pressure: ${pressure_value} kPa" }
             ],
             "on_failure": [
-                { "type": "log", "message": "读取压力失败" }
+                { "type": "log", "message": "Read Pressurefailed" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "读取压力超时" }
+                { "type": "log", "message": "Read Pressuretimeout" }
             ]
         },
         {
             "filename": "wait_test_duration.u16.r_b_wait_done",
-            "name": "检测计时等待",
-            "description": "检测阶段计时",
+            "name": "test timer wait",
+            "description": "Test stage timer",
             "params": ["${test_duration}"],
             "timeout_ms": "${test_duration} + 2000",
             "max_retries": 0,
@@ -381,21 +381,21 @@
             "action": {
                 "template": "L1_action/control/wait.u16_s.r_b_wait_done"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "检测计时完成" }
+                { "type": "log", "message": "test timer done" }
             ],
             "on_failure": [],
             "on_timeout": []
         },
         {
             "filename": "read_final_pressure.u8.r_f_final_pressure",
-            "name": "读取最终压力",
-            "description": "读取检测结束时的压力 P_end",
+            "name": "read final pressure",
+            "description": "read pressure at end of test P_end",
             "params": ["${pressure_channel}"],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -403,23 +403,23 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/read_pressure.u8.r_f_pressure"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 { "type": "log", "message": "P_end = ${final_pressure} kPa" }
             ],
             "on_failure": [
-                { "type": "log", "message": "读取最终压力失败" }
+                { "type": "log", "message": "read final pressurefailed" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "读取最终压力超时" }
+                { "type": "log", "message": "read final pressuretimeout" }
             ]
         },
         {
             "filename": "calculate_delta_p.f_f.r_f_delta_p",
-            "name": "计算压降",
-            "description": "计算 ΔP = P_start - P_end",
+            "name": "calculate pressure drop",
+            "description": "calculate  dP = P_start - P_end",
             "params": ["${p_start}", "${p_end}"],
             "timeout_ms": 1000,
             "max_retries": 0,
@@ -427,21 +427,21 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/calculate_pressure_drop.f_f.r_f_pressure_drop"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
-                { "type": "log", "message": "ΔP = ${delta_p} kPa" }
+                { "type": "log", "message": "dP = ${delta_p} kPa" }
             ],
             "on_failure": [
-                { "type": "log", "message": "计算压降失败" }
+                { "type": "log", "message": "calculate pressure dropfailed" }
             ],
             "on_timeout": []
         },
         {
             "filename": "calculate_leak_rate.f_f.r_f_leak_rate",
-            "name": "计算泄漏率",
-            "description": "计算泄漏率 = ΔP / 时间 (kPa/min)",
+            "name": "calculate leak rate",
+            "description": "calculate leak rate = dP / time (kPa/min)",
             "params": ["${delta_p}", "${test_duration}"],
             "timeout_ms": 1000,
             "max_retries": 0,
@@ -449,21 +449,21 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/calculate_leak_rate.f_f.r_f_leak_rate"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
-                { "type": "log", "message": "泄漏率 = ${leak_rate} kPa/min" }
+                { "type": "log", "message": "leak rate = ${leak_rate} kPa/min" }
             ],
             "on_failure": [
-                { "type": "log", "message": "计算泄漏率失败" }
+                { "type": "log", "message": "calculate leak ratefailed" }
             ],
             "on_timeout": []
         },
         {
             "filename": "check_leak_rate.f_f.r_b_leak_ok",
-            "name": "判断泄漏率是否合格",
-            "description": "判断泄漏率是否 ≤ 标准值",
+            "name": "Judge if leak rate is qualified",
+            "description": "judge  if leak rate <= standard",
             "params": ["${leak_rate}", "${leak_rate_standard}"],
             "timeout_ms": 1000,
             "max_retries": 0,
@@ -471,23 +471,23 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/calculate.f_f.r_f_calc_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "le",
                 "value": "${leak_rate_standard}"
             },
             "on_success": [
-                { "type": "log", "message": "泄漏率合格: ${leak_rate} ≤ ${leak_rate_standard}" }
+                { "type": "log", "message": "leak rate qualified: ${leak_rate} <= ${leak_rate_standard}" }
             ],
             "on_failure": [
-                { "type": "log", "message": "泄漏率不合格: ${leak_rate} > ${leak_rate_standard}" }
+                { "type": "log", "message": "leak rate unqualified: ${leak_rate} > ${leak_rate_standard}" }
             ],
             "on_timeout": []
         },
         {
             "filename": "set_test_result.s.r_b_set_result",
-            "name": "设置测试结果",
-            "description": "设置测试结果 (PASS/FAIL)",
+            "name": "Set test result",
+            "description": "Set test result (PASS/FAIL)",
             "params": ["${result}"],
             "timeout_ms": 1000,
             "max_retries": 0,
@@ -495,21 +495,21 @@
             "action": {
                 "template": "L1_action/variable/set.s_s"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
-                { "type": "log", "message": "测试结果已设置为 ${result}" }
+                { "type": "log", "message": "Test result set to ${result}" }
             ],
             "on_failure": [
-                { "type": "log", "message": "设置测试结果失败" }
+                { "type": "log", "message": "Set test resultfailed" }
             ],
             "on_timeout": []
         },
         {
             "filename": "open_exhaust_valve.r_b_valve_result",
-            "name": "打开排气阀",
-            "description": "打开排气阀释放压力",
+            "name": "open exhaust valve",
+            "description": "open exhaust valverelease pressure",
             "params": [],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -517,26 +517,26 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/open_exhaust_valve.r_b_valve_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "排气阀已打开" }
+                { "type": "log", "message": "exhaust valve opened" }
             ],
             "on_failure": [
-                { "type": "log", "message": "打开排气阀失败" },
-                { "type": "popup", "message": "打开排气阀失败", "level": "error" }
+                { "type": "log", "message": "open exhaust valve failed" },
+                { "type": "popup", "message": "open exhaust valve failed", "level": "error" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "打开排气阀超时" }
+                { "type": "log", "message": "open exhaust valve timeout" }
             ]
         },
         {
             "filename": "wait_pressure_zero.u8_f_u16.r_b_pressure_zero",
-            "name": "等待压力归零",
-            "description": "等待压力降至零值以下",
+            "name": "wait pressure zero",
+            "description": "wait pressure drop below zero",
             "params": ["${pressure_channel}", "${zero_threshold}", "${max_wait}"],
             "timeout_ms": "${max_wait}",
             "max_retries": 0,
@@ -544,26 +544,26 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/read_pressure.u8.r_f_pressure"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "le",
                 "value": "${zero_threshold}"
             },
             "on_success": [
-                { "type": "log", "message": "压力已归零: ${pressure} kPa" }
+                { "type": "log", "message": "pressure zeroed: ${pressure} kPa" }
             ],
             "on_failure": [
-                { "type": "log", "message": "压力未归零: ${pressure} kPa" },
-                { "type": "popup", "message": "压力未归零，请检查排气", "level": "warning" }
+                { "type": "log", "message": "pressure not zeroed: ${pressure} kPa" },
+                { "type": "popup", "message": "pressure not zeroed, , check exhaust", "level": "warning" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "等待压力归零超时" }
+                { "type": "log", "message": "wait pressure zero timeout" }
             ]
         },
         {
             "filename": "close_exhaust_valve.r_b_valve_result",
-            "name": "关闭排气阀",
-            "description": "关闭排气阀",
+            "name": "close exhaust valve",
+            "description": "close exhaust valve",
             "params": [],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -571,25 +571,25 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/close_exhaust_valve.r_b_valve_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "排气阀已关闭" }
+                { "type": "log", "message": "exhaust valve closed" }
             ],
             "on_failure": [
-                { "type": "log", "message": "关闭排气阀失败" }
+                { "type": "log", "message": "close exhaust valve failed" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "关闭排气阀超时" }
+                { "type": "log", "message": "close exhaust valve timeout" }
             ]
         },
         {
             "filename": "clamp_open_workpiece.r_b_clamp_result",
-            "name": "打开夹具",
-            "description": "打开夹具释放产品",
+            "name": "open fixture",
+            "description": "open fixture to release product",
             "params": [],
             "timeout_ms": 2000,
             "max_retries": 3,
@@ -597,26 +597,26 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/clamp_open.r_b_clamp_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "夹具已打开" }
+                { "type": "log", "message": "fixture opened" }
             ],
             "on_failure": [
-                { "type": "log", "message": "打开夹具失败" },
-                { "type": "popup", "message": "打开夹具失败，请手动检查", "level": "error" }
+                { "type": "log", "message": "open fixture failed" },
+                { "type": "popup", "message": "open fixturefailed, check manually", "level": "error" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "打开夹具超时" }
+                { "type": "log", "message": "open fixture timeout" }
             ]
         },
         {
             "filename": "stop_air_pump.r_b_pump_stop_result",
-            "name": "停止气泵",
-            "description": "停止气泵",
+            "name": "stop pump",
+            "description": "stop pump",
             "params": ["${pump_output_register}"],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -624,25 +624,25 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/digital_write_off.u8.r_b_write_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "气泵已停止" }
+                { "type": "log", "message": "pump stopped" }
             ],
             "on_failure": [
-                { "type": "log", "message": "停止气泵失败" }
+                { "type": "log", "message": "pump stop failed" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "停止气泵超时" }
+                { "type": "log", "message": "pump stop timeout" }
             ]
         },
         {
             "filename": "save_test_record.s_f_f_s_s.r_b_save_result",
-            "name": "保存测试记录",
-            "description": "保存测试数据到数据库",
+            "name": "save test record",
+            "description": "save test data to database",
             "params": ["${product_id}", "${leak_rate}", "${result}", "${timestamp}"],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -650,26 +650,26 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/save_test_data.s_f_f_s_s.r_b_save_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "测试记录已保存" }
+                { "type": "log", "message": "test record saved" }
             ],
             "on_failure": [
-                { "type": "log", "message": "保存测试记录失败" },
-                { "type": "popup", "message": "保存测试记录失败，请检查存储", "level": "warning" }
+                { "type": "log", "message": "save test record failed" },
+                { "type": "popup", "message": "save test recordfailed, check storage", "level": "warning" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "保存测试记录超时" }
+                { "type": "log", "message": "save test record timeout" }
             ]
         },
         {
             "filename": "show_result_popup.s_s",
-            "name": "显示结果弹窗",
-            "description": "显示测试结果弹窗",
+            "name": "show result popup",
+            "description": "show test result popup",
             "params": ["${message}", "${level}"],
             "timeout_ms": 5000,
             "max_retries": 0,
@@ -677,7 +677,7 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/popup.s_s"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -688,8 +688,8 @@
         },
         {
             "filename": "set_result_led.s.r_b_led_result",
-            "name": "设置结果指示灯",
-            "description": "设置指示灯颜色",
+            "name": "set result indicator light",
+            "description": "set indicator light color",
             "params": ["${color}"],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -697,25 +697,25 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/led_set.s.r_b_led_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "指示灯已设置为 ${color}" }
+                { "type": "log", "message": "indicator light set to ${color}" }
             ],
             "on_failure": [
-                { "type": "log", "message": "设置指示灯失败" }
+                { "type": "log", "message": "set indicator light failed" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "设置指示灯超时" }
+                { "type": "log", "message": "set indicator light timeout" }
             ]
         },
         {
             "filename": "beep_alert.u8.r_b_beep_result",
-            "name": "蜂鸣报警",
-            "description": "触发蜂鸣器报警",
+            "name": "buzzer alarm",
+            "description": "trigger buzzer alarm",
             "params": ["${duration}"],
             "timeout_ms": "${duration} * 1000 + 1000",
             "max_retries": 3,
@@ -723,19 +723,19 @@
             "action": {
                 "template": "L1_action/leak_test/all_actions.json/beep.u8.r_b_beep_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
             },
             "on_success": [
-                { "type": "log", "message": "蜂鸣报警 ${duration} 秒" }
+                { "type": "log", "message": "buzzer alarm ${duration} s" }
             ],
             "on_failure": [
-                { "type": "log", "message": "蜂鸣报警失败" }
+                { "type": "log", "message": "buzzer alarm failed" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "蜂鸣报警超时" }
+                { "type": "log", "message": "buzzer alarm timeout" }
             ]
         }
     ]

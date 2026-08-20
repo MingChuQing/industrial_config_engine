@@ -1,7 +1,7 @@
 {
     "type": "group",
-    "name": "气密性检测结束阶段",
-    "description": "排气、打开夹具、停止气泵",
+    "name": "Leak testingEnd stage",
+    "description": "exhaust, open fixture, stop pump",
     "mode": "sequence",
     "max_nodes": 15,
     "delay_between": 300,
@@ -9,7 +9,7 @@
     "body": [
         {
             "type": "node",
-            "name": "打开排气阀",
+            "name": "open exhaust valve",
             "params": [],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -22,7 +22,7 @@
         },
         {
             "type": "node",
-            "name": "等待压力归零",
+            "name": "wait pressure zero",
             "params": ["${pressure_channel}", 0.01, 5000],
             "timeout_ms": 5000,
             "max_retries": 0,
@@ -35,7 +35,7 @@
         },
         {
             "type": "node",
-            "name": "关闭排气阀",
+            "name": "close exhaust valve",
             "params": [],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -48,7 +48,7 @@
         },
         {
             "type": "node",
-            "name": "打开夹具",
+            "name": "open fixture",
             "params": [],
             "timeout_ms": 2000,
             "max_retries": 3,
@@ -61,7 +61,7 @@
         },
         {
             "type": "node",
-            "name": "停止气泵",
+            "name": "stop pump",
             "params": ["${pump_output_register}"],
             "timeout_ms": 1000,
             "max_retries": 3,
@@ -74,7 +74,7 @@
         }
     ],
     "args": [
-        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
-        { "index": 1, "name": "pump_output_register", "type": "u8", "default": 513, "desc": "气泵控制输出" }
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "pressure sensor channel" },
+        { "index": 1, "name": "pump_output_register", "type": "u8", "default": 513, "desc": "pump control output" }
     ]
 }

@@ -1,13 +1,13 @@
 {
 "type": "node_bundle",
-"description": "控制类执行节点集合",
+"description": "control node collection",
 "version": "1.0.0",
 "nodes": [
 {
 "filename": "wait.u16_s.r_b_wait_done",
 "type": "node",
-"name": "等待",
-"description": "等待指定时间",
+"name": "wait ",
+"description": "wait specified duration",
 "params": [500, "ms"],
 "timeout_ms": 1000,
 "max_retries": 0,
@@ -15,7 +15,7 @@
 "action": {
 "template": "L1_action/control/all_actions.json/wait.u16_s.r_b_wait_done"
 },
-"judge": {
+"judge ": {
 "type": "compare",
 "condition": "eq",
 "value": true
@@ -27,8 +27,8 @@
 {
 "filename": "wait_seconds.u16.r_b_wait_done",
 "type": "node",
-"name": "等待秒",
-"description": "等待指定秒数",
+"name": "wait s",
+"description": "Wait seconds",
 "params": [60],
 "timeout_ms": 65000,
 "max_retries": 0,
@@ -36,13 +36,13 @@
 "action": {
 "template": "L1_action/control/all_actions.json/wait.u16_s.r_b_wait_done"
 },
-"judge": {
+"judge ": {
 "type": "compare",
 "condition": "eq",
 "value": true
 },
 "on_success": [
-{ "type": "log", "message": "等待完成" }
+{ "type": "log", "message": "wait done" }
 ],
 "on_failure": [],
 "on_timeout": []

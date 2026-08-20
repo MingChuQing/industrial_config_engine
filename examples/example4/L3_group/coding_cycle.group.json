@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "打码贴标循环",
+    "name": "Coding/labeling cycle",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [],

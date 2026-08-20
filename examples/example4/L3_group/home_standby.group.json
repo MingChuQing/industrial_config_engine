@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "归零待机",
+    "name": "Homing and standby",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [],
@@ -14,7 +14,7 @@
             "type": "node",
             "template": "L2_node/all_nodes.json/popup.s_s",
             "params": [
-                "系统待机",
+                "systemstandby",
                 "info"
             ]
         }

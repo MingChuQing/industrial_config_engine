@@ -1,13 +1,13 @@
 ﻿{
     "type": "node_bundle",
-    "description": " 电机控制类执行节点集合",
+    "description": " motor control node collection",
     "version": "1.0.0",
     "nodes": [
         {
             "filename": "write_pr_position.u8_i32.r_b_write_pr_result",
             "type": "node",
-            "name": "写入PR点位坐标",
-            "description": "写入指定PR点位的坐标值",
+            "name": "write PR point coordinate",
+            "description": "write coordinate of specified PR point",
             "params": [2, 100000],
             "timeout_ms": 10000,
             "max_retries": 3,
@@ -15,38 +15,38 @@
             "action": {
                 "template": "L1_action/leadshine_actions.json/write_pr_position.u8_i32.r_b_write_pr_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "type": "log",
-                    "message": "PR${param_0}坐标写入成功"
+                    "message": "PR${param_0}coordinate write success"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "PR${param_0}坐标写入失败"
+                    "message": "PR${param_0}coordinate write failed"
                 },
                 {
                     "type": "popup",
-                    "message": "PR${param_0}坐标写入失败，请检查通信",
+                    "message": "PR${param_0}coordinatewrite failed, check communication",
                     "level": "error"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "PR${param_0}坐标写入超时"
+                    "message": "PR${param_0}coordinate write timeout"
                 }
             ]
         },
         {
             "filename": "verify_pr_position.u8_i32.r_b_verify_result",
             "type": "node",
-            "name": "验证PR点位坐标",
-            "description": "读取PR点位坐标并验证是否与期望值一致",
+            "name": "verify PR point coordinate",
+            "description": "read PR point coordinateand verify consistency with expected value",
             "params": [2, 100000],
             "timeout_ms": 5000,
             "max_retries": 0,
@@ -54,7 +54,7 @@
             "action": {
                 "template": "L1_action/leadshine_actions.json/read_pr_position.u8.r_i32_pr_position"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": "${param_1}"
@@ -62,32 +62,32 @@
             "on_success": [
                 {
                     "type": "log",
-                    "message": "PR${param_0}坐标验证通过：${pr_position}"
+                    "message": "PR${param_0}coordinate verify passed: ${pr_position}"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "PR${param_0}坐标验证失败：期望${param_1}，实际${pr_position}"
+                    "message": "PR${param_0}coordinate verify failed: expected${param_1}, actual${pr_position}"
                 },
                 {
                     "type": "popup",
-                    "message": "PR${param_0}坐标验证失败",
+                    "message": "PR${param_0}coordinate verify failed",
                     "level": "error"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "PR${param_0}坐标验证超时"
+                    "message": "PR${param_0}coordinate verify timeout"
                 }
             ]
         },
         {
             "filename": "start_pr_run.u8.r_b_start_result",
             "type": "node",
-            "name": "启动PR点位运行",
-            "description": "触发PR点位运行指令",
+            "name": "start PR point run",
+            "description": "trigger PR point runcommand",
             "params": [1],
             "timeout_ms": 5000,
             "max_retries": 2,
@@ -95,38 +95,38 @@
             "action": {
                 "template": "L1_action/leadshine_actions.json/pr_run.u8.r_b_pr_run_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "type": "log",
-                    "message": "PR${param_0}启动成功"
+                    "message": "PR${param_0}start success"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "PR${param_0}启动失败"
+                    "message": "PR${param_0}start failed"
                 },
                 {
                     "type": "popup",
-                    "message": "PR${param_0}启动失败，请检查通信",
+                    "message": "PR${param_0} start failed, check communication",
                     "level": "error"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "PR${param_0}启动超时"
+                    "message": "PR${param_0}start timeout"
                 }
             ]
         },
         {
             "filename": "check_motion_done.r_b_motion_done",
             "type": "node",
-            "name": "检查运动完成",
-            "description": "检查电机运动状态是否完成",
+            "name": "check motion done",
+            "description": "check if motor motion done",
             "params": [],
             "timeout_ms": 2000,
             "max_retries": 3,
@@ -134,7 +134,7 @@
             "action": {
                 "template": "L1_action/leadshine_actions.json/check_motion_done.r_b_motion_done"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -142,27 +142,27 @@
             "on_success": [
                 {
                     "type": "log",
-                    "message": "电机运动完成"
+                    "message": "motor motion done"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "电机运动未完成或超时"
+                    "message": "motor motion not done or timeout"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "检查运动完成超时"
+                    "message": "check motion done timeout"
                 }
             ]
         },
         {
             "filename": "start_jog.u16.r_b_jog_start_result",
             "type": "node",
-            "name": "启动点动",
-            "description": "启动正向点动",
+            "name": "start jog",
+            "description": "start forward jog",
             "params": [10],
             "timeout_ms": 5000,
             "max_retries": 2,
@@ -170,38 +170,38 @@
             "action": {
                 "template": "L1_action/leadshine_actions.json/jog_start.u16.r_b_jog_start_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "type": "log",
-                    "message": "点动启动成功，速度：${param_0}%"
+                    "message": "jog started, speed: ${param_0}%"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "点动启动失败"
+                    "message": "jogstart failed"
                 },
                 {
                     "type": "popup",
-                    "message": "点动启动失败，请检查电机",
+                    "message": "jog startfailed, check motor",
                     "level": "error"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "点动启动超时"
+                    "message": "jogstart timeout"
                 }
             ]
         },
         {
             "filename": "stop_jog.r_b_jog_stop_result",
             "type": "node",
-            "name": "停止点动",
-            "description": "立即停止点动",
+            "name": "stop jog",
+            "description": "immediately stop jog",
             "params": [],
             "timeout_ms": 3000,
             "max_retries": 0,
@@ -209,33 +209,33 @@
             "action": {
                 "template": "L1_action/leadshine_actions.json/jog_stop.r_b_jog_stop_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "type": "log",
-                    "message": "点动已停止"
+                    "message": "jogstopped"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "停止点动失败"
+                    "message": "stop jog failed"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "停止点动超时"
+                    "message": "stop jog timeout"
                 }
             ]
         },
         {
             "filename": "read_current_position.r_i32_current_position",
             "type": "node",
-            "name": "读取当前位置",
-            "description": "读取电机当前绝对位置",
+            "name": "read current position",
+            "description": "read motorcurrent absolute position",
             "params": [],
             "timeout_ms": 3000,
             "max_retries": 0,
@@ -243,30 +243,30 @@
             "action": {
                 "template": "L1_action/leadshine_actions.json/read_current_position.r_i32_current_position"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "type": "log",
-                    "message": "当前位置：${current_position}"
+                    "message": "current position: ${current_position}"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "读取当前位置失败"
+                    "message": "read current positionfailed"
                 },
                 {
                     "type": "popup",
-                    "message": "读取当前位置失败",
+                    "message": "read current positionfailed",
                     "level": "error"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "读取当前位置超时"
+                    "message": "read current positiontimeout"
                 }
             ]
         }

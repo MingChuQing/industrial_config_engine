@@ -1,13 +1,13 @@
 {
 "type": "flow",
-"name": "真空工艺流程",
-"description": "完整的真空抽气工艺流程，包含参数配置、抽真空、保压和泄漏检测",
+"name": "Vacuum Process Flow",
+"description": "Complete vacuum evacuation process flow with parameter configuration, Evacuation, pressure hold and Leak Test",
 "version": "2.1.0",
 "timeout_ms": 7200000,
 "max_retries": 0,
 "profiles": {
 "test": {
-"description": "测试模式 - 使用宽松参数",
+"description": "Test mode - relaxed parameters",
 "params": {
 "vacuum_target": 10.0,
 "pump_timeout": 120000,
@@ -17,7 +17,7 @@
 }
 },
 "production": {
-"description": "生产模式 - 标准工艺参数",
+"description": "Production mode - standard parameters",
 "params": {
 "vacuum_target": 5.0,
 "pump_timeout": 300000,
@@ -27,7 +27,7 @@
 }
 },
 "high_precision": {
-"description": "高精度模式 - 严格工艺参数",
+"description": "High precision mode - strict parameters",
 "params": {
 "vacuum_target": 1.0,
 "pump_timeout": 600000,
@@ -37,7 +37,7 @@
 }
 },
 "debug": {
-"description": "调试模式 - 每步需要用户确认",
+"description": "Debug mode - per-step confirmation",
 "params": {
 "vacuum_target": 5.0,
 "pump_timeout": 600000,
@@ -51,31 +51,31 @@
 "body": [
 {
 "type": "group",
-"name": "阶段1：系统自检",
+"name": "Phase 1: System Check",
 "template": "L3_group/common/system_check.group",
 "timeout_ms": 30000,
-"confirm_between": "{profile.confirm_between}" }, { "type": "group", "name": "阶段2：抽真空", "template": "L3_group/vacuum/pump_down.group", "timeout_ms": "{profile.pump_timeout}",
-"confirm_between": "{profile.confirm_between}" }, { "type": "group", "name": "阶段3：保压测试", "template": "L3_group/vacuum/hold_pressure.group", "timeout_ms": 180000, "confirm_between": "{profile.confirm_between}"
+"confirm_between": "{profile.confirm_between}" }, { "type": "group", "name": "Phase 2: Evacuation", "template": "L3_group/vacuum/pump_down.group", "timeout_ms": "{profile.pump_timeout}",
+"confirm_between": "{profile.confirm_between}" }, { "type": "group", "name": "Phase 3: Pressure Hold", "template": "L3_group/vacuum/hold_pressure.group", "timeout_ms": 180000, "confirm_between": "{profile.confirm_between}"
 },
 {
 "type": "group",
-"name": "阶段4：泄漏检测",
+"name": "Phase 4: Leak Test",
 "template": "L3_group/vacuum/leak_test.group",
 "timeout_ms": 120000,
-"confirm_between": "{profile.confirm_between}" }, { "type": "group", "name": "阶段5：结果记录", "template": "L3_group/common/log_result.group", "timeout_ms": 10000, "confirm_between": "{profile.confirm_between}"
+"confirm_between": "{profile.confirm_between}" }, { "type": "group", "name": "Phase 5: Result Log", "template": "L3_group/common/log_result.group", "timeout_ms": 10000, "confirm_between": "{profile.confirm_between}"
 }
 ],
 "on_timeout": [
-{ "type": "log", "message": "[TIMEOUT] 真空工艺流程整体超时" },
+{ "type": "log", "message": "[TIMEOUT] Vacuum Process Flowoverall timeout" },
 {
 "type": "group",
 "template": "L3_group/common/emergency_stop.group"
 },
 {
 "type": "node",
-"name": "超时告警",
+"name": "Timeout alarm",
 "result_key": "popup_result",
-"params": ["真空工艺流程超时，已自动停止", "error"],
+"params": ["Vacuum Process Flowtimeout, auto-stopped", "error"],
 "timeout_ms": 3000,
 "max_retries": 0,
 "retry_interval": 0,
@@ -89,14 +89,14 @@
 "body": [
 {
 "type": "group",
-"name": "全局紧急关机",
+"name": "Global emergency shutdown",
 "template": "L3_group/common/emergency_stop.group"
 },
 {
 "type": "node",
-"name": "急停日志",
+"name": "Emergency log",
 "result_key": "log_result",
-"params": ["[EMERGENCY] 真空工艺流程急停清理完成"],
+"params": ["[EMERGENCY] Vacuum Process Flowemergency stop cleanup done"],
 "timeout_ms": 2000,
 "max_retries": 2,
 "retry_interval": 500,
@@ -106,9 +106,9 @@
 },
 {
 "type": "node",
-"name": "急停弹框",
+"name": "emergency stop popup",
 "result_key": "popup_result",
-"params": ["系统已紧急停止！请检查安全后重置", "error"],
+"params": ["Emergency stop! Check and reset", "error"],
 "timeout_ms": 3000,
 "max_retries": 0,
 "retry_interval": 0,

@@ -1,12 +1,12 @@
 ﻿{
     "type": "node_bundle",
-    "description": "  iDM 系列步进电机 L2 执行节点集合 v2.0",
+    "description": "  iDM series stepper motor L2 node collection v2.0",
     "version": "2.0.0",
     "nodes": [
         {
             "filename": "motor_enable.r_b_enable_result",
-            "name": "电机使能",
-            "description": "使能指定的步进电机",
+            "name": "motor enable",
+            "description": "enable specified stepper motor",
             "params": [ "${instance_id}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -14,7 +14,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/motor_enable.r_b_enable_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -22,38 +22,38 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "电机 ${instance_id} 使能成功" ]
+                    "params": [ "motor ${instance_id} enable success" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "电机 ${instance_id} 已使能", "info" ]
+                    "params": [ "motor ${instance_id} enabled", "info" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "电机 ${instance_id} 使能失败" ]
+                    "params": [ "motor ${instance_id} enable failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "电机 ${instance_id} 使能失败，请检查参数", "error" ]
+                    "params": [ "motor ${instance_id} enablefailed, check parameters", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "电机 ${instance_id} 使能超时" ]
+                    "params": [ "motor ${instance_id} enable timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "电机 ${instance_id} 使能超时，请检查通信", "error" ]
+                    "params": [ "motor ${instance_id} enabletimeout, check communication", "error" ]
                 }
             ]
         },
         {
             "filename": "motor_disable.r_b_disable_result",
-            "name": "电机关闭使能",
-            "description": "关闭指定步进电机的使能",
+            "name": "motor disable",
+            "description": "disable specified stepper motor",
             "params": [ "${instance_id}" ],
             "timeout_ms": 3000,
             "max_retries": 0,
@@ -61,7 +61,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/motor_disable.r_b_disable_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -69,34 +69,34 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "电机 ${instance_id} 关闭使能成功" ]
+                    "params": [ "motor ${instance_id} disable success" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "电机 ${instance_id} 关闭使能失败" ]
+                    "params": [ "motor ${instance_id} disable failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "关闭使能失败", "warning" ]
+                    "params": [ "disable failed", "warning" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "电机 ${instance_id} 关闭使能超时" ]
+                    "params": [ "motor ${instance_id} disable timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "关闭使能超时，请检查通信", "warning" ]
+                    "params": [ "disabletimeout, check communication", "warning" ]
                 }
             ]
         },
         {
             "filename": "read_status.r_u16_motor_status",
-            "name": "读取运行状态",
-            "description": "读取电机的运行状态 (0x1003)",
+            "name": "read running status",
+            "description": "read motor running status (0x1003)",
             "params": [ "${instance_id}" ],
             "timeout_ms": 2000,
             "max_retries": 3,
@@ -104,40 +104,40 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/read_status.r_u16_motor_status"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 状态: ${motor_status} (bit0=故障, bit1=使能, bit2=运行, bit4=指令完成, bit5=路径完成, bit6=回零完成)" ]
+                    "params": [ "${instance_id} status: ${motor_status} (bit0=fault, bit1=enable, bit2=run, bit4=commanddone, bit5=path done, bit6=homing done)" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 状态读取失败" ]
+                    "params": [ "${instance_id} status read failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "读取状态失败", "warning" ]
+                    "params": [ "read status failed", "warning" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 状态读取超时" ]
+                    "params": [ "${instance_id} status read timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "读取状态超时，电机可能离线", "warning" ]
+                    "params": [ "read statustimeout, motor may be offline", "warning" ]
                 }
             ]
         },
         {
             "filename": "read_alarm.r_u16_alarm_code",
-            "name": "读取当前报警",
-            "description": "读取电机的当前报警码 (0x2203)",
+            "name": "read current alarm",
+            "description": "read motor current alarm code (0x2203)",
             "params": [ "${instance_id}" ],
             "timeout_ms": 2000,
             "max_retries": 3,
@@ -145,7 +145,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/read_alarm.r_u16_alarm_code"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": 0
@@ -153,34 +153,34 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 无报警" ]
+                    "params": [ "${instance_id} no alarm" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 报警码: ${alarm_code}" ]
+                    "params": [ "${instance_id} alarm code: ${alarm_code}" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "电机报警: ${alarm_code}", "error" ]
+                    "params": [ "motor alarm: ${alarm_code}", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 读取报警超时" ]
+                    "params": [ "${instance_id} read alarm timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "读取报警超时，请检查通信", "warning" ]
+                    "params": [ "read alarmtimeout, check communication", "warning" ]
                 }
             ]
         },
         {
             "filename": "reset_alarm.r_b_reset_result",
-            "name": "复位当前报警",
-            "description": "复位电机的当前报警 (0x1801 = 0x1111)",
+            "name": "reset current alarm",
+            "description": "reset motor current alarm (0x1801 = 0x1111)",
             "params": [ "${instance_id}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -188,7 +188,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/reset_alarm.r_b_reset_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -196,34 +196,34 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 报警已复位" ]
+                    "params": [ "${instance_id} alarm reset" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 报警复位失败" ]
+                    "params": [ "${instance_id} alarm reset failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "报警复位失败", "error" ]
+                    "params": [ "alarm reset failed", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 报警复位超时" ]
+                    "params": [ "${instance_id} alarm reset timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "报警复位超时，请检查通信", "error" ]
+                    "params": [ "alarm resettimeout, check communication", "error" ]
                 }
             ]
         },
         {
             "filename": "jog_forward.r_b_jog_result",
-            "name": "JOG 正转",
-            "description": "电机正转点动 (控制字 0x4001)",
+            "name": "JOG forward",
+            "description": "motor forward jog (control word 0x4001)",
             "params": [ "${instance_id}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -231,7 +231,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/jog_forward.r_b_jog_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -239,38 +239,38 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 正转启动" ]
+                    "params": [ "${instance_id} JOG forward started" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/show_status.s_s",
-                    "params": [ "正转中", "blue" ]
+                    "params": [ "forward...", "blue" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 正转失败" ]
+                    "params": [ "${instance_id} JOG forward failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "JOG 启动失败", "error" ]
+                    "params": [ "JOG start failed", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 正转超时" ]
+                    "params": [ "${instance_id} JOG forward timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "JOG 正转超时，请检查电机通信", "error" ]
+                    "params": [ "JOG forwardtimeout, check motorcommunication", "error" ]
                 }
             ]
         },
         {
             "filename": "jog_reverse.r_b_jog_result",
-            "name": "JOG 反转",
-            "description": "电机反转点动 (控制字 0x4002)",
+            "name": "JOG reverse",
+            "description": "motor reverse jog (control word 0x4002)",
             "params": [ "${instance_id}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -278,7 +278,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/jog_reverse.r_b_jog_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -286,38 +286,38 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 反转启动" ]
+                    "params": [ "${instance_id} JOG reverse started" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/show_status.s_s",
-                    "params": [ "反转中", "orange" ]
+                    "params": [ "reverse...", "orange" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 反转失败" ]
+                    "params": [ "${instance_id} JOG reverse failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "JOG 启动失败", "error" ]
+                    "params": [ "JOG start failed", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 反转超时" ]
+                    "params": [ "${instance_id} JOG reverse timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "JOG 反转超时，请检查电机通信", "error" ]
+                    "params": [ "JOG reversetimeout, check motorcommunication", "error" ]
                 }
             ]
         },
         {
             "filename": "jog_stop.r_b_jog_stop_result",
-            "name": "JOG 停止",
-            "description": "停止 JOG 运行 (控制字 0x0000)",
+            "name": "JOG stop",
+            "description": "stop JOG run (control word 0x0000)",
             "params": [ "${instance_id}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -325,7 +325,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/jog_stop.r_b_jog_stop_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -333,38 +333,38 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 已停止" ]
+                    "params": [ "${instance_id} JOG stopped" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/show_status.s_s",
-                    "params": [ "已停止", "red" ]
+                    "params": [ "stopped", "red" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 停止失败" ]
+                    "params": [ "${instance_id} JOG stop failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "停止失败", "error" ]
+                    "params": [ "stop failed", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 停止超时" ]
+                    "params": [ "${instance_id} JOG stop timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "JOG 停止超时，请检查通信", "error" ]
+                    "params": [ "JOG stoptimeout, check communication", "error" ]
                 }
             ]
         },
         {
             "filename": "motor_emergency_stop.r_b_estop_result",
-            "name": "电机急停",
-            "description": "电机紧急停止 (0x6002 = 0x0040)",
+            "name": "motor emergency stop",
+            "description": "motor emergency stop (0x6002 = 0x0040)",
             "params": [ "${instance_id}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -372,7 +372,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/motor_emergency_stop.r_b_estop_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -380,38 +380,38 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 急停命令已发送" ]
+                    "params": [ "${instance_id} emergency stop command sent" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "电机已紧急停止", "warning" ]
+                    "params": [ "motor emergency stopped", "warning" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 急停命令发送失败" ]
+                    "params": [ "${instance_id} emergency stop command send failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "急停失败", "error" ]
+                    "params": [ "emergency stop failed", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 急停命令发送超时" ]
+                    "params": [ "${instance_id} emergency stop command send timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "急停超时，请立即手动停止电机！", "error" ]
+                    "params": [ "emergency stop timeout, , stop motor manually immediately！", "error" ]
                 }
             ]
         },
         {
             "filename": "save_parameters.r_b_save_result",
-            "name": "保存参数",
-            "description": "保存所有参数到 EEPROM (0x1801 = 0x2211)",
+            "name": "save parameters",
+            "description": "save all parameters to EEPROM (0x1801 = 0x2211)",
             "params": [ "${instance_id}" ],
             "timeout_ms": 5000,
             "max_retries": 3,
@@ -419,7 +419,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/save_parameters.r_b_save_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -427,38 +427,38 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 参数保存成功" ]
+                    "params": [ "${instance_id} parameter save success" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "参数已保存", "info" ]
+                    "params": [ "parameters saved", "info" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 参数保存失败" ]
+                    "params": [ "${instance_id} parameter save failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "参数保存失败", "error" ]
+                    "params": [ "parameter save failed", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 参数保存超时" ]
+                    "params": [ "${instance_id} parameter save timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "参数保存超时，EEPROM可能正在写入中", "warning" ]
+                    "params": [ "parametersave timeout, EEPROM may be writing", "warning" ]
                 }
             ]
         },
         {
             "filename": "set_jog_speed.u16.r_b_jog_speed_result",
-            "name": "设置 JOG 速度",
-            "description": "设置 JOG 运行速度 (0x01E1)",
+            "name": "set  JOG speed",
+            "description": "set  JOG run speed (0x01E1)",
             "params": [ "${instance_id}", "${speed}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -466,7 +466,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/set_jog_speed.u16.r_b_jog_speed_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -474,34 +474,34 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 速度已设为 ${speed} rpm" ]
+                    "params": [ "${instance_id} JOG speed set to ${speed} rpm" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 速度设置失败" ]
+                    "params": [ "${instance_id} JOG speed set failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "速度设置失败", "warning" ]
+                    "params": [ "speed set failed", "warning" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 速度设置超时" ]
+                    "params": [ "${instance_id} JOG speed set timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "速度设置超时，请检查通信", "warning" ]
+                    "params": [ "speedset timeout, check communication", "warning" ]
                 }
             ]
         },
         {
             "filename": "set_jog_acc.u16.r_b_jog_acc_result",
-            "name": "设置 JOG 加减速时间",
-            "description": "设置 JOG 加减速时间 (0x01E7)",
+            "name": "set  JOG accel/decel time",
+            "description": "set  JOG accel/decel time (0x01E7)",
             "params": [ "${instance_id}", "${acc_time}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -509,7 +509,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/set_jog_acc.u16.r_b_jog_acc_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -517,34 +517,34 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 加减速时间已设为 ${acc_time} ms" ]
+                    "params": [ "${instance_id} JOG accel/decel time set to ${acc_time} ms" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 加减速时间设置失败" ]
+                    "params": [ "${instance_id} JOG accel/decel set failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "加减速时间设置失败", "warning" ]
+                    "params": [ "accel/decel set failed", "warning" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} JOG 加减速时间设置超时" ]
+                    "params": [ "${instance_id} JOG accel/decel set timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "加减速时间设置超时，请检查通信", "warning" ]
+                    "params": [ "accel/decel set timeout, , check communication", "warning" ]
                 }
             ]
         },
         {
             "filename": "trigger_homing.r_b_homing_result",
-            "name": "触发回零",
-            "description": "触发电机回零 (0x6002 = 0x0020)",
+            "name": "trigger homing",
+            "description": "trigger motor homing (0x6002 = 0x0020)",
             "params": [ "${instance_id}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -552,7 +552,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/trigger_homing.r_b_homing_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -560,38 +560,38 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 回零已触发" ]
+                    "params": [ "${instance_id} homing triggered" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/show_status.s_s",
-                    "params": [ "回零中", "yellow" ]
+                    "params": [ "homing...", "yellow" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 回零触发失败" ]
+                    "params": [ "${instance_id} homing trigger failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "回零触发失败", "error" ]
+                    "params": [ "homing trigger failed", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 回零触发超时" ]
+                    "params": [ "${instance_id} homing trigger timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "回零触发超时，请检查通信", "error" ]
+                    "params": [ "homingtrigger timeout, check communication", "error" ]
                 }
             ]
         },
         {
             "filename": "set_homing_mode.u16.r_b_mode_result",
-            "name": "设置回零模式",
-            "description": "设置回零模式 (0x600A)",
+            "name": "set homing mode",
+            "description": "set homing mode (0x600A)",
             "params": [ "${instance_id}", "${mode}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -599,7 +599,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/set_homing_mode.u16.r_b_mode_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -607,34 +607,34 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 回零模式已设置: ${mode}" ]
+                    "params": [ "${instance_id} homing mode set: ${mode}" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 回零模式设置失败" ]
+                    "params": [ "${instance_id} homing mode set failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "回零模式设置失败", "error" ]
+                    "params": [ "homing mode set failed", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 回零模式设置超时" ]
+                    "params": [ "${instance_id} homing mode set timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "回零模式设置超时，请检查通信", "error" ]
+                    "params": [ "homing modeset timeout, check communication", "error" ]
                 }
             ]
         },
         {
             "filename": "trigger_pr.u16.r_b_pr_result",
-            "name": "触发 PR 路径",
-            "description": "触发 PR 路径运行 (0x6002)",
+            "name": "trigger PR path",
+            "description": "trigger PR path run (0x6002)",
             "params": [ "${instance_id}", "${path}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -642,7 +642,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/trigger_pr.u16.r_b_pr_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -650,34 +650,34 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} PR 路径 ${path} 已触发" ]
+                    "params": [ "${instance_id} PR path ${path} triggered" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} PR 路径触发失败" ]
+                    "params": [ "${instance_id} PR path trigger failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "PR 触发失败", "error" ]
+                    "params": [ "PR trigger failed", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} PR 路径触发超时" ]
+                    "params": [ "${instance_id} PR path trigger timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "PR 路径触发超时，请检查通信", "error" ]
+                    "params": [ "PR path trigger timeout, , check communication", "error" ]
                 }
             ]
         },
         {
             "filename": "set_pr_mode.u16.r_b_pr_mode_result",
-            "name": "设置 PR 路径模式",
-            "description": "设置 PR 路径模式 (0x6200)",
+            "name": "set PR path mode",
+            "description": "set PR path mode (0x6200)",
             "params": [ "${instance_id}", "${pr_mode}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -685,7 +685,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/set_pr_mode.u16.r_b_pr_mode_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -693,34 +693,34 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} PR 模式已设置: ${pr_mode}" ]
+                    "params": [ "${instance_id} PR mode set: ${pr_mode}" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} PR 模式设置失败" ]
+                    "params": [ "${instance_id} PR mode set failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "PR 模式设置失败", "error" ]
+                    "params": [ "PR mode set failed", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} PR 模式设置超时" ]
+                    "params": [ "${instance_id} PR mode set timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "PR 模式设置超时，请检查通信", "error" ]
+                    "params": [ "PR mode set timeout, , check communication", "error" ]
                 }
             ]
         },
         {
             "filename": "read_position.r_i32_motor_position",
-            "name": "读取电机位置",
-            "description": "读取电机当前位置 (0x602C, 0x602D)",
+            "name": "read motorposition",
+            "description": "read motor current position (0x602C, 0x602D)",
             "params": [ "${instance_id}" ],
             "timeout_ms": 2000,
             "max_retries": 3,
@@ -728,40 +728,40 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/read_position.r_i32_motor_position"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 当前位置: ${motor_position}" ]
+                    "params": [ "${instance_id} current position: ${motor_position}" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 位置读取失败" ]
+                    "params": [ "${instance_id} position read failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "读取位置失败", "warning" ]
+                    "params": [ "read position failed", "warning" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 位置读取超时" ]
+                    "params": [ "${instance_id} position read timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "读取位置超时，电机可能离线", "warning" ]
+                    "params": [ "read positiontimeout, motor may be offline", "warning" ]
                 }
             ]
         },
         {
             "filename": "write_position_high.u16.r_b_position_result",
-            "name": "写入位置高16位",
-            "description": "写入32位位置的高16位 (0x6201)",
+            "name": "write position high16",
+            "description": "write high16 of 32-bit position (0x6201)",
             "params": [ "${instance_id}", "${value}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -769,7 +769,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/set_position_high.u16.r_b_position_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -777,34 +777,34 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 位置高16位写入成功: ${value}" ]
+                    "params": [ "${instance_id} position high16 write success: ${value}" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 位置高16位写入失败" ]
+                    "params": [ "${instance_id} position high16 write failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "写入位置高16位失败", "error" ]
+                    "params": [ "write position high16failed", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 位置高16位写入超时" ]
+                    "params": [ "${instance_id} position high16 write timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "写入位置高16位超时，请检查通信", "error" ]
+                    "params": [ "write position high16timeout, check communication", "error" ]
                 }
             ]
         },
         {
             "filename": "write_position_low.u16.r_b_position_result",
-            "name": "写入位置低16位",
-            "description": "写入32位位置的低16位 (0x6202)",
+            "name": "write position low16",
+            "description": "write low16 of 32-bit position (0x6202)",
             "params": [ "${instance_id}", "${value}" ],
             "timeout_ms": 3000,
             "max_retries": 3,
@@ -812,7 +812,7 @@
             "action": {
                 "template": "L1_action/modbus/iDM_actions.json/set_position_low.u16.r_b_position_result"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -820,34 +820,34 @@
             "on_success": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 位置低16位写入成功: ${value}" ]
+                    "params": [ "${instance_id} position low16 write success: ${value}" ]
                 }
             ],
             "on_failure": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 位置低16位写入失败" ]
+                    "params": [ "${instance_id} position low16 write failed" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "写入位置低16位失败", "error" ]
+                    "params": [ "write position low16failed", "error" ]
                 }
             ],
             "on_timeout": [
                 {
                     "template": "L1_action/modbus/iDM_actions.json/log.s",
-                    "params": [ "${instance_id} 位置低16位写入超时" ]
+                    "params": [ "${instance_id} position low16 write timeout" ]
                 },
                 {
                     "template": "L1_action/modbus/iDM_actions.json/popup.s_s",
-                    "params": [ "写入位置低16位超时，请检查通信", "error" ]
+                    "params": [ "write position low16timeout, check communication", "error" ]
                 }
             ]
         },
         {
             "filename": "reset_to_default.r_b_default_result",
-            "name": "恢复出厂设置",
-            "description": "恢复电机出厂设置 (0x1801 = 0x2233)",
+            "name": "factory reset",
+            "description": "restore motor factory settings (0x1801 = 0x2233)",
             "params": [ "${instance_id}" ],
             "timeout_ms": 5000,
             "max_retries": 3,
@@ -858,9 +858,9 @@
                 "request": "06 18 01 22 33",
                 "response": "06 18 01 22 33",
                 "timeout_ms": 5000,
-                "description": "恢复出厂设置 (0x1801 = 0x2233)"
+                "description": "factory reset (0x1801 = 0x2233)"
             },
-            "judge": {
+            "judge ": {
                 "type": "compare",
                 "condition": "eq",
                 "value": true
@@ -868,38 +868,38 @@
             "on_success": [
                 {
                     "type": "log",
-                    "message": "${instance_id} 已恢复出厂设置"
+                    "message": "${instance_id} factory reset done"
                 },
                 {
                     "type": "popup",
-                    "message": "恢复出厂设置成功，请重新上电",
+                    "message": "factory reset success, , please power-cycle",
                     "level": "warning"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "${instance_id} 恢复出厂设置失败"
+                    "message": "${instance_id} factory reset failed"
                 },
                 {
                     "type": "popup",
-                    "message": "恢复出厂设置失败",
+                    "message": "factory reset failed",
                     "level": "error"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "${instance_id} 恢复出厂设置超时"
+                    "message": "${instance_id} factory reset timeout"
                 },
                 {
                     "type": "popup",
-                    "message": "恢复出厂设置超时，请检查通信",    
+                    "message": "factory resettimeout, check communication",    
                     "level": "error"
                 },
                 {
                     "type": "popup",
-                    "message": "若长时间无响应，请手动重启电机",
+                    "message": "If no response for a long time, restart motor manually",
                     "level": "warning"
                 }
             ]

@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "输送带停止",
+    "name": "Conveyor stop",
     "mode": "sequence",
     "timeout_ms": 60000,
     "args": [],

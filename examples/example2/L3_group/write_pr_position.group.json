@@ -1,13 +1,13 @@
 {
     "type": "group",
-    "name": "写入并验证PR点位",
-    "description": "写入PR点位坐标并验证",
+    "name": "Write and verify PR point",
+    "description": "Write PR coords and verify",
     "mode": "sequence",
     "max_nodes": 20,
     "timeout_ms": 30000,
     "args": [
-        { "index": 0, "name": "pr_number", "type": "u8", "desc": "PR点位号" },
-        { "index": 1, "name": "position", "type": "i32", "desc": "目标位置(脉冲数)" }
+        { "index": 0, "name": "pr_number", "type": "u8", "desc": "PR point number" },
+        { "index": 1, "name": "position", "type": "i32", "desc": "target position (pulse count)" }
     ],
     "body": [
         {
@@ -22,7 +22,7 @@
         }
     ],
     "on_timeout": [
-        { "type": "log", "message": "写入并验证PR${pr_number}超时" },
-        { "type": "popup", "message": "写入并验证PR${pr_number}超时", "level": "error" }
+        { "type": "log", "message": "Write/verify PR${pr_number} timeout" },
+        { "type": "popup", "message": "Write/verify PR${pr_number} timeout", "level": "error" }
     ]
 }

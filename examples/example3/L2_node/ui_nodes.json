@@ -1,21 +1,21 @@
 {
     "type": "node_bundle",
-    "description": "UI交互类执行节点集合",
+    "description": "UI interaction node collection",
     "version": "1.0.0",
     "nodes": [
         {
             "filename": "popup.s_s",
             "type": "node",
-            "name": "弹窗提示",
-            "description": "显示弹窗消息",
-            "params": ["消息内容", "info"],
+            "name": "popup prompt",
+            "description": "show popup message",
+            "params": ["message content", "info"],
             "timeout_ms": 5000,
             "max_retries": 0,
             "retry_interval": 0,
             "action": {
                 "template": "L1_action/system_actions.json/popup.s_s"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [],
@@ -23,7 +23,7 @@
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "弹窗超时"
+                    "message": "popup timeout"
                 }
             ]
         }

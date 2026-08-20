@@ -1,13 +1,13 @@
 {
     "type": "node_bundle",
-    "description": "等待类执行节点集合",
+    "description": "wait node collection",
     "version": "1.0.0",
     "nodes": [
         {
             "filename": "wait_ms.u16.r_b_wait_done",
             "type": "node",
-            "name": "等待指定毫秒",
-            "description": "等待指定毫秒数",
+            "name": "Wait milliseconds",
+            "description": "Wait milliseconds",
             "params": [100],
             "timeout_ms": 10000,
             "max_retries": 0,
@@ -15,33 +15,33 @@
             "action": {
                 "template": "L1_action/control_actions.json/wait.u16.r_b_wait_done"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "type": "log",
-                    "message": "等待${param_0}ms完成"
+                    "message": "Wait ${param_0}ms done"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "等待失败"
+                    "message": "Wait failed"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "等待超时"
+                    "message": "Wait timeout"
                 }
             ]
         },
         {
             "filename": "wait_seconds.u16.r_b_wait_done",
             "type": "node",
-            "name": "等待指定秒数",
-            "description": "等待指定秒数",
+            "name": "Wait seconds",
+            "description": "Wait seconds",
             "params": [1],
             "timeout_ms": 60000,
             "max_retries": 0,
@@ -49,25 +49,25 @@
             "action": {
                 "template": "L1_action/control_actions.json/wait_seconds.u16.r_b_wait_done"
             },
-            "judge": {
+            "judge ": {
                 "type": "exists"
             },
             "on_success": [
                 {
                     "type": "log",
-                    "message": "等待${param_0}秒完成"
+                    "message": "wait ${param_0}s done"
                 }
             ],
             "on_failure": [
                 {
                     "type": "log",
-                    "message": "等待失败"
+                    "message": "Wait failed"
                 }
             ],
             "on_timeout": [
                 {
                     "type": "log",
-                    "message": "等待超时"
+                    "message": "Wait timeout"
                 }
             ]
         }

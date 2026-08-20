@@ -788,29 +788,29 @@ int main(int argc, char* argv[]) {
 
             json example_flow;
             example_flow["type"] = "flow";
-            example_flow["name"] = "示例生产流程";
-            example_flow["description"] = "演示流程";
+            example_flow["name"] = "Sample production flow";
+            example_flow["description"] = "Demo flow";
             example_flow["version"] = "1.0.0";
             example_flow["timeout_ms"] = 3600000;
 
             json body = json::array();
             json step1;
             step1["type"] = "group";
-            step1["name"] = "步骤1: 检查气源";
+            step1["name"] = "Step 1: check air supply";
             step1["template"] = "L3_group/leak_test/prepare_stage.group";
             step1["params"] = json::array({ 1, 0x0101, 0x0201 });
             body.push_back(step1);
 
             json step2;
             step2["type"] = "group";
-            step2["name"] = "步骤2: 充气";
+            step2["name"] = "Step 2: fill";
             step2["template"] = "L3_group/leak_test/fill_stage.group";
             step2["params"] = json::array({ 1, 100.0, 10000, 5.0 });
             body.push_back(step2);
 
             json step3;
             step3["type"] = "group";
-            step3["name"] = "步骤3: 保压";
+            step3["name"] = "Step 3: hold pressure";
             step3["template"] = "L3_group/leak_test/dwell_stage.group";
             step3["params"] = json::array({ 1, 5000, 0.1 });
             body.push_back(step3);
@@ -854,7 +854,7 @@ int main(int argc, char* argv[]) {
         // Step 6: 完成
         // ============================================================
         cout << endl;
-        OutputFormatter::printHeader("加载完成");
+        OutputFormatter::printHeader("Load complete");
         cout << "  Total L1 Actions cached: " << l1_cache.getCacheKeys().size() << endl;
         cout << "  Total L2 Nodes cached: " << l2_cache.getCacheKeys().size() << endl;
         cout << "  Total L3 Groups cached: " << l3_cache.getCacheKeys().size() << endl;

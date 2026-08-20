@@ -1,13 +1,13 @@
 {
     "type": "group",
-    "name": "运行PR并等待完成",
-    "description": "启动PR运行，然后循环检测直到运动完成",
+    "name": "Run PR and wait",
+    "description": "Start PR, loop until motion done",
     "mode": "sequence",
     "max_nodes": 50,
     "timeout_ms": 60000,
     "args": [
-        { "index": 0, "name": "pr_number", "type": "u8", "desc": "PR点位号" },
-        { "index": 1, "name": "timeout", "type": "u16", "default": 30000, "desc": "超时(毫秒)" }
+        { "index": 0, "name": "pr_number", "type": "u8", "desc": "PR point number" },
+        { "index": 1, "name": "timeout", "type": "u16", "default": 30000, "desc": "timeout(ms)" }
     ],
     "body": [
         {
@@ -17,7 +17,7 @@
         },
         {
             "type": "group",
-            "name": "循环等待运动完成",
+            "name": "Loop wait motion done",
             "mode": "loop",
             "max_nodes": 20,
             "timeout_ms": "${timeout}",
@@ -38,16 +38,16 @@
                 }
             ],
             "on_success": [
-                { "type": "log", "message": "PR${pr_number}运行完成" }
+                { "type": "log", "message": "PR${pr_number} run done" }
             ],
             "on_timeout": [
-                { "type": "log", "message": "PR${pr_number}运行超时" },
-                { "type": "popup", "message": "PR${pr_number}运行超时，请检查电机", "level": "error" }
+                { "type": "log", "message": "PR${pr_number} run timeout" },
+                { "type": "popup", "message": "PR${pr_number} run timeout, , check motor", "level": "error" }
             ]
         }
     ],
     "on_timeout": [
-        { "type": "log", "message": "PR${pr_number}运行组超时" },
-        { "type": "popup", "message": "PR${pr_number}运行组超时", "level": "error" }
+        { "type": "log", "message": "PR${pr_number} group timeout" },
+        { "type": "popup", "message": "PR${pr_number} group timeout", "level": "error" }
     ]
 }

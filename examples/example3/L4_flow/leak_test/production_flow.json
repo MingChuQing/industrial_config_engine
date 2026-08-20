@@ -1,26 +1,26 @@
 {
     "type": "flow",
-    "name": "气密性检测生产流程",
-    "description": "完整的气密性检测生产流程",
+    "name": "Leak test production flow",
+    "description": "Complete Leak test production flow",
     "version": "1.0.0",
     "max_depth": 10,
     "body": [
         {
             "type": "group",
-            "name": "上料：取产品",
+            "name": "Feed: pick product",
             "template": "L3_group/positioning/precise_positioning.group",
             "params": [1, 512, "pick_position", 30000]
         },
         {
             "type": "group",
-            "name": "上料：放置产品到测试工位",
+            "name": "Feed: place product to test station",
             "template": "L3_group/positioning/precise_positioning.group",
             "params": [2, 512, "place_position", 30000]
         },
         {
             "type": "node",
-            "name": "通知开始检测",
-            "params": ["产品已放置到测试工位，开始气密性检测"],
+            "name": "Notify start of test",
+            "params": ["Product placed, start leak test"],
             "node": {
                 "template": "L2_node/log_nodes.json/print.s"
             },
@@ -29,13 +29,13 @@
         },
         {
             "type": "group",
-            "name": "气密性检测",
+            "name": "Leak testing",
             "template": "L3_group/leak_test/complete_leak_test.group",
             "params": ["${product_id}", 100.0, 30000, 0.5, 1]
         },
         {
             "type": "if",
-            "name": "根据检测结果分拣",
+            "name": "Sort by test result",
             "condition": {
                 "type": "expression",
                 "expression": "${test_result} == 'PASS'"
@@ -43,14 +43,14 @@
             "then": [
                 {
                     "type": "group",
-                    "name": "搬运到合格品区",
+                    "name": "Move to PASS area",
                     "template": "L3_group/positioning/precise_positioning.group",
                     "params": [3, 512, "pass_position", 30000]
                 },
                 {
                     "type": "node",
-                    "name": "记录合格品",
-                    "params": ["产品${product_id}合格，已放入合格品区"],
+                    "name": "record qualified product",
+                    "params": ["Product ${product_id} PASS, moved to pass area"],
                     "node": {
                         "template": "L2_node/log_nodes.json/print.s"
                     },
@@ -61,14 +61,14 @@
             "else": [
                 {
                     "type": "group",
-                    "name": "搬运到不合格品区",
+                    "name": "Move to FAIL area",
                     "template": "L3_group/positioning/precise_positioning.group",
                     "params": [4, 512, "fail_position", 30000]
                 },
                 {
                     "type": "node",
-                    "name": "记录不合格品",
-                    "params": ["产品${product_id}不合格，已放入不合格品区"],
+                    "name": "record unqualified product",
+                    "params": ["Product ${product_id} FAIL, moved to fail area"],
                     "node": {
                         "template": "L2_node/log_nodes.json/print.s"
                     },

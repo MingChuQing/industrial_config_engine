@@ -1,7 +1,7 @@
 {
     "type": "group",
-    "name": "气密性检测检测阶段",
-    "description": "检测时间计时，读取最终压力，计算泄漏率",
+    "name": "Leak testingTest stage",
+    "description": "test timer, read final pressure, calculate leak rate",
     "mode": "sequence",
     "max_nodes": 10,
     "delay_between": 0,
@@ -9,7 +9,7 @@
     "body": [
         {
             "type": "node",
-            "name": "检测计时等待",
+            "name": "test timer wait",
             "params": ["${test_duration}"],
             "timeout_ms": "${test_duration} + 2000",
             "max_retries": 0,
@@ -22,7 +22,7 @@
         },
         {
             "type": "node",
-            "name": "读取最终压力P_end",
+            "name": "read final pressureP_end",
             "result_key": "p_end",
             "params": ["${pressure_channel}"],
             "timeout_ms": 1000,
@@ -38,7 +38,7 @@
         },
         {
             "type": "node",
-            "name": "计算压降ΔP",
+            "name": "calculate pressure dropdP",
             "params": ["${p_start}", "${final_pressure}"],
             "timeout_ms": 1000,
             "max_retries": 0,
@@ -47,13 +47,13 @@
                 "template": "L2_node/leak_test/all_nodes.json/calculate_delta_p.f_f.r_f_delta_p"
             },
             "on_success": [
-                { "type": "log", "message": "ΔP = ${delta_p} kPa" }
+                { "type": "log", "message": "dP = ${delta_p} kPa" }
             ],
             "on_failure": []
         },
         {
             "type": "node",
-            "name": "计算泄漏率",
+            "name": "calculate leak rate",
             "params": ["${delta_p}", "${test_duration}"],
             "timeout_ms": 1000,
             "max_retries": 0,
@@ -62,13 +62,13 @@
                 "template": "L2_node/leak_test/all_nodes.json/calculate_leak_rate.f_f.r_f_leak_rate"
             },
             "on_success": [
-                { "type": "log", "message": "泄漏率 = ${leak_rate} kPa/min" }
+                { "type": "log", "message": "leak rate = ${leak_rate} kPa/min" }
             ],
             "on_failure": []
         }
     ],
     "args": [
-        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "压力传感器通道" },
-        { "index": 1, "name": "test_duration", "type": "u16", "default": 30000, "desc": "检测时间(ms)" }
+        { "index": 0, "name": "pressure_channel", "type": "u8", "default": 1, "desc": "pressure sensor channel" },
+        { "index": 1, "name": "test_duration", "type": "u16", "default": 30000, "desc": "test duration(ms)" }
     ]
 }

@@ -1,6 +1,6 @@
 {
     "type": "group",
-    "name": "四工位液位复检",
+    "name": "four-station Level recheck",
     "mode": "loop",
     "timeout_ms": 60000,
     "args": [
