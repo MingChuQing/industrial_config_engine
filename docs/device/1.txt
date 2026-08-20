@@ -1,0 +1,416 @@
+## 设备定义分层架构 v1.0
+
+### 一、三层抽象模型
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  第3层：应用层 (Device Type)                                       │
+│  只管 "设备名称 + 做什么操作"                                      │
+│  示例：Motor_A1.使能()、Motor_A1.读取位置()                       │
+│  完全不知道：Modbus地址、串口参数、CRC校验                        │
+│  输入：instance_id + 操作名 + 参数                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│  第2层：协议层 (Protocol Layer)                                    │
+│  只管 "协议类型 + 设备在协议中的地址"                              │
+│  示例：link_id=1, modbus_address=1, protocol=modbus_rtu           │
+│  完全不知道：COM口号、波特率、停止位                              │
+│  支持：modbus_rtu, modbus_tcp, custom_serial, custom_tcp          │
+├─────────────────────────────────────────────────────────────────────┤
+│  第1层：物理层 (Link Layer)                                        │
+│  只管 "通信参数 + 名称"                                            │
+│  示例：COM14, 9600, 8N1 / 192.168.1.100:502                      │
+│  完全不知道：上面跑的是什么协议、什么设备                         │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### 二、完整目录结构
+
+```
+device/
+├── links.json                              # 第1层：物理链路配置
+├── protocols/
+│   ├── modbus_rtu.json                     # 第2层：Modbus RTU 设备映射
+│   ├── modbus_tcp.json                     # 第2层：Modbus TCP 设备映射
+│   ├── custom_serial.json                  # 第2层：自定义串口协议设备映射
+│   └── custom_tcp.json                     # 第2层：自定义TCP协议设备映射
+└── types/
+    ├── modbus/
+    │   ├── iDM42_RS06.json                 # 第3层：雷赛步进电机
+    │   └── IFD9506.json                    # 第3层：雷赛变频器
+    ├── custom/
+    │   ├── custom_motor.json               # 第3层：自定义串口电机
+    │   └── custom_sensor.json              # 第3层：自定义串口传感器
+    └── tcp/
+        └── vision_controller.json          # 第3层：TCP视觉控制器
+```
+
+
+## 三、第1层：物理链路配置
+
+**文件：`device/links.json`**
+
+```json
+{
+    "type": "link_config",
+    "description": "物理通信链路配置（只关心通信参数，不关心协议）",
+    "version": "1.0.0",
+    "links": [
+        {
+            "id": 1,
+            "type": "serial",
+            "name": "COM14",
+            "baudrate": 9600,
+            "data_bits": 8,
+            "stop_bits": 1,
+            "parity": "none",
+            "timeout_ms": 1000,
+            "enabled": true,
+            "description": "产线A RS485 网络 - 雷赛驱动器"
+        },
+        {
+            "id": 2,
+            "type": "serial",
+            "name": "COM15",
+            "baudrate": 19200,
+            "data_bits": 8,
+            "stop_bits": 1,
+            "parity": "even",
+            "timeout_ms": 500,
+            "enabled": true,
+            "description": "产线B RS485 网络 - 自定义设备"
+        },
+        {
+            "id": 3,
+            "type": "tcp",
+            "name": "192.168.1.100",
+            "port": 502,
+            "timeout_ms": 3000,
+            "reconnect_interval": 5000,
+            "enabled": true,
+            "description": "Modbus TCP 网关"
+        },
+        {
+            "id": 4,
+            "type": "tcp",
+            "name": "192.168.1.150",
+            "port": 8888,
+            "timeout_ms": 3000,
+            "reconnect_interval": 5000,
+            "enabled": true,
+            "description": "视觉控制器 - 自定义TCP协议"
+        }
+    ]
+}
+```
+
+
+## 四、第2层：协议层配置
+
+### 4.1 Modbus RTU 协议
+
+**文件：`device/protocols/modbus_rtu.json`**
+
+```json
+{
+    "type": "protocol_config",
+    "protocol": "modbus_rtu",
+    "description": "Modbus RTU 协议设备映射",
+    "devices": [
+        {
+            "instance_id": "Motor_A1",
+            "link_id": 1,
+            "modbus_address": 1,
+            "enabled": true,
+            "description": "取料电机"
+        },
+        {
+            "instance_id": "Motor_A2",
+            "link_id": 1,
+            "modbus_address": 2,
+            "enabled": true,
+            "description": "装配电机"
+        },
+        {
+            "instance_id": "VFD_01",
+            "link_id": 1,
+            "modbus_address": 3,
+            "enabled": true,
+            "description": "变频器1"
+        }
+    ]
+}
+```
+
+### 4.2 Modbus TCP 协议
+
+**文件：`device/protocols/modbus_tcp.json`**
+
+```json
+{
+    "type": "protocol_config",
+    "protocol": "modbus_tcp",
+    "description": "Modbus TCP 协议设备映射",
+    "devices": [
+        {
+            "instance_id": "TCP_Gateway_01",
+            "link_id": 3,
+            "unit_id": 1,
+            "enabled": true,
+            "description": "TCP网关 - 子设备1"
+        },
+        {
+            "instance_id": "TCP_Gateway_02",
+            "link_id": 3,
+            "unit_id": 2,
+            "enabled": true,
+            "description": "TCP网关 - 子设备2"
+        }
+    ]
+}
+```
+
+### 4.3 自定义串口协议
+
+**文件：`device/protocols/custom_serial.json`**
+
+```json
+{
+    "type": "protocol_config",
+    "protocol": "custom_serial",
+    "description": "自定义串口协议设备映射",
+    "devices": [
+        {
+            "instance_id": "Custom_Motor_01",
+            "link_id": 2,
+            "enabled": true,
+            "description": "自定义串口电机"
+        },
+        {
+            "instance_id": "Custom_Sensor_01",
+            "link_id": 2,
+            "enabled": true,
+            "description": "自定义串口传感器"
+        }
+    ],
+    "protocol_specific": {
+        "frame_delimiter": "\r\n",
+        "response_timeout_ms": 200
+    }
+}
+```
+
+### 4.4 自定义 TCP 协议
+
+**文件：`device/protocols/custom_tcp.json`**
+
+```json
+{
+    "type": "protocol_config",
+    "protocol": "custom_tcp",
+    "description": "自定义 TCP 协议设备映射",
+    "devices": [
+        {
+            "instance_id": "Vision_Controller_01",
+            "link_id": 4,
+            "enabled": true,
+            "description": "视觉控制器 - 相机1"
+        },
+        {
+            "instance_id": "Robot_Controller_01",
+            "link_id": 4,
+            "enabled": true,
+            "description": "机器人控制器"
+        }
+    ],
+    "protocol_specific": {
+        "message_delimiter": "\n",
+        "heartbeat_interval_ms": 5000
+    }
+}
+```
+
+
+## 五、第3层：应用层（设备类型定义）
+
+### 5.1 Modbus RTU 设备类型
+
+**文件：`device/types/modbus/iDM42_RS06.json`**
+
+```json
+{
+    "type": "device_type",
+    "type_id": "iDM42_RS06",
+    "name": "雷赛 iDM42-RS06 步进电机",
+    "manufacturer": "雷赛智能",
+    "protocol": "modbus_rtu",
+    "description": "42机座 0.6N·m 智能驱控一体式步进电机",
+    "register_map": {
+        "control_word": 0x1801,
+        "status_word": 0x1901,
+        "running_status": 0x1003,
+        "current_alarm": 0x2203,
+        "command_position_high": 0x6006,
+        "command_position_low": 0x6007,
+        "motor_position_high": 0x602C,
+        "motor_position_low": 0x602D,
+        "pr_control": 0x6000,
+        "pr_trigger": 0x6002,
+        "pr_mode_0": 0x6200,
+        "pr_pos_high_0": 0x6201,
+        "pr_pos_low_0": 0x6202,
+        "pr_speed_0": 0x6203,
+        "pr_acc_0": 0x6204,
+        "pr_dec_0": 0x6205,
+        "jog_speed": 0x01E1,
+        "jog_acc": 0x01E7,
+        "peak_current": 0x0191,
+        "hold_current": 0x0195
+    },
+    "defaults": {
+        "peak_current": 22,
+        "hold_current": 50,
+        "jog_acc": 200,
+        "timeout_ms": 3000
+    }
+}
+```
+
+### 5.2 Modbus TCP 设备类型
+
+**文件：`device/types/tcp/modbus_tcp_gateway.json`**
+
+```json
+{
+    "type": "device_type",
+    "type_id": "ModbusTCP_Gateway",
+    "name": "Modbus TCP 网关",
+    "protocol": "modbus_tcp",
+    "description": "Modbus TCP 转 RTU 网关",
+    "register_map": {
+        "device_status": 0x0001,
+        "command": 0x0002,
+        "read_value": 0x0010,
+        "write_value": 0x0011
+    },
+    "defaults": {
+        "timeout_ms": 3000
+    }
+}
+```
+
+### 5.3 自定义串口设备类型
+
+**文件：`device/types/custom/custom_motor.json`**
+
+```json
+{
+    "type": "device_type",
+    "type_id": "Custom_Motor",
+    "name": "自定义串口电机控制器",
+    "protocol": "custom_serial",
+    "description": "基于自定义串口协议的电机控制器",
+    "commands": {
+        "enable": { "send": "ENABLE\r\n", "response": "OK\r\n" },
+        "disable": { "send": "DISABLE\r\n", "response": "OK\r\n" },
+        "set_speed": { "send": "SPEED ${speed}\r\n", "response": "OK\r\n" },
+        "read_status": { "send": "STATUS\r\n", "response_pattern": "STATUS (.+)\r\n" }
+    },
+    "defaults": {
+        "timeout_ms": 500
+    }
+}
+```
+
+### 5.4 自定义 TCP 设备类型
+
+**文件：`device/types/tcp/vision_controller.json`**
+
+```json
+{
+    "type": "device_type",
+    "type_id": "Vision_Controller",
+    "name": "视觉控制器",
+    "protocol": "custom_tcp",
+    "description": "TCP 视觉检测控制器",
+    "commands": {
+        "trigger": { "send": "TRIGGER\n", "response_pattern": "OK" },
+        "read_result": { "send": "RESULT\n", "response_pattern": "RESULT (.+)" },
+        "set_params": { "send": "PARAM ${name} ${value}\n", "response": "OK\n" }
+    },
+    "defaults": {
+        "timeout_ms": 5000
+    }
+}
+```
+
+
+## 六、设备实例配置
+
+**文件：`device/instances/Motor_A1.json`**
+
+```json
+{
+    "type": "device_instance",
+    "instance_id": "Motor_A1",
+    "type_id": "iDM42_RS06",
+    "enabled": true,
+    "description": "产线A - 取料电机",
+    "location": "工位1",
+    "custom_params": {
+        "peak_current": 22,
+        "jog_acc": 200
+    }
+}
+```
+
+**文件：`device/instances/Vision_Controller_01.json`**
+
+```json
+{
+    "type": "device_instance",
+    "instance_id": "Vision_Controller_01",
+    "type_id": "Vision_Controller",
+    "enabled": true,
+    "description": "视觉控制器 - 相机1",
+    "location": "检测工位",
+    "custom_params": {
+        "exposure_time": 100
+    }
+}
+```
+
+
+## 七、数据传递流程
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  L4 Flow: main_flow.json                                           │
+│  { "template": "L3_group/motor_homing.group", "params": ["Motor_A1"] } │
+│                              ↓                                      │
+│  L3 Group: motor_homing.group.json                                 │
+│  使用 ${instance_id} 引用设备                                      │
+│                              ↓                                      │
+│  L2 Node: write_register.node.json                                │
+│  通过 instance_id 查找设备配置                                     │
+│                              ↓                                      │
+│  设备配置查找（三层）：                                             │
+│  ┌─────────────────────────────────────────────────────────────────┐ │
+│  │  第3层：instance_id "Motor_A1" → type_id "iDM42_RS06"         │ │
+│  │         → register_map { control_word: 0x1801, ... }          │ │
+│  │  第2层：instance_id "Motor_A1" → link_id: 1, modbus_address: 1 │ │
+│  │         → protocol: modbus_rtu                                │ │
+│  │  第1层：link_id: 1 → serial: COM14, 9600, 8N1                │ │
+│  └─────────────────────────────────────────────────────────────────┘ │
+│                              ↓                                      │
+│  执行：COM14(9600,8N1) → Modbus RTU (地址1) → 寄存器 0x1801       │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+
+## 八、各层职责对照
+
+| 层级 | 目录 | 知道什么 | 不知道什么 |
+|------|------|---------|-----------|
+| **第1层** | `device/links.json` | COM口号、波特率、IP地址、端口 | 上面跑什么协议、挂什么设备 |
+| **第2层** | `device/protocols/*.json` | 协议类型、设备在协议中的地址 | COM口号、波特率、IP地址 |
+| **第3层** | `device/types/*.json` | 寄存器映射、命令格式 | 协议地址、物理链路参数 |

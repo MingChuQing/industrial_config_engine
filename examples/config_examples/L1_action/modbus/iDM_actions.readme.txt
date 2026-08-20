@@ -1,0 +1,806 @@
+﻿#   iDM 系列步进电机 - L1 原子操作手册
+
+## 一、概述
+
+### 1.1 适用范围
+
+本手册适用于  iDM-RS(V2.0) 系列智能驱控一体式步进电机，基于 Modbus RTU 协议通信，包含以下型号：
+
+| 型号 | 机座 | 保持扭矩 | 峰值电流 |
+|------|------|---------|----------|
+| iDM42-RS06(V2.0) | 42 | 0.6 N·m | 2.2A |
+| iDM42-RS08(V2.0) | 42 | 0.8 N·m | 2.2A |
+| iDM57-RS13(V2.0) | 57 | 1.3 N·m | 4.5A |
+| iDM57-RS23(V2.0) | 57 | 2.3 N·m | 7.0A |
+
+### 1.2 文档结构
+
+每个原子操作包含：
+- **文件名**：文件命名规范
+- **功能描述**：操作的作用
+- **参数列表**：输入参数说明
+- **JSON 模板**：完整的配置示例
+- **Modbus 报文示例**：对应的十六进制报文
+
+### 1.3 目录结构
+
+```
+L1_action/
+└── modbus/
+    ├── iDM_actions.json         #  所有原子操作聚合文件
+    ├── write_register.u16_u16.json
+    ├── read_register.u8_u16_u16.json
+    ├── read_register_32.u8_u16_u16.json
+    ├── check_register.u8_s_u16_u16.json
+    ├── write_coil.u16_b.json
+    ├── write_coil_on.json
+    ├── write_coil_off.json
+    ├── write_control_word.u16.json
+    ├── read_status.json
+    ├── read_alarm.json
+    ├── jog_forward.json
+    ├── jog_reverse.json
+    ├── jog_stop.json
+    ├── trigger_pr.u16.json
+    ├── trigger_homing.json
+    ├── set_homing_mode.u16.json
+    ├── set_position_32.u32.json
+    ├── set_speed.u16.json
+    ├── save_params.json
+    ├── reset_alarm.json
+    └── reset_to_default.json
+```
+
+
+## 二、聚合文件
+
+**文件：`L1_action/modbus/iDM_actions.json`**
+
+```json
+{
+    "type": "action_bundle",
+    "description": "  iDM 系列步进电机原子操作集合",
+    "version": "1.0.0",
+    "actions": [
+        {
+            "filename": "write_register.u16_u16",
+            "type": "modbus_write_verify",
+            "description": "写入单个16位寄存器",
+            "protocol": "modbus",
+            "request": "06 ${register} ${value_high} ${value_low}",
+            "response": "06 ${register} ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "register", "type": "u16", "min": 0, "max": 65535, "desc": "寄存器地址" },
+                { "index": 1, "name": "value", "type": "u16", "min": 0, "max": 65535, "desc": "写入值" }
+            ]
+        },
+        {
+            "filename": "read_register.u8_u16_u16",
+            "type": "modbus_read_cache",
+            "description": "读取单个16位寄存器",
+            "protocol": "modbus",
+            "request": "03 ${register} 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": "${timeout}",
+            "args": [
+                { "index": 0, "name": "register", "type": "u8", "min": 0, "max": 255, "desc": "寄存器地址" },
+                { "index": 1, "name": "timeout", "type": "u16", "min": 500, "max": 10000, "default": 2000, "desc": "超时(毫秒)" }
+            ]
+        },
+        {
+            "filename": "read_register_32.u8_u16_u16",
+            "type": "modbus_read_cache",
+            "description": "读取32位寄存器（两个连续寄存器）",
+            "protocol": "modbus",
+            "request": "03 ${register} 00 02",
+            "parse": {
+                "start_byte": 2,
+                "length": 4,
+                "endian": "big",
+                "type": "int32"
+            },
+            "timeout_ms": "${timeout}",
+            "args": [
+                { "index": 0, "name": "register", "type": "u8", "min": 0, "max": 255, "desc": "寄存器起始地址" },
+                { "index": 1, "name": "timeout", "type": "u16", "min": 500, "max": 10000, "default": 2000, "desc": "超时(毫秒)" }
+            ]
+        },
+        {
+            "filename": "check_register.u8_s_u16_u16",
+            "type": "modbus_read_check",
+            "description": "读取寄存器并检查条件",
+            "protocol": "modbus",
+            "request": "03 ${register} 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "check": {
+                "condition": "${condition}",
+                "value": "${compare_value}"
+            },
+            "timeout_ms": "${timeout}",
+            "args": [
+                { "index": 0, "name": "register", "type": "u8", "min": 0, "max": 255, "desc": "寄存器地址" },
+                { "index": 1, "name": "condition", "type": "s", "enum": ["eq","ne","lt","le","gt","ge"], "desc": "比较条件" },
+                { "index": 2, "name": "compare_value", "type": "u16", "min": 0, "max": 65535, "desc": "比较值" },
+                { "index": 3, "name": "timeout", "type": "u16", "min": 500, "max": 10000, "default": 2000, "desc": "超时(毫秒)" }
+            ]
+        },
+        {
+            "filename": "write_coil.u16_b",
+            "type": "modbus_write_verify",
+            "description": "写线圈",
+            "protocol": "modbus",
+            "request": "05 ${coil} ${value}",
+            "response": "05 ${coil} ${value}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "coil", "type": "u16", "min": 0, "max": 65535, "desc": "线圈地址" },
+                { "index": 1, "name": "value", "type": "b", "desc": "true=ON(FF00), false=OFF(0000)" }
+            ]
+        },
+        {
+            "filename": "write_coil_on",
+            "type": "modbus_write_verify",
+            "description": "开启线圈（固定地址 0x0001）",
+            "protocol": "modbus",
+            "request": "05 00 01 FF 00",
+            "response": "05 00 01 FF 00",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "write_coil_off",
+            "type": "modbus_write_verify",
+            "description": "关闭线圈（固定地址 0x0001）",
+            "protocol": "modbus",
+            "request": "05 00 01 00 00",
+            "response": "05 00 01 00 00",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "write_control_word.u16",
+            "type": "modbus_write_verify",
+            "description": "写入控制字 (0x1801)",
+            "protocol": "modbus",
+            "request": "06 18 01 ${value_high} ${value_low}",
+            "response": "06 18 01 ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "value", "type": "u16", "min": 0, "max": 65535, "desc": "控制字值" }
+            ]
+        },
+        {
+            "filename": "read_status",
+            "type": "modbus_read_cache",
+            "description": "读取运行状态 (0x1003)",
+            "protocol": "modbus",
+            "request": "03 10 03 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": 2000
+        },
+        {
+            "filename": "read_alarm",
+            "type": "modbus_read_cache",
+            "description": "读取当前报警 (0x2203)",
+            "protocol": "modbus",
+            "request": "03 22 03 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "timeout_ms": 2000
+        },
+        {
+            "filename": "jog_forward",
+            "type": "modbus_write_verify",
+            "description": "JOG 正转 (控制字 0x4001)",
+            "protocol": "modbus",
+            "request": "06 18 01 40 01",
+            "response": "06 18 01 40 01",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "jog_reverse",
+            "type": "modbus_write_verify",
+            "description": "JOG 反转 (控制字 0x4002)",
+            "protocol": "modbus",
+            "request": "06 18 01 40 02",
+            "response": "06 18 01 40 02",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "jog_stop",
+            "type": "modbus_write_verify",
+            "description": "JOG 停止 (控制字 0x0000)",
+            "protocol": "modbus",
+            "request": "06 18 01 00 00",
+            "response": "06 18 01 00 00",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "trigger_pr.u16",
+            "type": "modbus_write_verify",
+            "description": "触发 PR 路径 (0x6002)",
+            "protocol": "modbus",
+            "request": "06 60 02 ${value_high} ${value_low}",
+            "response": "06 60 02 ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "value", "type": "u16", "min": 0, "max": 65535, "desc": "触发值: 0x001P=路径P, 0x0020=回零, 0x0040=急停" }
+            ]
+        },
+        {
+            "filename": "trigger_homing",
+            "type": "modbus_write_verify",
+            "description": "触发回零 (0x6002 = 0x0020)",
+            "protocol": "modbus",
+            "request": "06 60 02 00 20",
+            "response": "06 60 02 00 20",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "set_homing_mode.u16",
+            "type": "modbus_write_verify",
+            "description": "设置回零模式 (0x600A)",
+            "protocol": "modbus",
+            "request": "06 60 0A ${value_high} ${value_low}",
+            "response": "06 60 0A ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "value", "type": "u16", "min": 0, "max": 65535, "desc": "回零模式: bit2=1原点回零, bit2=0限位回零" }
+            ]
+        },
+        {
+            "filename": "set_position_32.u32",
+            "type": "modbus_write_verify",
+            "description": "设置32位位置值 (0x6201高16位, 0x6202低16位)",
+            "protocol": "modbus",
+            "request": "06 62 01 ${pos_high_high} ${pos_high_low}",
+            "response": "06 62 01 ${pos_high_high} ${pos_high_low}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "position", "type": "u32", "min": 0, "max": 4294967295, "desc": "位置值(脉冲数)" }
+            ]
+        },
+        {
+            "filename": "set_speed.u16",
+            "type": "modbus_write_verify",
+            "description": "设置运行速度 (0x6203 / 0x01E1)",
+            "protocol": "modbus",
+            "request": "06 ${register} ${value_high} ${value_low}",
+            "response": "06 ${register} ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "register", "type": "u16", "min": 0, "max": 65535, "desc": "寄存器地址: 0x6203=PR速度, 0x01E1=JOG速度" },
+                { "index": 1, "name": "value", "type": "u16", "min": 0, "max": 6000, "desc": "速度值(rpm)" }
+            ]
+        },
+        {
+            "filename": "save_params",
+            "type": "modbus_write_verify",
+            "description": "保存所有参数到 EEPROM (0x1801 = 0x2211)",
+            "protocol": "modbus",
+            "request": "06 18 01 22 11",
+            "response": "06 18 01 22 11",
+            "timeout_ms": 5000
+        },
+        {
+            "filename": "reset_alarm",
+            "type": "modbus_write_verify",
+            "description": "复位当前报警 (0x1801 = 0x1111)",
+            "protocol": "modbus",
+            "request": "06 18 01 11 11",
+            "response": "06 18 01 11 11",
+            "timeout_ms": 3000
+        },
+        {
+            "filename": "reset_to_default",
+            "type": "modbus_write_verify",
+            "description": "恢复出厂设置 (0x1801 = 0x2233)",
+            "protocol": "modbus",
+            "request": "06 18 01 22 33",
+            "response": "06 18 01 22 33",
+            "timeout_ms": 5000
+        },
+        {
+            "filename": "read_status_32",
+            "type": "modbus_read_cache",
+            "description": "读取32位状态值",
+            "protocol": "modbus",
+            "request": "03 ${register} 00 02",
+            "parse": {
+                "start_byte": 2,
+                "length": 4,
+                "endian": "big",
+                "type": "int32"
+            },
+            "timeout_ms": "${timeout}",
+            "args": [
+                { "index": 0, "name": "register", "type": "u8", "min": 0, "max": 255, "desc": "寄存器起始地址" },
+                { "index": 1, "name": "timeout", "type": "u16", "min": 500, "max": 10000, "default": 2000, "desc": "超时(毫秒)" }
+            ]
+        },
+        {
+            "filename": "set_pr_mode.u16",
+            "type": "modbus_write_verify",
+            "description": "设置 PR 路径模式 (0x6200)",
+            "protocol": "modbus",
+            "request": "06 62 00 ${value_high} ${value_low}",
+            "response": "06 62 00 ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "value", "type": "u16", "min": 0, "max": 65535, "desc": "模式值: 0x0001=绝对位置, 0x0002=速度模式, 0x0003=回零" }
+            ]
+        },
+        {
+            "filename": "set_jog_speed.u16",
+            "type": "modbus_write_verify",
+            "description": "设置 JOG 速度 (0x01E1)",
+            "protocol": "modbus",
+            "request": "06 01 E1 ${value_high} ${value_low}",
+            "response": "06 01 E1 ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "value", "type": "u16", "min": 0, "max": 6000, "desc": "JOG 速度 (rpm)" }
+            ]
+        },
+        {
+            "filename": "set_jog_acc.u16",
+            "type": "modbus_write_verify",
+            "description": "设置 JOG 加减速时间 (0x01E7)",
+            "protocol": "modbus",
+            "request": "06 01 E7 ${value_high} ${value_low}",
+            "response": "06 01 E7 ${value_high} ${value_low}",
+            "timeout_ms": 3000,
+            "args": [
+                { "index": 0, "name": "value", "type": "u16", "min": 10, "max": 10000, "desc": "加减速时间 (ms)" }
+            ]
+        }
+    ]
+}
+```
+
+
+## 三、各原子操作详解
+
+### 3.1 write_register.u16_u16
+
+**功能**：写入单个 16 位 Modbus 寄存器
+
+**参数**：
+
+| 参数 | 类型 | 范围 | 说明 |
+|------|------|------|------|
+| register | u16 | 0~65535 | 寄存器地址 |
+| value | u16 | 0~65535 | 写入值 |
+
+**示例**：写入控制字使能 (0x1801 = 0x0001)
+
+```json
+{
+    "type": "modbus_write_verify",
+    "protocol": "modbus",
+    "request": "06 18 01 00 01",
+    "response": "06 18 01 00 01",
+    "timeout_ms": 3000
+}
+```
+
+### 3.2 read_register.u8_u16_u16
+
+**功能**：读取单个 16 位寄存器
+
+**参数**：
+
+| 参数 | 类型 | 范围 | 说明 |
+|------|------|------|------|
+| register | u8 | 0~255 | 寄存器地址 |
+| timeout | u16 | 500~10000 | 超时(ms)，默认2000 |
+
+**示例**：读取运行状态 (0x1003)
+
+```json
+{
+    "type": "modbus_read_cache",
+    "protocol": "modbus",
+    "request": "03 10 03 00 01",
+    "parse": { "start_byte": 2, "length": 2, "endian": "big", "type": "uint16" },
+    "timeout_ms": 2000
+}
+```
+
+**返回状态位说明**：
+
+| Bit | 含义 |
+|-----|------|
+| Bit0 | 故障 |
+| Bit1 | 使能 |
+| Bit2 | 运行 |
+| Bit4 | 指令完成 |
+| Bit5 | 路径完成 |
+| Bit6 | 回零完成 |
+
+### 3.3 read_register_32.u8_u16_u16
+
+**功能**：读取 32 位值（两个连续寄存器）
+
+**参数**：
+
+| 参数 | 类型 | 范围 | 说明 |
+|------|------|------|------|
+| register | u8 | 0~255 | 寄存器起始地址 |
+| timeout | u16 | 500~10000 | 超时(ms)，默认2000 |
+
+**示例**：读取电机位置 (0x602C, 0x602D)
+
+```json
+{
+    "type": "modbus_read_cache",
+    "protocol": "modbus",
+    "request": "03 60 2C 00 02",
+    "parse": { "start_byte": 2, "length": 4, "endian": "big", "type": "int32" },
+    "timeout_ms": 2000
+}
+```
+
+### 3.4 check_register.u8_s_u16_u16
+
+**功能**：读取寄存器并检查条件
+
+**参数**：
+
+| 参数 | 类型 | 范围 | 说明 |
+|------|------|------|------|
+| register | u8 | 0~255 | 寄存器地址 |
+| condition | s | eq/ne/lt/le/gt/ge | 比较条件 |
+| compare_value | u16 | 0~65535 | 比较值 |
+| timeout | u16 | 500~10000 | 超时(ms)，默认2000 |
+
+**示例**：检查回零是否完成 (0x1003 & 0x40)
+
+```json
+{
+    "type": "modbus_read_check",
+    "protocol": "modbus",
+    "request": "03 10 03 00 01",
+    "parse": { "start_byte": 2, "length": 2, "endian": "big", "type": "uint16" },
+    "check": { "condition": "eq", "value": 64 },
+    "timeout_ms": 2000
+}
+```
+
+### 3.5 write_control_word.u16
+
+**功能**：写入控制字 (0x1801)
+
+**控制字值说明**：
+
+| 值 | 功能 |
+|----|------|
+| 0x0001 | 使能 |
+| 0x1111 | 复位当前报警 |
+| 0x2211 | 保存参数到 EEPROM |
+| 0x2233 | 恢复出厂设置 |
+| 0x4001 | JOG 正转 |
+| 0x4002 | JOG 反转 |
+
+**示例**：使能电机
+
+```json
+{
+    "type": "modbus_write_verify",
+    "protocol": "modbus",
+    "request": "06 18 01 00 01",
+    "response": "06 18 01 00 01",
+    "timeout_ms": 3000
+}
+```
+
+### 3.6 trigger_pr.u16
+
+**功能**：触发 PR 路径 (0x6002)
+
+**触发值说明**：
+
+| 值 | 功能 |
+|----|------|
+| 0x001P (P=0~F) | 触发路径 P |
+| 0x0020 | 触发回零 |
+| 0x0040 | 急停 |
+
+**示例**：触发路径 0
+
+```json
+{
+    "type": "modbus_write_verify",
+    "protocol": "modbus",
+    "request": "06 60 02 00 01",
+    "response": "06 60 02 00 01",
+    "timeout_ms": 3000
+}
+```
+
+### 3.7 set_pr_mode.u16
+
+**功能**：设置 PR 路径模式 (0x6200)
+
+**模式值说明**：
+
+| 值 | 模式 |
+|----|------|
+| 0x0001 | 绝对位置 |
+| 0x0002 | 速度模式 |
+| 0x0003 | 回零 |
+
+### 3.8 read_status
+
+**功能**：读取运行状态 (0x1003)
+
+**状态值说明**：同 3.2 节
+
+### 3.9 read_alarm
+
+**功能**：读取当前报警 (0x2203)
+
+**报警码说明**：
+
+| 值 | 含义 |
+|----|------|
+| 0x00E0 | 过流 |
+| 0x00C0 | 过压 |
+| 0x0152 | 锁轴故障 |
+| 0x0240 | EEPROM 故障 |
+| 0x00F0 | 过温 |
+| 0x0210 | IO 配置重复 |
+
+### 3.10 set_position_32.u32
+
+**功能**：设置 32 位位置值
+
+**参数**：
+
+| 参数 | 类型 | 范围 | 说明 |
+|------|------|------|------|
+| position | u32 | 0~4294967295 | 位置值(脉冲数) |
+
+**示例**：设置位置 200000 (0x00030D40)
+
+```json
+{
+    "type": "modbus_write_verify",
+    "protocol": "modbus",
+    "request": "06 62 01 00 03",
+    "response": "06 62 01 00 03",
+    "timeout_ms": 3000
+}
+```
+（注：需要分别写入高位 0x6201 和低位 0x6202）
+
+
+## 四、常用寄存器地址速查
+
+| 寄存器 | 名称 | 类型 | 说明 |
+|--------|------|------|------|
+| 0x1003 | 运行状态 | R | 见状态位说明 |
+| 0x1801 | 控制字 | W | 见控制字说明 |
+| 0x1901 | 状态字 | R | 参数保存状态 |
+| 0x2203 | 当前报警 | R | 见报警码说明 |
+| 0x6000 | PR 控制 | RW | PR 全局设置 |
+| 0x6002 | 触发寄存器 | W | 触发 PR/回零/急停 |
+| 0x600A | 回零模式 | RW | 回零配置 |
+| 0x600F | 回零高速 | RW | 回零高速 (rpm) |
+| 0x6010 | 回零低速 | RW | 回零低速 (rpm) |
+| 0x6013 | 力矩回零时间 | RW | 力矩回零保留时间 (ms) |
+| 0x6014 | 力矩回零值 | RW | 力矩回零出力 (%) |
+| 0x601C | S 码输出值 | R | S 码当前输出 |
+| 0x6026 | JOG2 速度 | RW | JOG 第二速度 (rpm) |
+| 0x6027 | JOG1 速度 | RW | JOG 速度 (rpm) |
+| 0x6028 | JOG 加速时间 | RW | JOG 加速时间 |
+| 0x6029 | JOG 减速时间 | RW | JOG 减速时间 |
+| 0x602C | 电机位置 H | R | 电机位置高16位 |
+| 0x602D | 电机位置 L | R | 电机位置低16位 |
+| 0x6200 | PR0 模式 | RW | 路径0模式 |
+| 0x6201 | PR0 位置 H | RW | 路径0位置高16位 |
+| 0x6202 | PR0 位置 L | RW | 路径0位置低16位 |
+| 0x6203 | PR0 速度 | RW | 路径0速度 (rpm) |
+| 0x6204 | PR0 加速时间 | RW | 路径0加速时间 |
+| 0x6205 | PR0 减速时间 | RW | 路径0减速时间 |
+| 0x6206 | PR0 停顿时间 | RW | 路径0停顿时间 |
+| 0x01E1 | JOG 速度 | RW | JOG 速度 (rpm) |
+| 0x01E7 | JOG 加减速 | RW | JOG 加减速时间 |
+| 0x0191 | 峰值电流 | RW | 峰值电流 (0.1A) |
+| 0x0195 | 保持电流 | RW | 保持电流百分比 |
+| 0x0233 | 编码器分辨率 | RW | 编码器分辨率 |
+
+
+## 五、PR 路径配置参考
+
+### 5.1 PR0 绝对位置模式
+
+```json
+{
+    "type": "sequence",
+    "steps": [
+        { "type": "action", "template": "modbus/set_pr_mode.u16", "params": [0x0001] },
+        { "type": "action", "template": "modbus/set_position_32.u32", "params": [200000] },
+        { "type": "action", "template": "modbus/set_speed.u16", "params": [0x6203, 600] },
+        { "type": "action", "template": "modbus/trigger_pr.u16", "params": [0x0001] }
+    ]
+}
+```
+
+### 5.2 PR0 速度模式
+
+```json
+{
+    "type": "sequence",
+    "steps": [
+        { "type": "action", "template": "modbus/set_pr_mode.u16", "params": [0x0002] },
+        { "type": "action", "template": "modbus/set_speed.u16", "params": [0x6203, 300] },
+        { "type": "action", "template": "modbus/trigger_pr.u16", "params": [0x0001] }
+    ]
+}
+```
+
+### 5.3 回零流程
+
+```json
+{
+    "type": "sequence",
+    "steps": [
+        { "type": "action", "template": "modbus/set_homing_mode.u16", "params": [0x0002] },
+        { "type": "action", "template": "modbus/write_register.u16_u16", "params": [0x600F, 200] },
+        { "type": "action", "template": "modbus/write_register.u16_u16", "params": [0x6010, 50] },
+        { "type": "action", "template": "modbus/trigger_homing" },
+        { "type": "action", "template": "modbus/read_status", "judge": { "type": "compare", "condition": "eq", "value": 64 } }
+    ]
+}
+```
+
+
+## 六、故障码处理
+
+### 6.1 报警码对照表
+
+| 故障码 | 含义 | 处理方式 |
+|--------|------|----------|
+| 0x00E0 | 过流 | 检查电机接线，减小负载 |
+| 0x00C0 | 过压 | 检查电源电压 |
+| 0x00A1 | 电流采样故障 | 重启驱动器，联系厂家 |
+| 0x0152 | 锁轴故障 | 检查电机接线 |
+| 0x0240 | EEPROM 故障 | 恢复出厂设置 |
+| 0x05F0 | 参数自整定故障 | 关闭自整定 |
+| 0x0180 | 超差报警 | 检查编码器设置 |
+| 0x0150 | 编码器断线 | 检查编码器接线 |
+| 0x00F0 | 过温 | 降低电流，加强散热 |
+| 0x0210 | IO 配置重复 | 检查 IO 口配置 |
+
+### 6.2 故障清除流程
+
+```json
+{
+    "type": "sequence",
+    "steps": [
+        { "type": "action", "template": "modbus/read_alarm" },
+        { "type": "action", "template": "modbus/reset_alarm" },
+        { "type": "action", "template": "modbus/read_alarm", "judge": { "type": "compare", "condition": "eq", "value": 0 } }
+    ]
+}
+```
+
+
+## 七、文档版本
+
+| 版本 | 日期 | 变更说明 |
+|------|------|----------|
+| v1.0 | 2026-08-03 | 初始版本，包含  iDM 系列所有原子操作 |
+
+**文档维护者**：明楚晴（东北育才学校）
+
+
+
+
+
+
+这个聚合文件，我要放在哪里，才能用demo加载？
+聚合文件存放位置
+把聚合文件放在 L1_action/modbus/iDM_actions.json 即可。
+
+完整路径
+text
+D:\project\industrial_config_engine\L1_action\modbus\iDM_actions.json
+demo 加载方式
+方式1：加载单个聚合文件
+cpp
+// 在 demo 中加载聚合文件
+engine.loadActionBundle("L1_action/modbus/iDM_actions.json");
+方式2：加载整个 L1_action 目录（自动识别聚合文件）
+cpp
+// 加载整个目录，会自动识别 iDM_actions.json 为聚合文件
+engine.loadAllActions("L1_action");
+方式3：同时加载单个文件和聚合文件（混合使用）
+cpp
+// 单个文件
+engine.loadL1Action("modbus/write_register.u16_u16");
+// 聚合文件
+engine.loadActionBundle("L1_action/modbus/iDM_actions.json");
+目录结构
+text
+D:\project\industrial_config_engine\
+├── L1_action\
+│   └── modbus\
+│       ├── iDM_actions.json          ← 聚合文件（推荐，包含所有）
+│       ├── write_register.u16_u16.json   (可选，保留单文件)
+│       └── read_register.u8_u16_u16.json (可选，保留单文件)
+├── L2_node\
+├── L3_group\
+├── L4_flow\
+├── demos\
+│   └── demo_full.cpp
+└── ...
+demo_full.cpp 修改示例
+cpp
+int main() {
+    Engine engine;
+    engine.setDebugMode(true);
+
+    // ========== 加载 L1 Action（使用聚合文件） ==========
+    std::cout << "\n--- 加载 L1 Action ---" << std::endl;
+    
+    // 方式1：加载聚合文件（推荐）
+    engine.loadActionBundle("L1_action/modbus/iDM_actions.json");
+    
+    // 方式2：加载整个 L1_action 目录（自动识别）
+    // engine.loadAllActions("L1_action");
+    
+    // 方式3：单个文件（也支持）
+    // engine.loadL1Action("modbus/write_register.u16_u16");
+
+    // ========== 其余代码保持不变 ==========
+    // ...
+}
+在 engine.cpp 中实现 loadActionBundle
+确保 engine.cpp 中有这个函数：
+
+cpp
+bool Engine::loadActionBundle(const std::string& bundle_path) {
+    std::vector<Action> actions;
+    std::string error;
+    if (action_loader_->loadActionBundle(bundle_path, actions, error)) {
+        for (const auto& action : actions) {
+            // 缓存或注册 action
+            std::cout << "[ACTION] Loaded: " << action.description << std::endl;
+        }
+        logDebug("Loaded action bundle: " + bundle_path);
+        return true;
+    }
+    logError("Failed to load action bundle: " + error);
+    return false;
+}
+验证加载
+编译运行后，输出应该类似：
+
+text
+--- 加载 L1 Action ---
+[ACTION_LOADER] Loading bundle: L1_action/modbus/iDM_actions.json
+  Contains 28 actions
+[ACTION] Loaded: write_register.u16_u16: 写入单个16位寄存器
+[ACTION] Loaded: read_register.u8_u16_u16: 读取单个16位寄存器
+[ACTION] Loaded: read_register_32.u8_u16_u16: 读取32位寄存器
+...

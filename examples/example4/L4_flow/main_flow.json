@@ -1,0 +1,236 @@
+{
+    "type": "flow",
+    "name": "饮料灌装主流程",
+    "mode": "sequence",
+    "timeout_ms": 36000000,
+    "body": [
+        {
+            "type": "group",
+            "name": "步骤1 系统初始化",
+            "template": "L3_group/axis_home_seq.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "步骤1 报警自检",
+            "template": "L3_group/alarm_check_seq.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "步骤1 阀门复位",
+            "template": "L3_group/valve_reset_seq.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "步骤1 气缸复位",
+            "template": "L3_group/cylinder_reset_seq.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "步骤2 输送启动",
+            "template": "L3_group/conveyor_run_seq.group.json",
+            "params": [
+                300
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤2 推瓶检测",
+            "template": "L3_group/bottle_feed.group.json",
+            "params": [
+                8,
+                52
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤2 输送停止",
+            "template": "L3_group/conveyor_stop_seq.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "步骤3 瓶位1检测",
+            "template": "L3_group/pos_detect.group.json",
+            "params": [
+                52
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤3 瓶位2检测",
+            "template": "L3_group/pos_detect.group.json",
+            "params": [
+                53
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤3 瓶位3检测",
+            "template": "L3_group/pos_detect.group.json",
+            "params": [
+                54
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤3 瓶位4检测",
+            "template": "L3_group/pos_detect.group.json",
+            "params": [
+                55
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤4 冲洗",
+            "template": "L3_group/rinse_cycle.group.json",
+            "params": [
+                18,
+                5000
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤4 消毒",
+            "template": "L3_group/rinse_cycle.group.json",
+            "params": [
+                19,
+                3000
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤4 排放",
+            "template": "L3_group/rinse_cycle.group.json",
+            "params": [
+                20,
+                3000
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤5 灌装定位1",
+            "template": "L3_group/axis_move_seq.group.json",
+            "params": [
+                120000,
+                60000,
+                150000
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤5 灌装定位2",
+            "template": "L3_group/axis_move_seq.group.json",
+            "params": [
+                132000,
+                60000,
+                150000
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤5 灌装定位3",
+            "template": "L3_group/axis_move_seq.group.json",
+            "params": [
+                144000,
+                60000,
+                150000
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤5 灌装定位4",
+            "template": "L3_group/axis_move_seq.group.json",
+            "params": [
+                156000,
+                60000,
+                150000
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤6 灌装工位1",
+            "template": "L3_group/fill_cycle.group.json",
+            "params": [
+                17,
+                500
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤6 灌装工位2",
+            "template": "L3_group/fill_cycle.group.json",
+            "params": [
+                17,
+                500
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤6 灌装工位3",
+            "template": "L3_group/fill_cycle.group.json",
+            "params": [
+                17,
+                500
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤6 灌装工位4",
+            "template": "L3_group/fill_cycle.group.json",
+            "params": [
+                17,
+                500
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤7 液位复检1",
+            "template": "L3_group/level_recheck.group.json",
+            "params": [
+                56
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤7 液位复检2",
+            "template": "L3_group/level_recheck.group.json",
+            "params": [
+                57
+            ]
+        },
+        {
+            "type": "group",
+            "name": "步骤8 旋盖",
+            "template": "L3_group/capping_cycle.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "步骤9 打码贴标",
+            "template": "L3_group/coding_cycle.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "步骤10 推瓶出料",
+            "template": "L3_group/unload.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "步骤11 CIP清洗",
+            "template": "L3_group/cip_cycle.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "步骤12 归零待机",
+            "template": "L3_group/home_standby.group.json",
+            "params": []
+        }
+    ]
+}

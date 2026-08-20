@@ -1,0 +1,22 @@
+{
+    "type": "group",
+    "name": "归零待机",
+    "mode": "sequence",
+    "timeout_ms": 60000,
+    "args": [],
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/axis_home_seq.group.json",
+            "params": []
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/popup.s_s",
+            "params": [
+                "系统待机",
+                "info"
+            ]
+        }
+    ]
+}

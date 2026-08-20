@@ -1,0 +1,46 @@
+{
+    "type": "group",
+    "name": "推瓶并检测到位",
+    "mode": "sequence",
+    "timeout_ms": 60000,
+    "args": [
+        {
+            "index": 0,
+            "name": "coil",
+            "type": "u16",
+            "default": 8
+        },
+        {
+            "index": 1,
+            "name": "sensor",
+            "type": "u16",
+            "default": 52
+        }
+    ],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/coil_set.u16_b.r_b_done",
+            "params": [
+                "${coil}",
+                true
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/sensor_wait.u16_u16.r_b_triggered",
+            "params": [
+                "${sensor}",
+                5000
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/coil_set.u16_b.r_b_done",
+            "params": [
+                "${coil}",
+                false
+            ]
+        }
+    ]
+}

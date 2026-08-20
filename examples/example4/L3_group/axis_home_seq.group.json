@@ -1,0 +1,30 @@
+{
+    "type": "group",
+    "name": "三轴回零",
+    "mode": "sequence",
+    "timeout_ms": 60000,
+    "args": [],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/axis_home.u8.r_b_homed",
+            "params": [
+                1
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/axis_home.u8.r_b_homed",
+            "params": [
+                2
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/axis_home.u8.r_b_homed",
+            "params": [
+                3
+            ]
+        }
+    ]
+}

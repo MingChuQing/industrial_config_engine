@@ -1,0 +1,14 @@
+{
+    "type": "group",
+    "name": "输送带停止",
+    "mode": "sequence",
+    "timeout_ms": 60000,
+    "args": [],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/conveyor_stop.r_b_stop",
+            "params": []
+        }
+    ]
+}

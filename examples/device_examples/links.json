@@ -1,0 +1,19 @@
+﻿{
+    "type": "link_config",
+    "description": "物理通信链路配置",
+    "version": "1.0.0",
+    "links": [
+        {
+            "id": 1,
+            "type": "serial",
+            "name": "COM14",
+            "baudrate": 9600,
+            "data_bits": 8,
+            "stop_bits": 1,
+            "parity": "none",
+            "timeout_ms": 1000,
+            "enabled": true,
+            "description": "  iDM 驱动器 RS485 网络"
+        }
+    ]
+}

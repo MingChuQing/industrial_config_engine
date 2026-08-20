@@ -1,0 +1,30 @@
+{
+    "type": "group",
+    "name": "三轴报警自检",
+    "mode": "sequence",
+    "timeout_ms": 60000,
+    "args": [],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/axis_alarm.u8.r_b_ok",
+            "params": [
+                1
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/axis_alarm.u8.r_b_ok",
+            "params": [
+                2
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/axis_alarm.u8.r_b_ok",
+            "params": [
+                3
+            ]
+        }
+    ]
+}

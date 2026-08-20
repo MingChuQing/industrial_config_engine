@@ -1,0 +1,301 @@
+{
+    "type": "node_bundle",
+    "description": "饮料灌装线 L2 执行节点",
+    "nodes": [
+        {
+            "filename": "axis_home.u8.r_b_homed",
+            "type": "node",
+            "name": "轴回零",
+            "params": [
+                1
+            ],
+            "timeout_ms": 30000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/motor_home_mode.r_b_home_mode"
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "轴回零失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        },
+        {
+            "filename": "axis_move_abs.u8_u32.r_b_arrived",
+            "type": "node",
+            "name": "轴绝对定位",
+            "params": [
+                1,
+                0
+            ],
+            "timeout_ms": 30000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/motor_pr_abs.r_b_abs_done"
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "轴绝对定位失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        },
+        {
+            "filename": "axis_alarm.u8.r_b_ok",
+            "type": "node",
+            "name": "轴报警检查",
+            "params": [
+                1
+            ],
+            "timeout_ms": 3000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/motor_alarm.r_u16_alarm"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "轴报警检查失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        },
+        {
+            "filename": "coil_set.u16_b.r_b_done",
+            "type": "node",
+            "name": "线圈/气缸控制",
+            "params": [
+                1,
+                true
+            ],
+            "timeout_ms": 5000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/coil_write.u16_b.r_b_done"
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "线圈/气缸控制失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        },
+        {
+            "filename": "sensor_wait.u16_u16.r_b_triggered",
+            "type": "node",
+            "name": "光电等待触发",
+            "params": [
+                1,
+                5000
+            ],
+            "timeout_ms": 10000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/di_read.u16.r_b_triggered"
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "光电等待触发失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        },
+        {
+            "filename": "flow_ge.f.r_b_ok",
+            "type": "node",
+            "name": "流量达标判断",
+            "params": [
+                500
+            ],
+            "timeout_ms": 8000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/reg_read_float.u16.r_f_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "ge",
+                "value": 500
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "流量达标判断失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        },
+        {
+            "filename": "pressure_ge.f.r_b_ok",
+            "type": "node",
+            "name": "压力达标判断",
+            "params": [
+                0.2
+            ],
+            "timeout_ms": 5000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/reg_read_float.u16.r_f_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "ge",
+                "value": 0.2
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "压力达标判断失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        },
+        {
+            "filename": "torque_ge.f.r_b_ok",
+            "type": "node",
+            "name": "扭矩达标判断",
+            "params": [
+                2.0
+            ],
+            "timeout_ms": 5000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/reg_read_float.u16.r_f_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "ge",
+                "value": 2.0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "扭矩达标判断失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        },
+        {
+            "filename": "conveyor_run.u16.r_b_run",
+            "type": "node",
+            "name": "输送带运行",
+            "params": [
+                300
+            ],
+            "timeout_ms": 5000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/conveyor_speed.u16.r_b_speed"
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "输送带运行失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        },
+        {
+            "filename": "conveyor_stop.r_b_stop",
+            "type": "node",
+            "name": "输送带停止",
+            "params": [],
+            "timeout_ms": 3000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/conveyor_stop.r_b_stop_done"
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "输送带停止失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        },
+        {
+            "filename": "wait_ms.u16.r_b_wait_done",
+            "type": "node",
+            "name": "等待",
+            "params": [
+                1000
+            ],
+            "timeout_ms": 3600000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/wait.u16.r_b_wait_done"
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "等待失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        },
+        {
+            "filename": "popup.s_s",
+            "type": "node",
+            "name": "弹窗",
+            "params": [
+                "提示",
+                "info"
+            ],
+            "timeout_ms": 5000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/popup.s_s"
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "弹窗失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        },
+        {
+            "filename": "log.s",
+            "type": "node",
+            "name": "日志",
+            "params": [
+                ""
+            ],
+            "timeout_ms": 1000,
+            "max_retries": 2,
+            "action": {
+                "template": "L1_action/all_actions.json/log.s"
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "message": "日志失败",
+                    "level": "error"
+                }
+            ],
+            "on_success": []
+        }
+    ]
+}

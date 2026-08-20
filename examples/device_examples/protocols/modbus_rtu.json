@@ -1,0 +1,23 @@
+{
+    "type": "protocol_config",
+    "protocol": "modbus_rtu",
+    "description": "Modbus RTU 协议设备映射",
+    "devices": [
+        {
+            "instance_id": "X_Axis",
+            "type_id": "iDM42_RS06",
+            "link_id": 1,
+            "modbus_address": 1,
+            "enabled": true,
+            "description": "X轴 - 取料/定位电机"
+        },
+        {
+            "instance_id": "Y_Axis",
+            "type_id": "iDM42_RS06",
+            "link_id": 1,
+            "modbus_address": 2,
+            "enabled": true,
+            "description": "Y轴 - 搬运/装配电机"
+        }
+    ]
+}

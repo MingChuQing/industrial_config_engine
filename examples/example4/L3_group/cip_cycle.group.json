@@ -1,0 +1,48 @@
+{
+    "type": "group",
+    "name": "CIP清洗循环",
+    "mode": "sequence",
+    "timeout_ms": 60000,
+    "args": [],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/coil_set.u16_b.r_b_done",
+            "params": [
+                19,
+                true
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/coil_set.u16_b.r_b_done",
+            "params": [
+                14,
+                true
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/wait_ms.u16.r_b_wait_done",
+            "params": [
+                120000
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/coil_set.u16_b.r_b_done",
+            "params": [
+                14,
+                false
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/coil_set.u16_b.r_b_done",
+            "params": [
+                19,
+                false
+            ]
+        }
+    ]
+}

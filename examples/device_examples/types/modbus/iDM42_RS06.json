@@ -1,0 +1,41 @@
+﻿{
+    "type": "device_type",
+    "type_id": "iDM42_RS06",
+    "name": "  iDM42-RS06 步进电机",
+    "manufacturer": " 智能",
+    "protocol": "modbus_rtu",
+    "description": "42机座 0.6N·m 智能驱控一体式步进电机",
+    "register_map": {
+        "control_word": 0x1801,
+        "status_word": 0x1901,
+        "running_status": 0x1003,
+        "current_alarm": 0x2203,
+        "command_position_high": 0x6006,
+        "command_position_low": 0x6007,
+        "motor_position_high": 0x602C,
+        "motor_position_low": 0x602D,
+        "pr_control": 0x6000,
+        "pr_trigger": 0x6002,
+        "pr_mode_0": 0x6200,
+        "pr_pos_high_0": 0x6201,
+        "pr_pos_low_0": 0x6202,
+        "pr_speed_0": 0x6203,
+        "pr_acc_0": 0x6204,
+        "pr_dec_0": 0x6205,
+        "pr_delay_0": 0x6206,
+        "jog_speed": 0x01E1,
+        "jog_acc": 0x01E7,
+        "peak_current": 0x0191,
+        "hold_current": 0x0195,
+        "encoder_resolution": 0x0233,
+        "di_input": 0x0179,
+        "do_output": 0x017B
+    },
+    "defaults": {
+        "peak_current": 22,
+        "hold_current": 50,
+        "jog_acc": 200,
+        "encoder_resolution": 10000,
+        "timeout_ms": 3000
+    }
+}

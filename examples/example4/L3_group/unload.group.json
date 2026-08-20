@@ -1,0 +1,25 @@
+{
+    "type": "group",
+    "name": "推瓶出料",
+    "mode": "sequence",
+    "timeout_ms": 60000,
+    "args": [],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/coil_set.u16_b.r_b_done",
+            "params": [
+                8,
+                true
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/coil_set.u16_b.r_b_done",
+            "params": [
+                8,
+                false
+            ]
+        }
+    ]
+}

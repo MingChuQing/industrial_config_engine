@@ -40,9 +40,9 @@ desktop.ini
 
 # 忽略所有PDF和TXT文件
 *.pdf
-*.txt
+# *.txt
 
 # 忽略特定目录
-docs/device/
-examples/docs/
-examples/device_examples/
+# docs/device/
+#examples/docs/
+# examples/device_examples/

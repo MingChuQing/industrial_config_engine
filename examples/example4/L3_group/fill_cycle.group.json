@@ -1,0 +1,44 @@
+{
+    "type": "group",
+    "name": "灌装循环",
+    "mode": "sequence",
+    "timeout_ms": 60000,
+    "args": [
+        {
+            "index": 0,
+            "name": "valve",
+            "type": "u16"
+        },
+        {
+            "index": 1,
+            "name": "volume",
+            "type": "f",
+            "default": 500
+        }
+    ],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/coil_set.u16_b.r_b_done",
+            "params": [
+                "${valve}",
+                true
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/flow_ge.f.r_b_ok",
+            "params": [
+                "${volume}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/coil_set.u16_b.r_b_done",
+            "params": [
+                "${valve}",
+                false
+            ]
+        }
+    ]
+}
