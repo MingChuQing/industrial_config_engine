@@ -6,6 +6,7 @@
 #include <iostream>
 #include <iomanip>
 #include <regex>
+#include <stdexcept>
 
 namespace industrial_config_engine {
 
@@ -199,6 +200,7 @@ namespace industrial_config_engine {
 
         json["type"] = "node";
         json["name"] = name_;
+        if (device_) json["device"] = *device_;
 
         if (!description_.empty()) {
             json["description"] = description_;
@@ -395,6 +397,7 @@ namespace industrial_config_engine {
             };
 
         // extract from params
+        if (device_) addPlaceholders(*device_);
         for (const auto& param : params_) {
             if (param.is_string()) {
                 addPlaceholders(param.get<std::string>());
@@ -523,6 +526,12 @@ namespace industrial_config_engine {
     // ============================================================
 
     void L2Node::parseCommonFields(const nlohmann::json& json) {
+        device_.reset();
+        if (json.contains("device")) {
+            if (!json["device"].is_string() || json["device"].get<std::string>().find_first_not_of(" \t\r\n") == std::string::npos)
+                throw std::invalid_argument("L2 device must be a nonempty string");
+            device_ = json["device"].get<std::string>();
+        }
         if (json.contains("name") && json["name"].is_string()) {
             name_ = json["name"].get<std::string>();
         }

@@ -1,0 +1,3359 @@
+{
+  "status": "PASS",
+  "scope": "Static contracts match after omitting unchanged motor PR triggers as requested; not raw trace equality or hardware verification.",
+  "source_sha256": "43812e8593abd853a27fda36ff12297aa2f389889ca39cd655a01afb07c03fb3",
+  "reference_operations": 356,
+  "omitted_redundant_triggers": [
+    {
+      "reference_index": 126,
+      "step": 5,
+      "kind": "write",
+      "device": "Y1",
+      "request": "06 60 02 00 11",
+      "response": "06 60 02 00 11"
+    },
+    {
+      "reference_index": 127,
+      "step": 5,
+      "kind": "write",
+      "device": "Y2",
+      "request": "06 60 02 00 11",
+      "response": "06 60 02 00 11"
+    }
+  ],
+  "steps": 12,
+  "operations": 354,
+  "operation_kinds": {
+    "write": 86,
+    "wait": 32,
+    "cache": 112,
+    "ui": 84,
+    "compare": 19,
+    "poll": 21
+  },
+  "internal_calculations": 26,
+  "modbus_operations": 238,
+  "definitions": {
+    "L1": 53,
+    "L2": 63,
+    "L3": 19,
+    "L4": 1
+  },
+  "group_calls": {
+    "L3_group/step_01_system_initialization.group.json": 1,
+    "L3_group/home_axis_and_refresh.group.json": 3,
+    "L3_group/move_axis_if_changed.group.json": 66,
+    "L3_group/trigger_motor_pr.group.json": 26,
+    "L3_group/refresh_all_motor_positions_and_ui.group.json": 24,
+    "L3_group/step_02_empty_bottle_feeding.group.json": 1,
+    "L3_group/shared_conveyor_start.group.json": 2,
+    "L3_group/poll_sensor_until_ready.group.json": 21,
+    "L3_group/move_production_point.group.json": 21,
+    "L3_group/step_03_bottle_position_detection.group.json": 1,
+    "L3_group/step_04_in_bottle_rinsing.group.json": 1,
+    "L3_group/step_05_filling_positioning.group.json": 1,
+    "L3_group/step_06_filling.group.json": 1,
+    "L3_group/step_07_level_recheck.group.json": 1,
+    "L3_group/step_08_capping.group.json": 1,
+    "L3_group/step_09_coding_labeling.group.json": 1,
+    "L3_group/step_10_finished_product_discharge.group.json": 1,
+    "L3_group/step_11_cip_cleaning_and_sanitizing.group.json": 1,
+    "L3_group/step_12_homing_and_standby.group.json": 1
+  },
+  "size_by_component": {
+    "device_registry.json": {
+      "files": 1,
+      "lines": 61,
+      "utf8_bytes": 1375
+    },
+    "L1_action": {
+      "files": 1,
+      "lines": 735,
+      "utf8_bytes": 22208
+    },
+    "L2_node": {
+      "files": 1,
+      "lines": 945,
+      "utf8_bytes": 30652
+    },
+    "L3_group": {
+      "files": 19,
+      "lines": 1806,
+      "utf8_bytes": 50074
+    },
+    "L4_flow": {
+      "files": 1,
+      "lines": 79,
+      "utf8_bytes": 2500
+    },
+    "system_variables.json": {
+      "files": 1,
+      "lines": 126,
+      "utf8_bytes": 2758
+    }
+  },
+  "normalized_size": {
+    "files": 24,
+    "lines": 3752,
+    "utf8_bytes": 109567
+  },
+  "contracts": [
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "X",
+      "request": "06 60 02 00 10",
+      "response": "06 60 02 00 10"
+    },
+    {
+      "step": 1,
+      "kind": "wait",
+      "ms": 3000
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 1,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 1,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 1,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "Y1",
+      "request": "06 60 02 00 10",
+      "response": "06 60 02 00 10"
+    },
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "Y2",
+      "request": "06 60 02 00 10",
+      "response": "06 60 02 00 10"
+    },
+    {
+      "step": 1,
+      "kind": "wait",
+      "ms": 3000
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 1,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 1,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 1,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "Z",
+      "request": "06 60 02 00 10",
+      "response": "06 60 02 00 10"
+    },
+    {
+      "step": 1,
+      "kind": "wait",
+      "ms": 3000
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 1,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 1,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 1,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "FillingValve",
+      "request": "05 00 11 00 00",
+      "response": "05 00 11 00 00"
+    },
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "RinseValve",
+      "request": "05 00 12 00 00",
+      "response": "05 00 12 00 00"
+    },
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "CIPValve",
+      "request": "05 00 13 00 00",
+      "response": "05 00 13 00 00"
+    },
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 08 00 00",
+      "response": "05 00 08 00 00"
+    },
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 09 00 00",
+      "response": "05 00 09 00 00"
+    },
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 0A 00 00",
+      "response": "05 00 0A 00 00"
+    },
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 0B 00 00",
+      "response": "05 00 0B 00 00"
+    },
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 0C 00 00",
+      "response": "05 00 0C 00 00"
+    },
+    {
+      "step": 1,
+      "kind": "write",
+      "device": "Conveyor",
+      "request": "06 60 02 00 40",
+      "response": "06 60 02 00 40"
+    },
+    {
+      "step": 1,
+      "kind": "compare",
+      "device": "X",
+      "request": "03 22 03 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 2,
+        "endian": "big",
+        "type": "int"
+      },
+      "condition": "eq",
+      "value": 0,
+      "error_code": "X_ALARM",
+      "error_message": "Driver alarm"
+    },
+    {
+      "step": 1,
+      "kind": "compare",
+      "device": "Y1",
+      "request": "03 22 03 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 2,
+        "endian": "big",
+        "type": "int"
+      },
+      "condition": "eq",
+      "value": 0,
+      "error_code": "Y_ALARM",
+      "error_message": "Driver alarm"
+    },
+    {
+      "step": 1,
+      "kind": "compare",
+      "device": "Y2",
+      "request": "03 22 03 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 2,
+        "endian": "big",
+        "type": "int"
+      },
+      "condition": "eq",
+      "value": 0,
+      "error_code": "Y_ALARM_Y2",
+      "error_message": "Driver alarm"
+    },
+    {
+      "step": 1,
+      "kind": "compare",
+      "device": "Z",
+      "request": "03 22 03 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 2,
+        "endian": "big",
+        "type": "int"
+      },
+      "condition": "eq",
+      "value": 0,
+      "error_code": "Z_ALARM",
+      "error_message": "Driver alarm"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 10 03 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 2,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "xStatus"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 10 03 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 2,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "yStatus"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 10 03 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 2,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "yStatus_Y2"
+    },
+    {
+      "step": 1,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 10 03 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 2,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "zStatus"
+    },
+    {
+      "step": 1,
+      "kind": "ui",
+      "target": "SystemState",
+      "value": "ready"
+    },
+    {
+      "step": 1,
+      "kind": "wait",
+      "ms": 1000
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Conveyor",
+      "request": "06 18 01 00 01",
+      "response": "06 18 01 00 01"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Conveyor",
+      "request": "06 62 00 00 02",
+      "response": "06 62 00 00 02"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Conveyor",
+      "request": "06 62 03 01 2C",
+      "response": "06 62 03 01 2C"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Conveyor",
+      "request": "06 60 02 00 10",
+      "response": "06 60 02 00 10"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 08 FF 00",
+      "response": "05 00 08 FF 00"
+    },
+    {
+      "step": 2,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 34 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 100,
+      "timeout_ms": 5000,
+      "error_code": "BOTTLE_SENSOR_TIMEOUT",
+      "error_message": "Bottle sensor not triggered, check feed"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 08 00 00",
+      "response": "05 00 08 00 00"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "X",
+      "request": "06 60 02 00 11",
+      "response": "06 60 02 00 11"
+    },
+    {
+      "step": 2,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Z",
+      "request": "06 60 02 00 12",
+      "response": "06 60 02 00 12"
+    },
+    {
+      "step": 2,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 09 FF 00",
+      "response": "05 00 09 FF 00"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Z",
+      "request": "06 60 02 00 11",
+      "response": "06 60 02 00 11"
+    },
+    {
+      "step": 2,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Conveyor",
+      "request": "06 60 02 00 40",
+      "response": "06 60 02 00 40"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 09 00 00",
+      "response": "05 00 09 00 00"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Y1",
+      "request": "06 60 02 00 11",
+      "response": "06 60 02 00 11"
+    },
+    {
+      "step": 2,
+      "kind": "write",
+      "device": "Y2",
+      "request": "06 60 02 00 11",
+      "response": "06 60 02 00 11"
+    },
+    {
+      "step": 2,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 2,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 2,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 41 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "PICK_TIMEOUT",
+      "error_message": "Pick not in place"
+    },
+    {
+      "step": 2,
+      "kind": "ui",
+      "target": "BottleCount",
+      "value": "+1"
+    },
+    {
+      "step": 3,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 34 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "POS1_TIMEOUT",
+      "error_message": "Station 1 not ready"
+    },
+    {
+      "step": 3,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 35 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "POS2_TIMEOUT",
+      "error_message": "Station 2 not ready"
+    },
+    {
+      "step": 3,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 36 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "POS3_TIMEOUT",
+      "error_message": "Station 3 not ready"
+    },
+    {
+      "step": 3,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 37 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "POS4_TIMEOUT",
+      "error_message": "Station 4 not ready"
+    },
+    {
+      "step": 3,
+      "kind": "cache",
+      "device": "BottleSensor",
+      "request": "04 00 34 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 1,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "pos1State"
+    },
+    {
+      "step": 3,
+      "kind": "cache",
+      "device": "BottleSensor",
+      "request": "04 00 35 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 1,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "pos2State"
+    },
+    {
+      "step": 3,
+      "kind": "cache",
+      "device": "BottleSensor",
+      "request": "04 00 36 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 1,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "pos3State"
+    },
+    {
+      "step": 3,
+      "kind": "cache",
+      "device": "BottleSensor",
+      "request": "04 00 37 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 1,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "pos4State"
+    },
+    {
+      "step": 3,
+      "kind": "cache",
+      "device": "FlowMeter",
+      "request": "03 00 20 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "bottleCount"
+    },
+    {
+      "step": 3,
+      "kind": "ui",
+      "target": "BottleState",
+      "value": "all ready"
+    },
+    {
+      "step": 4,
+      "kind": "write",
+      "device": "RinseValve",
+      "request": "05 00 12 FF 00",
+      "response": "05 00 12 FF 00"
+    },
+    {
+      "step": 4,
+      "kind": "wait",
+      "ms": 5000
+    },
+    {
+      "step": 4,
+      "kind": "write",
+      "device": "RinseValve",
+      "request": "05 00 12 00 00",
+      "response": "05 00 12 00 00"
+    },
+    {
+      "step": 4,
+      "kind": "compare",
+      "device": "PressureSensor",
+      "request": "03 00 10 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "condition": "ge",
+      "value": 0.2,
+      "error_code": "RINSE_PRESSURE_LOW",
+      "error_message": "Rinse pressure insufficient"
+    },
+    {
+      "step": 4,
+      "kind": "write",
+      "device": "CIPValve",
+      "request": "05 00 13 FF 00",
+      "response": "05 00 13 FF 00"
+    },
+    {
+      "step": 4,
+      "kind": "wait",
+      "ms": 3000
+    },
+    {
+      "step": 4,
+      "kind": "write",
+      "device": "CIPValve",
+      "request": "05 00 13 00 00",
+      "response": "05 00 13 00 00"
+    },
+    {
+      "step": 4,
+      "kind": "write",
+      "device": "CIPValve",
+      "request": "05 00 14 FF 00",
+      "response": "05 00 14 FF 00"
+    },
+    {
+      "step": 4,
+      "kind": "wait",
+      "ms": 3000
+    },
+    {
+      "step": 4,
+      "kind": "write",
+      "device": "CIPValve",
+      "request": "05 00 14 00 00",
+      "response": "05 00 14 00 00"
+    },
+    {
+      "step": 4,
+      "kind": "ui",
+      "target": "WashState",
+      "value": "done"
+    },
+    {
+      "step": 5,
+      "kind": "write",
+      "device": "X",
+      "request": "06 60 02 00 12",
+      "response": "06 60 02 00 12"
+    },
+    {
+      "step": 5,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 5,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 5,
+      "kind": "write",
+      "device": "Z",
+      "request": "06 60 02 00 13",
+      "response": "06 60 02 00 13"
+    },
+    {
+      "step": 5,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 5,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 42 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "FILL1_POS_TIMEOUT",
+      "error_message": "Station 1 not arrived"
+    },
+    {
+      "step": 5,
+      "kind": "write",
+      "device": "X",
+      "request": "06 60 02 00 13",
+      "response": "06 60 02 00 13"
+    },
+    {
+      "step": 5,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 5,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 43 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "FILL2_POS_TIMEOUT",
+      "error_message": "Station 2 not arrived"
+    },
+    {
+      "step": 5,
+      "kind": "write",
+      "device": "X",
+      "request": "06 60 02 00 14",
+      "response": "06 60 02 00 14"
+    },
+    {
+      "step": 5,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 5,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 44 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "FILL3_POS_TIMEOUT",
+      "error_message": "Station 3 not arrived"
+    },
+    {
+      "step": 5,
+      "kind": "write",
+      "device": "X",
+      "request": "06 60 02 00 15",
+      "response": "06 60 02 00 15"
+    },
+    {
+      "step": 5,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 5,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 45 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "FILL4_POS_TIMEOUT",
+      "error_message": "Station 4 not arrived"
+    },
+    {
+      "step": 5,
+      "kind": "write",
+      "device": "Z",
+      "request": "06 60 02 00 11",
+      "response": "06 60 02 00 11"
+    },
+    {
+      "step": 5,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 5,
+      "kind": "write",
+      "device": "X",
+      "request": "06 60 02 00 12",
+      "response": "06 60 02 00 12"
+    },
+    {
+      "step": 5,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 5,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 5,
+      "kind": "ui",
+      "target": "FillState",
+      "value": "positioned"
+    },
+    {
+      "step": 6,
+      "kind": "write",
+      "device": "FillingValve",
+      "request": "05 00 11 FF 00",
+      "response": "05 00 11 FF 00"
+    },
+    {
+      "step": 6,
+      "kind": "compare",
+      "device": "FlowMeter",
+      "request": "03 00 00 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "condition": "ge",
+      "value": 500,
+      "error_code": "FLOW_NOT_REACHED",
+      "error_message": "fill volume below setpoint"
+    },
+    {
+      "step": 6,
+      "kind": "poll",
+      "device": "LevelSensor",
+      "request": "04 00 38 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 8000,
+      "error_code": "LEVEL_TIMEOUT",
+      "error_message": "Level not reached"
+    },
+    {
+      "step": 6,
+      "kind": "write",
+      "device": "FillingValve",
+      "request": "05 00 11 00 00",
+      "response": "05 00 11 00 00"
+    },
+    {
+      "step": 6,
+      "kind": "write",
+      "device": "FlowMeter",
+      "request": "06 00 01 00 00",
+      "response": "06 00 01 00 00"
+    },
+    {
+      "step": 6,
+      "kind": "write",
+      "device": "FillingValve",
+      "request": "05 00 11 FF 00",
+      "response": "05 00 11 FF 00"
+    },
+    {
+      "step": 6,
+      "kind": "compare",
+      "device": "FlowMeter",
+      "request": "03 00 00 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "condition": "ge",
+      "value": 500,
+      "error_code": "FLOW_NOT_REACHED",
+      "error_message": "fill volume below setpoint"
+    },
+    {
+      "step": 6,
+      "kind": "poll",
+      "device": "LevelSensor",
+      "request": "04 00 38 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 8000,
+      "error_code": "LEVEL_TIMEOUT",
+      "error_message": "Level not reached"
+    },
+    {
+      "step": 6,
+      "kind": "write",
+      "device": "FillingValve",
+      "request": "05 00 11 00 00",
+      "response": "05 00 11 00 00"
+    },
+    {
+      "step": 6,
+      "kind": "write",
+      "device": "FlowMeter",
+      "request": "06 00 01 00 00",
+      "response": "06 00 01 00 00"
+    },
+    {
+      "step": 6,
+      "kind": "write",
+      "device": "FillingValve",
+      "request": "05 00 11 FF 00",
+      "response": "05 00 11 FF 00"
+    },
+    {
+      "step": 6,
+      "kind": "compare",
+      "device": "FlowMeter",
+      "request": "03 00 00 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "condition": "ge",
+      "value": 500,
+      "error_code": "FLOW_NOT_REACHED",
+      "error_message": "fill volume below setpoint"
+    },
+    {
+      "step": 6,
+      "kind": "poll",
+      "device": "LevelSensor",
+      "request": "04 00 38 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 8000,
+      "error_code": "LEVEL_TIMEOUT",
+      "error_message": "Level not reached"
+    },
+    {
+      "step": 6,
+      "kind": "write",
+      "device": "FillingValve",
+      "request": "05 00 11 00 00",
+      "response": "05 00 11 00 00"
+    },
+    {
+      "step": 6,
+      "kind": "write",
+      "device": "FlowMeter",
+      "request": "06 00 01 00 00",
+      "response": "06 00 01 00 00"
+    },
+    {
+      "step": 6,
+      "kind": "write",
+      "device": "FillingValve",
+      "request": "05 00 11 FF 00",
+      "response": "05 00 11 FF 00"
+    },
+    {
+      "step": 6,
+      "kind": "compare",
+      "device": "FlowMeter",
+      "request": "03 00 00 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "condition": "ge",
+      "value": 500,
+      "error_code": "FLOW_NOT_REACHED",
+      "error_message": "fill volume below setpoint"
+    },
+    {
+      "step": 6,
+      "kind": "poll",
+      "device": "LevelSensor",
+      "request": "04 00 38 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 8000,
+      "error_code": "LEVEL_TIMEOUT",
+      "error_message": "Level not reached"
+    },
+    {
+      "step": 6,
+      "kind": "write",
+      "device": "FillingValve",
+      "request": "05 00 11 00 00",
+      "response": "05 00 11 00 00"
+    },
+    {
+      "step": 6,
+      "kind": "write",
+      "device": "FlowMeter",
+      "request": "06 00 01 00 00",
+      "response": "06 00 01 00 00"
+    },
+    {
+      "step": 6,
+      "kind": "compare",
+      "device": "PressureSensor",
+      "request": "03 00 12 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "condition": "ge",
+      "value": 0.1,
+      "error_code": "FILL_PRESSURE_LOW",
+      "error_message": "Filling pressure insufficient"
+    },
+    {
+      "step": 6,
+      "kind": "compare",
+      "device": "PressureSensor",
+      "request": "03 00 12 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "condition": "ge",
+      "value": 0.1,
+      "error_code": "FILL_PRESSURE_LOW",
+      "error_message": "Filling pressure insufficient"
+    },
+    {
+      "step": 6,
+      "kind": "compare",
+      "device": "PressureSensor",
+      "request": "03 00 12 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "condition": "ge",
+      "value": 0.1,
+      "error_code": "FILL_PRESSURE_LOW",
+      "error_message": "Filling pressure insufficient"
+    },
+    {
+      "step": 6,
+      "kind": "compare",
+      "device": "PressureSensor",
+      "request": "03 00 12 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "condition": "ge",
+      "value": 0.1,
+      "error_code": "FILL_PRESSURE_LOW",
+      "error_message": "Filling pressure insufficient"
+    },
+    {
+      "step": 6,
+      "kind": "cache",
+      "device": "FlowMeter",
+      "request": "03 00 00 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "cache_key": "totalVolume"
+    },
+    {
+      "step": 6,
+      "kind": "ui",
+      "target": "FillState",
+      "value": "done"
+    },
+    {
+      "step": 7,
+      "kind": "poll",
+      "device": "LevelSensor",
+      "request": "04 00 38 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "RECHECK1_FAIL",
+      "error_message": "Level 1 recheck failed"
+    },
+    {
+      "step": 7,
+      "kind": "poll",
+      "device": "LevelSensor",
+      "request": "04 00 39 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "RECHECK2_FAIL",
+      "error_message": "Level 2 recheck failed"
+    },
+    {
+      "step": 7,
+      "kind": "poll",
+      "device": "LevelSensor",
+      "request": "04 00 3A 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "RECHECK3_FAIL",
+      "error_message": "Level 3 recheck failed"
+    },
+    {
+      "step": 7,
+      "kind": "poll",
+      "device": "LevelSensor",
+      "request": "04 00 3B 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "RECHECK4_FAIL",
+      "error_message": "Level 4 recheck failed"
+    },
+    {
+      "step": 7,
+      "kind": "cache",
+      "device": "LevelSensor",
+      "request": "04 00 38 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 1,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "lv1"
+    },
+    {
+      "step": 7,
+      "kind": "cache",
+      "device": "LevelSensor",
+      "request": "04 00 39 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 1,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "lv2"
+    },
+    {
+      "step": 7,
+      "kind": "cache",
+      "device": "LevelSensor",
+      "request": "04 00 3A 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 1,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "lv3"
+    },
+    {
+      "step": 7,
+      "kind": "cache",
+      "device": "LevelSensor",
+      "request": "04 00 3B 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 1,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "lv4"
+    },
+    {
+      "step": 7,
+      "kind": "ui",
+      "target": "CheckState",
+      "value": "qualified"
+    },
+    {
+      "step": 8,
+      "kind": "write",
+      "device": "X",
+      "request": "06 60 02 00 16",
+      "response": "06 60 02 00 16"
+    },
+    {
+      "step": 8,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 8,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 8,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 8,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 8,
+      "kind": "write",
+      "device": "Z",
+      "request": "06 60 02 00 13",
+      "response": "06 60 02 00 13"
+    },
+    {
+      "step": 8,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 8,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 8,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 8,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 8,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 0B FF 00",
+      "response": "05 00 0B FF 00"
+    },
+    {
+      "step": 8,
+      "kind": "wait",
+      "ms": 3000
+    },
+    {
+      "step": 8,
+      "kind": "compare",
+      "device": "Torque",
+      "request": "03 00 30 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "condition": "ge",
+      "value": 2.0,
+      "error_code": "TORQUE_LOW",
+      "error_message": "Cappingtorqueinsufficient"
+    },
+    {
+      "step": 8,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 0B 00 00",
+      "response": "05 00 0B 00 00"
+    },
+    {
+      "step": 8,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 46 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "CAP_TIMEOUT",
+      "error_message": "Cap not in place"
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "Torque",
+      "request": "03 00 30 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "cache_key": "torqueValue"
+    },
+    {
+      "step": 8,
+      "kind": "write",
+      "device": "Z",
+      "request": "06 60 02 00 11",
+      "response": "06 60 02 00 11"
+    },
+    {
+      "step": 8,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 8,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 8,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 8,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 8,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 8,
+      "kind": "ui",
+      "target": "CapState",
+      "value": "done"
+    },
+    {
+      "step": 9,
+      "kind": "write",
+      "device": "X",
+      "request": "06 60 02 00 17",
+      "response": "06 60 02 00 17"
+    },
+    {
+      "step": 9,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 9,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 9,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 9,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 9,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 9,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 9,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 9,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 9,
+      "kind": "write",
+      "device": "Z",
+      "request": "06 60 02 00 13",
+      "response": "06 60 02 00 13"
+    },
+    {
+      "step": 9,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 9,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 9,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 9,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 9,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 9,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 9,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 9,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 9,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 0C FF 00",
+      "response": "05 00 0C FF 00"
+    },
+    {
+      "step": 9,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 0C 00 00",
+      "response": "05 00 0C 00 00"
+    },
+    {
+      "step": 9,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 0D FF 00",
+      "response": "05 00 0D FF 00"
+    },
+    {
+      "step": 9,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 0D 00 00",
+      "response": "05 00 0D 00 00"
+    },
+    {
+      "step": 9,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 47 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 50,
+      "timeout_ms": 3000,
+      "error_code": "CODE_POS_TIMEOUT",
+      "error_message": "Coding position not ready"
+    },
+    {
+      "step": 9,
+      "kind": "write",
+      "device": "Z",
+      "request": "06 60 02 00 11",
+      "response": "06 60 02 00 11"
+    },
+    {
+      "step": 9,
+      "kind": "wait",
+      "ms": 2000
+    },
+    {
+      "step": 9,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 9,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 9,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 9,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 9,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 9,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 9,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 9,
+      "kind": "ui",
+      "target": "CodeState",
+      "value": "done"
+    },
+    {
+      "step": 10,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 08 FF 00",
+      "response": "05 00 08 FF 00"
+    },
+    {
+      "step": 10,
+      "kind": "write",
+      "device": "Conveyor",
+      "request": "06 18 01 00 01",
+      "response": "06 18 01 00 01"
+    },
+    {
+      "step": 10,
+      "kind": "write",
+      "device": "Conveyor",
+      "request": "06 62 00 00 02",
+      "response": "06 62 00 00 02"
+    },
+    {
+      "step": 10,
+      "kind": "write",
+      "device": "Conveyor",
+      "request": "06 62 03 01 2C",
+      "response": "06 62 03 01 2C"
+    },
+    {
+      "step": 10,
+      "kind": "write",
+      "device": "Conveyor",
+      "request": "06 60 02 00 10",
+      "response": "06 60 02 00 10"
+    },
+    {
+      "step": 10,
+      "kind": "poll",
+      "device": "BottleSensor",
+      "request": "04 00 40 00 01",
+      "expected_response": "04 02 00 01",
+      "interval_ms": 100,
+      "timeout_ms": 5000,
+      "error_code": "OUT_SENSOR_TIMEOUT",
+      "error_message": "Discharge sensor not triggered"
+    },
+    {
+      "step": 10,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 08 00 00",
+      "response": "05 00 08 00 00"
+    },
+    {
+      "step": 10,
+      "kind": "write",
+      "device": "Conveyor",
+      "request": "06 60 02 00 40",
+      "response": "06 60 02 00 40"
+    },
+    {
+      "step": 10,
+      "kind": "cache",
+      "device": "FlowMeter",
+      "request": "03 00 20 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "totalCount"
+    },
+    {
+      "step": 10,
+      "kind": "ui",
+      "target": "OutputState",
+      "value": "done"
+    },
+    {
+      "step": 11,
+      "kind": "write",
+      "device": "CIPValve",
+      "request": "05 00 13 FF 00",
+      "response": "05 00 13 FF 00"
+    },
+    {
+      "step": 11,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 0E FF 00",
+      "response": "05 00 0E FF 00"
+    },
+    {
+      "step": 11,
+      "kind": "wait",
+      "ms": 120000
+    },
+    {
+      "step": 11,
+      "kind": "compare",
+      "device": "PressureSensor",
+      "request": "03 00 10 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "little",
+        "type": "float"
+      },
+      "condition": "ge",
+      "value": 0.3,
+      "error_code": "CIP_PRESSURE_LOW",
+      "error_message": "CIP pressure low"
+    },
+    {
+      "step": 11,
+      "kind": "write",
+      "device": "CIPValve",
+      "request": "05 00 14 FF 00",
+      "response": "05 00 14 FF 00"
+    },
+    {
+      "step": 11,
+      "kind": "wait",
+      "ms": 30000
+    },
+    {
+      "step": 11,
+      "kind": "write",
+      "device": "CIPValve",
+      "request": "05 00 14 00 00",
+      "response": "05 00 14 00 00"
+    },
+    {
+      "step": 11,
+      "kind": "write",
+      "device": "Relay",
+      "request": "05 00 0E 00 00",
+      "response": "05 00 0E 00 00"
+    },
+    {
+      "step": 11,
+      "kind": "write",
+      "device": "RinseValve",
+      "request": "05 00 12 FF 00",
+      "response": "05 00 12 FF 00"
+    },
+    {
+      "step": 11,
+      "kind": "wait",
+      "ms": 20000
+    },
+    {
+      "step": 11,
+      "kind": "write",
+      "device": "RinseValve",
+      "request": "05 00 12 00 00",
+      "response": "05 00 12 00 00"
+    },
+    {
+      "step": 11,
+      "kind": "write",
+      "device": "CIPValve",
+      "request": "05 00 13 00 00",
+      "response": "05 00 13 00 00"
+    },
+    {
+      "step": 11,
+      "kind": "ui",
+      "target": "CIPState",
+      "value": "done"
+    },
+    {
+      "step": 12,
+      "kind": "write",
+      "device": "X",
+      "request": "06 60 02 00 10",
+      "response": "06 60 02 00 10"
+    },
+    {
+      "step": 12,
+      "kind": "wait",
+      "ms": 3000
+    },
+    {
+      "step": 12,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 12,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 12,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 12,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 12,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 12,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 12,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 12,
+      "kind": "write",
+      "device": "Y1",
+      "request": "06 60 02 00 10",
+      "response": "06 60 02 00 10"
+    },
+    {
+      "step": 12,
+      "kind": "write",
+      "device": "Y2",
+      "request": "06 60 02 00 10",
+      "response": "06 60 02 00 10"
+    },
+    {
+      "step": 12,
+      "kind": "wait",
+      "ms": 3000
+    },
+    {
+      "step": 12,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 12,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 12,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 12,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 12,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 12,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 12,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 12,
+      "kind": "write",
+      "device": "Z",
+      "request": "06 60 02 00 10",
+      "response": "06 60 02 00 10"
+    },
+    {
+      "step": 12,
+      "kind": "wait",
+      "ms": 3000
+    },
+    {
+      "step": 12,
+      "kind": "cache",
+      "device": "X",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "X_position"
+    },
+    {
+      "step": 12,
+      "kind": "cache",
+      "device": "Y1",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y_position"
+    },
+    {
+      "step": 12,
+      "kind": "cache",
+      "device": "Y2",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Y2_position"
+    },
+    {
+      "step": 12,
+      "kind": "cache",
+      "device": "Z",
+      "request": "03 60 2C 00 02",
+      "parse": {
+        "start_byte": 2,
+        "length": 4,
+        "endian": "big",
+        "type": "int"
+      },
+      "cache_key": "Z_position"
+    },
+    {
+      "step": 12,
+      "kind": "ui",
+      "target": "centerX",
+      "value": "${X_position}"
+    },
+    {
+      "step": 12,
+      "kind": "ui",
+      "target": "centerY",
+      "value": "${Y_position}"
+    },
+    {
+      "step": 12,
+      "kind": "ui",
+      "target": "centerZ",
+      "value": "${Z_position}"
+    },
+    {
+      "step": 12,
+      "kind": "write",
+      "device": "FillingValve",
+      "request": "05 00 11 00 00",
+      "response": "05 00 11 00 00"
+    },
+    {
+      "step": 12,
+      "kind": "write",
+      "device": "RinseValve",
+      "request": "05 00 12 00 00",
+      "response": "05 00 12 00 00"
+    },
+    {
+      "step": 12,
+      "kind": "write",
+      "device": "CIPValve",
+      "request": "05 00 13 00 00",
+      "response": "05 00 13 00 00"
+    },
+    {
+      "step": 12,
+      "kind": "compare",
+      "device": "X",
+      "request": "03 22 03 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 2,
+        "endian": "big",
+        "type": "int"
+      },
+      "condition": "eq",
+      "value": 0,
+      "error_code": "X_ALARM2",
+      "error_message": "Driver alarm"
+    },
+    {
+      "step": 12,
+      "kind": "compare",
+      "device": "Y1",
+      "request": "03 22 03 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 2,
+        "endian": "big",
+        "type": "int"
+      },
+      "condition": "eq",
+      "value": 0,
+      "error_code": "Y_ALARM2",
+      "error_message": "Driver alarm"
+    },
+    {
+      "step": 12,
+      "kind": "compare",
+      "device": "Y2",
+      "request": "03 22 03 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 2,
+        "endian": "big",
+        "type": "int"
+      },
+      "condition": "eq",
+      "value": 0,
+      "error_code": "Y_ALARM2_Y2",
+      "error_message": "Driver alarm"
+    },
+    {
+      "step": 12,
+      "kind": "compare",
+      "device": "Z",
+      "request": "03 22 03 00 01",
+      "parse": {
+        "start_byte": 2,
+        "length": 2,
+        "endian": "big",
+        "type": "int"
+      },
+      "condition": "eq",
+      "value": 0,
+      "error_code": "Z_ALARM2",
+      "error_message": "Driver alarm"
+    },
+    {
+      "step": 12,
+      "kind": "ui",
+      "target": "SystemState",
+      "value": "standby"
+    }
+  ]
+}

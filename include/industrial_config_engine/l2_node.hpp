@@ -126,6 +126,7 @@ namespace industrial_config_engine {
         const std::string& getName() const { return name_; }
         const std::string& getDescription() const { return description_; }
         const std::vector<nlohmann::json>& getParams() const { return params_; }
+        const std::optional<std::string>& getDevice() const { return device_; }
         uint32_t getTimeoutMs() const { return timeout_ms_; }
         uint8_t getMaxRetries() const { return max_retries_; }
         uint16_t getRetryInterval() const { return retry_interval_; }
@@ -199,6 +200,7 @@ namespace industrial_config_engine {
         // Core fields
         std::string name_;
         std::string description_;
+        std::optional<std::string> device_;
         std::vector<nlohmann::json> params_;    // Parameter list (JSON format, supports various types)
 
         // Execution control

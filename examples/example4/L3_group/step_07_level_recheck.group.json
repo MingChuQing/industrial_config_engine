@@ -1,0 +1,100 @@
+{
+    "type": "group",
+    "name": "Level recheck",
+    "mode": "sequence",
+    "max_nodes": 200,
+    "body": [
+        {
+            "type": "group",
+            "name": "Check level 1",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0038.r_b_poll_ready",
+                "LevelSensor",
+                50,
+                3000,
+                62,
+                "RECHECK1_FAIL",
+                "Level 1 recheck failed"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check level 2",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0039.r_b_poll_ready",
+                "LevelSensor",
+                50,
+                3000,
+                62,
+                "RECHECK2_FAIL",
+                "Level 2 recheck failed"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check level 3",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg003a.r_b_poll_ready",
+                "LevelSensor",
+                50,
+                3000,
+                62,
+                "RECHECK3_FAIL",
+                "Level 3 recheck failed"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check level 4",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg003b.r_b_poll_ready",
+                "LevelSensor",
+                50,
+                3000,
+                62,
+                "RECHECK4_FAIL",
+                "Level 4 recheck failed"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc04_reg0038_byte.r_u16_value",
+            "params": [],
+            "device": "LevelSensor",
+            "result_key": "lv1"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc04_reg0039_byte.r_u16_value",
+            "params": [],
+            "device": "LevelSensor",
+            "result_key": "lv2"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc04_reg003a_byte.r_u16_value",
+            "params": [],
+            "device": "LevelSensor",
+            "result_key": "lv3"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc04_reg003b_byte.r_u16_value",
+            "params": [],
+            "device": "LevelSensor",
+            "result_key": "lv4"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "CheckState",
+                "qualified"
+            ]
+        }
+    ]
+}

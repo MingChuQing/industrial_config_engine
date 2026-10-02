@@ -1,0 +1,107 @@
+{
+    "type": "group",
+    "name": "Bottle position detection",
+    "mode": "sequence",
+    "max_nodes": 200,
+    "body": [
+        {
+            "type": "group",
+            "name": "Check station 1 sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0034.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "POS1_TIMEOUT",
+                "Station 1 not ready"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check station 2 sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0035.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "POS2_TIMEOUT",
+                "Station 2 not ready"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check station 3 sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0036.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "POS3_TIMEOUT",
+                "Station 3 not ready"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check station 4 sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0037.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "POS4_TIMEOUT",
+                "Station 4 not ready"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc04_reg0034_byte.r_u16_value",
+            "params": [],
+            "device": "BottleSensor",
+            "result_key": "pos1State"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc04_reg0035_byte.r_u16_value",
+            "params": [],
+            "device": "BottleSensor",
+            "result_key": "pos2State"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc04_reg0036_byte.r_u16_value",
+            "params": [],
+            "device": "BottleSensor",
+            "result_key": "pos3State"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc04_reg0037_byte.r_u16_value",
+            "params": [],
+            "device": "BottleSensor",
+            "result_key": "pos4State"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0020.r_i32_value",
+            "params": [],
+            "device": "FlowMeter",
+            "result_key": "bottleCount"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "BottleState",
+                "all ready"
+            ]
+        }
+    ]
+}

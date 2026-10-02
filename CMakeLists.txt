@@ -20,6 +20,7 @@ endif()
 # Options
 # ============================================================
 option(BUILD_DEMOS "Build demo programs" ON)
+include(CTest)
 
 # ============================================================
 # Main library - library sources only, no demos
@@ -42,6 +43,23 @@ target_include_directories(industrial_config_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party
 )
+
+if(BUILD_TESTING)
+    add_executable(test_device_points tests/test_device_points.cpp)
+    target_link_libraries(test_device_points industrial_config_engine)
+    add_test(NAME device_points COMMAND test_device_points
+        "${CMAKE_CURRENT_SOURCE_DIR}/examples/example4")
+    add_executable(test_beverage_suite tests/test_beverage_suite.cpp)
+    target_link_libraries(test_beverage_suite industrial_config_engine)
+    add_test(NAME beverage_suite COMMAND test_beverage_suite
+        "${CMAKE_CURRENT_SOURCE_DIR}/examples/beverage_suite")
+    add_executable(test_beverage_full tests/test_beverage_full.cpp)
+    target_link_libraries(test_beverage_full industrial_config_engine)
+    add_test(NAME beverage_full_baseline COMMAND test_beverage_full
+        "${CMAKE_CURRENT_SOURCE_DIR}/examples/beverage_full/example4")
+    add_test(NAME beverage_full_extended COMMAND test_beverage_full
+        "${CMAKE_CURRENT_SOURCE_DIR}/examples/beverage_full/example5")
+endif()
 
 # ============================================================
 # Demo programs - each demo contains only its own source

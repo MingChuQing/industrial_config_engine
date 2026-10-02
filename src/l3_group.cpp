@@ -133,6 +133,8 @@ namespace industrial_config_engine {
                 if (arg.default_value.has_value()) {
                     arg_json["default"] = arg.default_value.value();
                 }
+                if (arg.min_value) arg_json["min"] = *arg.min_value;
+                if (arg.max_value) arg_json["max"] = *arg.max_value;
                 if (!arg.desc.empty()) {
                     arg_json["desc"] = arg.desc;
                 }
@@ -513,6 +515,8 @@ namespace industrial_config_engine {
 
         for (const auto& arg_json : json["args"]) {
             GroupArgDef arg;
+            if (arg_json.contains("min")) arg.min_value = arg_json.at("min").get<int64_t>();
+            if (arg_json.contains("max")) arg.max_value = arg_json.at("max").get<int64_t>();
             if (arg_json.contains("index") && arg_json["index"].is_number()) {
                 arg.index = arg_json["index"].get<int>();
             }

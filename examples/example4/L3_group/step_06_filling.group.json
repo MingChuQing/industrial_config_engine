@@ -1,0 +1,216 @@
+{
+    "type": "group",
+    "name": "Filling",
+    "mode": "sequence",
+    "max_nodes": 200,
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050011.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "FillingValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0000_le_flow_not_reached.r_b_check_ok",
+            "params": [],
+            "device": "FlowMeter"
+        },
+        {
+            "type": "group",
+            "name": "Check level sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0038.r_b_poll_ready",
+                "LevelSensor",
+                50,
+                8000,
+                162,
+                "LEVEL_TIMEOUT",
+                "Level not reached"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050011.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "FillingValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_060001.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "FlowMeter"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050011.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "FillingValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0000_le_flow_not_reached.r_b_check_ok",
+            "params": [],
+            "device": "FlowMeter"
+        },
+        {
+            "type": "group",
+            "name": "Check level sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0038.r_b_poll_ready",
+                "LevelSensor",
+                50,
+                8000,
+                162,
+                "LEVEL_TIMEOUT",
+                "Level not reached"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050011.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "FillingValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_060001.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "FlowMeter"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050011.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "FillingValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0000_le_flow_not_reached.r_b_check_ok",
+            "params": [],
+            "device": "FlowMeter"
+        },
+        {
+            "type": "group",
+            "name": "Check level sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0038.r_b_poll_ready",
+                "LevelSensor",
+                50,
+                8000,
+                162,
+                "LEVEL_TIMEOUT",
+                "Level not reached"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050011.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "FillingValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_060001.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "FlowMeter"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050011.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "FillingValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0000_le_flow_not_reached.r_b_check_ok",
+            "params": [],
+            "device": "FlowMeter"
+        },
+        {
+            "type": "group",
+            "name": "Check level sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0038.r_b_poll_ready",
+                "LevelSensor",
+                50,
+                8000,
+                162,
+                "LEVEL_TIMEOUT",
+                "Level not reached"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050011.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "FillingValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_060001.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "FlowMeter"
+        },
+        {
+            "type": "group",
+            "name": "Repeat consecutive checks",
+            "mode": "loop",
+            "loop": {
+                "type": "count",
+                "count": 4
+            },
+            "body": [
+                {
+                    "type": "node",
+                    "template": "L2_node/all_nodes.json/read_fc03_reg0012_le_fill_pressure_low.r_b_check_ok",
+                    "params": [],
+                    "device": "PressureSensor"
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0000_le.r_f_value",
+            "params": [],
+            "device": "FlowMeter",
+            "result_key": "totalVolume"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "FillState",
+                "done"
+            ]
+        }
+    ]
+}

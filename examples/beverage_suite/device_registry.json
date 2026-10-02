@@ -1,0 +1,57 @@
+{
+    "configuration_note": "Synthetic simulation endpoints; not physical serial ports or commissioned addresses.",
+    "devices": {
+        "X": {
+            "port": "SIM_MOTION",
+            "address": 1
+        },
+        "Y1": {
+            "port": "SIM_MOTION",
+            "address": 2
+        },
+        "Y2": {
+            "port": "SIM_MOTION",
+            "address": 3
+        },
+        "Z": {
+            "port": "SIM_MOTION",
+            "address": 4
+        },
+        "Infeed": {
+            "port": "SIM_MOTION",
+            "address": 5
+        },
+        "Closure": {
+            "port": "SIM_MOTION",
+            "address": 6
+        },
+        "Outfeed": {
+            "port": "SIM_MOTION",
+            "address": 7
+        },
+        "OrangeFill": {
+            "port": "SIM_PROCESS",
+            "address": 1
+        },
+        "AppleFill": {
+            "port": "SIM_PROCESS",
+            "address": 2
+        },
+        "GrapeFill": {
+            "port": "SIM_PROCESS",
+            "address": 3
+        },
+        "Gripper": {
+            "port": "SIM_PROCESS",
+            "address": 4
+        },
+        "CapFeeder": {
+            "port": "SIM_PROCESS",
+            "address": 5
+        },
+        "ContainerSensor": {
+            "port": "SIM_PROCESS",
+            "address": 6
+        }
+    }
+}

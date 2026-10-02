@@ -1,0 +1,15 @@
+{
+    "type": "flow",
+    "name": "apple_can",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/run_recipe.group.json",
+            "params": [
+                1,
+                1
+            ]
+        }
+    ]
+}

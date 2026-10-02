@@ -1,0 +1,119 @@
+{
+    "type": "group",
+    "name": "step 10 finished product discharge",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "stage",
+                "10"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].finished_entry}"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].finished_work}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Gripper"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/trigger_motor.group.json",
+            "params": [
+                "Outfeed",
+                "${recipes[recipe_index].outfeed_pr}"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Wait for Outfeed",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+                "Outfeed",
+                20,
+                4000,
+                202,
+                "OUTFEED_TIMEOUT",
+                "outfeed timeout"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check discharge sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0040_expected.r_b_poll_ready",
+                "BottleSensor",
+                100,
+                5000,
+                52,
+                "OUT_SENSOR_TIMEOUT",
+                "Discharge sensor not triggered"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0020.r_i32_value",
+            "params": [],
+            "device": "FlowMeter",
+            "result_key": "totalCount"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].finished_entry}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/increment.i32.r_i32_completed",
+            "params": [
+                "${completed}"
+            ],
+            "result_key": "completed"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "completed",
+                "${completed}"
+            ]
+        }
+    ]
+}

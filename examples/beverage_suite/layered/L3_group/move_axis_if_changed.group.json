@@ -1,0 +1,72 @@
+{
+    "type": "group",
+    "name": "move axis if changed",
+    "mode": "sequence",
+    "args": [
+        {
+            "index": 0,
+            "name": "axis_state",
+            "type": "s"
+        },
+        {
+            "index": 1,
+            "name": "axis_pr",
+            "type": "u16"
+        },
+        {
+            "index": 2,
+            "name": "axis_devices",
+            "type": "arr"
+        }
+    ],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_state.s.r_i32_previous_pr",
+            "params": [
+                "${axis_state}"
+            ],
+            "result_key": "previous_pr"
+        },
+        {
+            "type": "group",
+            "name": "Changed axis",
+            "mode": "if",
+            "condition": {
+                "type": "expression",
+                "expression": "${axis_pr} != ${previous_pr}"
+            },
+            "then": [
+                {
+                    "type": "group",
+                    "name": "Axis motors",
+                    "mode": "loop",
+                    "loop": {
+                        "type": "foreach",
+                        "items": "axis_devices",
+                        "item_name": "active_motor"
+                    },
+                    "body": [
+                        {
+                            "type": "group",
+                            "template": "L3_group/trigger_motor.group.json",
+                            "params": [
+                                "${active_motor}",
+                                "${axis_pr}"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "node",
+                    "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+                    "params": [
+                        "${axis_state}",
+                        "${axis_pr}"
+                    ]
+                }
+            ],
+            "else": []
+        }
+    ]
+}

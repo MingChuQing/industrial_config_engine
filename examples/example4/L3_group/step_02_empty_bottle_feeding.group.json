@@ -1,0 +1,117 @@
+{
+    "type": "group",
+    "name": "Empty bottle feeding",
+    "mode": "sequence",
+    "max_nodes": 200,
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/shared_conveyor_start.group.json",
+            "params": []
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "group",
+            "name": "Check bottle sensor and wait (5s)",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0034.r_b_poll_ready",
+                "BottleSensor",
+                100,
+                5000,
+                52,
+                "BOTTLE_SENSOR_TIMEOUT",
+                "Bottle sensor not triggered, check feed"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                0
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                1
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050009.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                2
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/trigger_pr_path.u16.r_b_done",
+            "params": [
+                64
+            ],
+            "device": "Conveyor"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050009.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                3
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check pick sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0041.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "PICK_TIMEOUT",
+                "Pick not in place"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "BottleCount",
+                "+1"
+            ]
+        }
+    ]
+}

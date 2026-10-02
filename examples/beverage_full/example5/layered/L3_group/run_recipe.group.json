@@ -1,0 +1,94 @@
+{
+    "type": "group",
+    "name": "run recipe",
+    "mode": "sequence",
+    "args": [
+        {
+            "index": 0,
+            "name": "flavor",
+            "type": "u16",
+            "min": 0,
+            "max": 2
+        },
+        {
+            "index": 1,
+            "name": "specification",
+            "type": "u16",
+            "min": 0,
+            "max": 2
+        }
+    ],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+            "params": [
+                "recipe_index",
+                "${recipe_lookup[flavor][specification]}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+            "params": [
+                "completed",
+                0
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+            "params": [
+                "last_x_pr",
+                -1
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+            "params": [
+                "last_y_pr",
+                -1
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+            "params": [
+                "last_z_pr",
+                -1
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/step_01_system_initialization.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "Production batches",
+            "mode": "loop",
+            "loop": {
+                "type": "count",
+                "count": 2
+            },
+            "body": [
+                {
+                    "type": "group",
+                    "template": "L3_group/produce_batch.group.json",
+                    "params": []
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/step_11_cip_cleaning_sanitizing.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "template": "L3_group/step_12_homing_standby.group.json",
+            "params": []
+        }
+    ]
+}

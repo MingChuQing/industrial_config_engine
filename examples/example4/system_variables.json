@@ -1,0 +1,126 @@
+{
+    "production_points": [
+        {
+            "name": "X move to feed position",
+            "x": 1,
+            "y": 0,
+            "z": 0,
+            "wait_ms": 2000
+        },
+        {
+            "name": "Z descend to pick position",
+            "x": 1,
+            "y": 0,
+            "z": 2,
+            "wait_ms": 2000
+        },
+        {
+            "name": "Z lift reset",
+            "x": 1,
+            "y": 0,
+            "z": 1,
+            "wait_ms": 2000
+        },
+        {
+            "name": "Y move to conveyor position",
+            "x": 1,
+            "y": 1,
+            "z": 1,
+            "wait_ms": 2000
+        },
+        {
+            "name": "X-axis move to Filling station1",
+            "x": 2,
+            "y": 1,
+            "z": 1,
+            "wait_ms": 2000
+        },
+        {
+            "name": "Z-axis descend to Filling station1",
+            "x": 2,
+            "y": 1,
+            "z": 3,
+            "wait_ms": 2000
+        },
+        {
+            "name": "X-axis move to Filling station2",
+            "x": 3,
+            "y": 1,
+            "z": 3,
+            "wait_ms": 2000
+        },
+        {
+            "name": "X-axis move to Filling station3",
+            "x": 4,
+            "y": 1,
+            "z": 3,
+            "wait_ms": 2000
+        },
+        {
+            "name": "X-axis move to Filling station4",
+            "x": 5,
+            "y": 1,
+            "z": 3,
+            "wait_ms": 2000
+        },
+        {
+            "name": "Z lift",
+            "x": 5,
+            "y": 1,
+            "z": 1,
+            "wait_ms": 2000
+        },
+        {
+            "name": "Xaxis move to Cappingstation",
+            "x": 6,
+            "y": 1,
+            "z": 1,
+            "wait_ms": 2000
+        },
+        {
+            "name": "Zaxis descend to Cappingstation",
+            "x": 6,
+            "y": 1,
+            "z": 3,
+            "wait_ms": 2000
+        },
+        {
+            "name": "X move to coding station",
+            "x": 7,
+            "y": 1,
+            "z": 1,
+            "wait_ms": 2000
+        },
+        {
+            "name": "Z descend to coding station",
+            "x": 7,
+            "y": 1,
+            "z": 3,
+            "wait_ms": 2000
+        },
+        {
+            "name": "Xaxis homing",
+            "x": 0,
+            "y": 1,
+            "z": 1,
+            "wait_ms": 3000
+        },
+        {
+            "name": "Yaxis homing",
+            "x": 0,
+            "y": 0,
+            "z": 1,
+            "wait_ms": 3000
+        },
+        {
+            "name": "Zaxis homing",
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "wait_ms": 3000
+        }
+    ],
+    "last_x_pr": -1,
+    "last_y_pr": -1,
+    "last_z_pr": -1
+}

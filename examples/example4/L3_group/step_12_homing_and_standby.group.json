@@ -1,0 +1,85 @@
+{
+    "type": "group",
+    "name": "Homing and standby",
+    "mode": "sequence",
+    "max_nodes": 200,
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                14
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                15
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                16
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050011.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "FillingValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050012.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "RinseValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050013.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "CIPValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg2203_x_alarm2.r_b_check_ok",
+            "params": [],
+            "device": "X"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg2203_y_alarm2.r_b_check_ok",
+            "params": [],
+            "device": "Y1"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg2203_y_alarm2_y2.r_b_check_ok",
+            "params": [],
+            "device": "Y2"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg2203_z_alarm2.r_b_check_ok",
+            "params": [],
+            "device": "Z"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "SystemState",
+                "standby"
+            ]
+        }
+    ]
+}

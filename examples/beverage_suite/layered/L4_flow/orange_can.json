@@ -1,0 +1,14 @@
+{
+    "type": "flow",
+    "name": "orange_can",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/run_recipe.group.json",
+            "params": [
+                1
+            ]
+        }
+    ]
+}

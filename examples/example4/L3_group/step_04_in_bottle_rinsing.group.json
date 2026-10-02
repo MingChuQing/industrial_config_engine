@@ -1,0 +1,91 @@
+{
+    "type": "group",
+    "name": "In-bottle rinsing",
+    "mode": "sequence",
+    "max_nodes": 200,
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050012.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "RinseValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+            "params": [
+                5000
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050012.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "RinseValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0010_le_rinse_pressure_low.r_b_check_ok",
+            "params": [],
+            "device": "PressureSensor"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050013.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "CIPValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+            "params": [
+                3000
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050013.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "CIPValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050014.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "CIPValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+            "params": [
+                3000
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050014.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "CIPValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "WashState",
+                "done"
+            ]
+        }
+    ]
+}

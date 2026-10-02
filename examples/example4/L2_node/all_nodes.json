@@ -1,63 +1,179 @@
 {
     "type": "node_bundle",
-    "description": "Beverage Filling line L2 execution nodes",
     "nodes": [
         {
-            "filename": "axis_home.u8.r_b_homed",
+            "filename": "read_fc03_reg602c.r_i32_value",
+            "name": "read_fc03_reg602c",
             "type": "node",
-            "name": "axis homing",
-            "params": [
-                1
-            ],
-            "timeout_ms": 30000,
-            "max_retries": 2,
-            "action": {
-                "template": "L1_action/all_actions.json/motor_home_mode.r_b_home_mode"
-            },
-            "on_failure": [
-                {
-                    "type": "popup",
-                    "message": "axis homingfailed",
-                    "level": "error"
-                }
-            ],
-            "on_success": []
-        },
-        {
-            "filename": "axis_move_abs.u8_u32.r_b_arrived",
-            "type": "node",
-            "name": "axis absolute move",
-            "params": [
-                1,
-                0
-            ],
-            "timeout_ms": 30000,
-            "max_retries": 2,
-            "action": {
-                "template": "L1_action/all_actions.json/motor_pr_abs.r_b_abs_done"
-            },
-            "on_failure": [
-                {
-                    "type": "popup",
-                    "message": "axis absolute movefailed",
-                    "level": "error"
-                }
-            ],
-            "on_success": []
-        },
-        {
-            "filename": "axis_alarm.u8.r_b_ok",
-            "type": "node",
-            "name": "axis alarm check",
-            "params": [
-                1
-            ],
             "timeout_ms": 3000,
-            "max_retries": 2,
+            "max_retries": 0,
             "action": {
-                "template": "L1_action/all_actions.json/motor_alarm.r_u16_alarm"
+                "template": "L1_action/all_actions.json/read_fc03_reg602c.r_i32_value"
             },
-            "judge ": {
+            "device": "${device}"
+        },
+        {
+            "filename": "update_ui.s_s",
+            "name": "update_ui",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/update_ui.s_s"
+            }
+        },
+        {
+            "filename": "encode_pr_trigger.u16.r_u16_motor_trigger_word",
+            "name": "encode_pr_trigger",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/encode_pr_trigger.u16.r_u16_motor_trigger_word"
+            }
+        },
+        {
+            "filename": "trigger_pr_path.u16.r_b_done",
+            "name": "trigger_pr_path",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/trigger_pr_path.u16.r_b_written"
+            },
+            "judge": {
+                "type": "exists"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_pr_state.s.r_i32_previous_axis_pr",
+            "name": "read_pr_state",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_pr_state.s.r_i32_previous_pr"
+            }
+        },
+        {
+            "filename": "remember_pr_state.s_i32.r_b_done",
+            "name": "remember_pr_state",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/remember_pr_state.s_i32.r_b_saved"
+            }
+        },
+        {
+            "filename": "wait_ms.u32.r_b_done",
+            "name": "wait_ms",
+            "type": "node",
+            "timeout_ms": 3600000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/wait_ms.u32.r_b_wait_done"
+            }
+        },
+        {
+            "filename": "write_050011.u16.r_b_done",
+            "name": "write_050011",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_050011.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_050012.u16.r_b_done",
+            "name": "write_050012",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_050012.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_050013.u16.r_b_done",
+            "name": "write_050013",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_050013.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_050008.u16.r_b_done",
+            "name": "write_050008",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_050008.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_050009.u16.r_b_done",
+            "name": "write_050009",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_050009.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_05000a.u16.r_b_done",
+            "name": "write_05000a",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_05000a.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_05000b.u16.r_b_done",
+            "name": "write_05000b",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_05000b.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_05000c.u16.r_b_done",
+            "name": "write_05000c",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_05000c.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg2203_x_alarm.r_b_check_ok",
+            "name": "read_fc03_reg2203",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+            },
+            "judge": {
                 "type": "compare",
                 "condition": "eq",
                 "value": 0
@@ -65,95 +181,274 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "axis alarm checkfailed",
-                    "level": "error"
+                    "level": "error",
+                    "message": "Driver alarm",
+                    "error_code": "X_ALARM"
                 }
             ],
-            "on_success": []
+            "device": "${device}"
         },
         {
-            "filename": "coil_set.u16_b.r_b_done",
+            "filename": "read_fc03_reg2203_y_alarm.r_b_check_ok",
+            "name": "read_fc03_reg2203",
             "type": "node",
-            "name": "coil/cylinder control",
-            "params": [
-                1,
-                true
-            ],
-            "timeout_ms": 5000,
-            "max_retries": 2,
+            "timeout_ms": 3000,
+            "max_retries": 0,
             "action": {
-                "template": "L1_action/all_actions.json/coil_write.u16_b.r_b_done"
+                "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
             },
-            "on_failure": [
-                {
-                    "type": "popup",
-                    "message": "coil/cylinder controlfailed",
-                    "level": "error"
-                }
-            ],
-            "on_success": []
-        },
-        {
-            "filename": "sensor_wait.u16_u16.r_b_triggered",
-            "type": "node",
-            "name": "sensor wait trigger",
-            "params": [
-                1,
-                5000
-            ],
-            "timeout_ms": 10000,
-            "max_retries": 2,
-            "action": {
-                "template": "L1_action/all_actions.json/di_read.u16.r_b_triggered"
-            },
-            "on_failure": [
-                {
-                    "type": "popup",
-                    "message": "sensor wait triggerfailed",
-                    "level": "error"
-                }
-            ],
-            "on_success": []
-        },
-        {
-            "filename": "flow_ge.f.r_b_ok",
-            "type": "node",
-            "name": "flow qualification check",
-            "params": [
-                500
-            ],
-            "timeout_ms": 8000,
-            "max_retries": 2,
-            "action": {
-                "template": "L1_action/all_actions.json/reg_read_float.u16.r_f_value"
-            },
-            "judge ": {
+            "judge": {
                 "type": "compare",
-                "condition": "ge",
-                "value": 500
+                "condition": "eq",
+                "value": 0
             },
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "flow qualification checkfailed",
-                    "level": "error"
+                    "level": "error",
+                    "message": "Driver alarm",
+                    "error_code": "Y_ALARM"
                 }
             ],
-            "on_success": []
+            "device": "${device}"
         },
         {
-            "filename": "pressure_ge.f.r_b_ok",
+            "filename": "read_fc03_reg2203_y_alarm_y2.r_b_check_ok",
+            "name": "read_fc03_reg2203",
             "type": "node",
-            "name": "pressure qualification check",
-            "params": [
-                0.2
-            ],
-            "timeout_ms": 5000,
-            "max_retries": 2,
+            "timeout_ms": 3000,
+            "max_retries": 0,
             "action": {
-                "template": "L1_action/all_actions.json/reg_read_float.u16.r_f_value"
+                "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
             },
-            "judge ": {
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Driver alarm",
+                    "error_code": "Y_ALARM_Y2"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg2203_z_alarm.r_b_check_ok",
+            "name": "read_fc03_reg2203",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Driver alarm",
+                    "error_code": "Z_ALARM"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg1003.r_u16_value",
+            "name": "read_fc03_reg1003",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg1003.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "set_motor_enable.u16.r_b_done",
+            "name": "set_motor_enable",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/set_motor_enable.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_066200.u16.r_b_done",
+            "name": "write_066200",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_066200.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_066203.u16.r_b_done",
+            "name": "write_066203",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_066203.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0034.r_b_poll_ready",
+            "name": "read_fc04_reg0034",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0034.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0041.r_b_poll_ready",
+            "name": "read_fc04_reg0041",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0041.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0035.r_b_poll_ready",
+            "name": "read_fc04_reg0035",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0035.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0036.r_b_poll_ready",
+            "name": "read_fc04_reg0036",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0036.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0037.r_b_poll_ready",
+            "name": "read_fc04_reg0037",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0037.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0034_byte.r_u16_value",
+            "name": "read_fc04_reg0034_byte",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0034_byte.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0035_byte.r_u16_value",
+            "name": "read_fc04_reg0035_byte",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0035_byte.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0036_byte.r_u16_value",
+            "name": "read_fc04_reg0036_byte",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0036_byte.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0037_byte.r_u16_value",
+            "name": "read_fc04_reg0037_byte",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0037_byte.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0020.r_i32_value",
+            "name": "read_fc03_reg0020",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0020.r_i32_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0010_le_rinse_pressure_low.r_b_check_ok",
+            "name": "read_fc03_reg0010_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0010_le.r_f_value"
+            },
+            "judge": {
                 "type": "compare",
                 "condition": "ge",
                 "value": 0.2
@@ -161,25 +456,276 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "pressure qualification checkfailed",
-                    "level": "error"
+                    "level": "error",
+                    "message": "Rinse pressure insufficient",
+                    "error_code": "RINSE_PRESSURE_LOW"
                 }
             ],
-            "on_success": []
+            "device": "${device}"
         },
         {
-            "filename": "torque_ge.f.r_b_ok",
+            "filename": "write_050014.u16.r_b_done",
+            "name": "write_050014",
             "type": "node",
-            "name": "torque qualification check",
-            "params": [
-                2.0
-            ],
-            "timeout_ms": 5000,
-            "max_retries": 2,
+            "timeout_ms": 3000,
+            "max_retries": 0,
             "action": {
-                "template": "L1_action/all_actions.json/reg_read_float.u16.r_f_value"
+                "template": "L1_action/all_actions.json/write_050014.u16.r_b_written"
             },
-            "judge ": {
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0042.r_b_poll_ready",
+            "name": "read_fc04_reg0042",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0042.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0043.r_b_poll_ready",
+            "name": "read_fc04_reg0043",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0043.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0044.r_b_poll_ready",
+            "name": "read_fc04_reg0044",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0044.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0045.r_b_poll_ready",
+            "name": "read_fc04_reg0045",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0045.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0000_le_flow_not_reached.r_b_check_ok",
+            "name": "read_fc03_reg0000_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0000_le.r_f_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "ge",
+                "value": 500
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "fill volume below setpoint",
+                    "error_code": "FLOW_NOT_REACHED"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0038.r_b_poll_ready",
+            "name": "read_fc04_reg0038",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0038.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_060001.u16.r_b_done",
+            "name": "write_060001",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_060001.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0012_le_fill_pressure_low.r_b_check_ok",
+            "name": "read_fc03_reg0012_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0012_le.r_f_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "ge",
+                "value": 0.1
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Filling pressure insufficient",
+                    "error_code": "FILL_PRESSURE_LOW"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0000_le.r_f_value",
+            "name": "read_fc03_reg0000_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0000_le.r_f_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0039.r_b_poll_ready",
+            "name": "read_fc04_reg0039",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0039.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg003a.r_b_poll_ready",
+            "name": "read_fc04_reg003a",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg003a.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg003b.r_b_poll_ready",
+            "name": "read_fc04_reg003b",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg003b.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0038_byte.r_u16_value",
+            "name": "read_fc04_reg0038_byte",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0038_byte.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0039_byte.r_u16_value",
+            "name": "read_fc04_reg0039_byte",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0039_byte.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg003a_byte.r_u16_value",
+            "name": "read_fc04_reg003a_byte",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg003a_byte.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg003b_byte.r_u16_value",
+            "name": "read_fc04_reg003b_byte",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg003b_byte.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0030_le_torque_low.r_b_check_ok",
+            "name": "read_fc03_reg0030_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0030_le.r_f_value"
+            },
+            "judge": {
                 "type": "compare",
                 "condition": "ge",
                 "value": 2.0
@@ -187,115 +733,213 @@
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "torque qualification checkfailed",
-                    "level": "error"
+                    "level": "error",
+                    "message": "Cappingtorqueinsufficient",
+                    "error_code": "TORQUE_LOW"
                 }
             ],
-            "on_success": []
+            "device": "${device}"
         },
         {
-            "filename": "conveyor_run.u16.r_b_run",
+            "filename": "read_fc04_reg0046.r_b_poll_ready",
+            "name": "read_fc04_reg0046",
             "type": "node",
-            "name": "conveyor run",
-            "params": [
-                300
-            ],
-            "timeout_ms": 5000,
-            "max_retries": 2,
-            "action": {
-                "template": "L1_action/all_actions.json/conveyor_speed.u16.r_b_speed"
-            },
-            "on_failure": [
-                {
-                    "type": "popup",
-                    "message": "conveyor runfailed",
-                    "level": "error"
-                }
-            ],
-            "on_success": []
-        },
-        {
-            "filename": "conveyor_stop.r_b_stop",
-            "type": "node",
-            "name": "Conveyor stop",
-            "params": [],
             "timeout_ms": 3000,
-            "max_retries": 2,
+            "max_retries": 0,
             "action": {
-                "template": "L1_action/all_actions.json/conveyor_stop.r_b_stop_done"
+                "template": "L1_action/all_actions.json/read_fc04_reg0046.r_u16_value"
             },
-            "on_failure": [
-                {
-                    "type": "popup",
-                    "message": "Conveyor stopfailed",
-                    "level": "error"
-                }
-            ],
-            "on_success": []
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
         },
         {
-            "filename": "wait_ms.u16.r_b_wait_done",
+            "filename": "read_fc03_reg0030_le.r_f_value",
+            "name": "read_fc03_reg0030_le",
             "type": "node",
-            "name": "wait ",
-            "params": [
-                1000
-            ],
-            "timeout_ms": 3600000,
-            "max_retries": 2,
+            "timeout_ms": 3000,
+            "max_retries": 0,
             "action": {
-                "template": "L1_action/all_actions.json/wait.u16.r_b_wait_done"
+                "template": "L1_action/all_actions.json/read_fc03_reg0030_le.r_f_value"
             },
-            "on_failure": [
-                {
-                    "type": "popup",
-                    "message": "Wait failed",
-                    "level": "error"
-                }
-            ],
-            "on_success": []
+            "device": "${device}"
         },
         {
-            "filename": "popup.s_s",
+            "filename": "write_05000d.u16.r_b_done",
+            "name": "write_05000d",
             "type": "node",
-            "name": "popup",
-            "params": [
-                "prompt",
-                "info"
-            ],
-            "timeout_ms": 5000,
-            "max_retries": 2,
+            "timeout_ms": 3000,
+            "max_retries": 0,
             "action": {
-                "template": "L1_action/all_actions.json/popup.s_s"
+                "template": "L1_action/all_actions.json/write_05000d.u16.r_b_written"
             },
-            "on_failure": [
-                {
-                    "type": "popup",
-                    "message": "popupfailed",
-                    "level": "error"
-                }
-            ],
-            "on_success": []
+            "device": "${device}"
         },
         {
-            "filename": "log.s",
+            "filename": "read_fc04_reg0047.r_b_poll_ready",
+            "name": "read_fc04_reg0047",
             "type": "node",
-            "name": "log",
-            "params": [
-                ""
-            ],
-            "timeout_ms": 1000,
-            "max_retries": 2,
+            "timeout_ms": 3000,
+            "max_retries": 0,
             "action": {
-                "template": "L1_action/all_actions.json/log.s"
+                "template": "L1_action/all_actions.json/read_fc04_reg0047.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0040.r_b_poll_ready",
+            "name": "read_fc04_reg0040",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0040.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_05000e.u16.r_b_done",
+            "name": "write_05000e",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_05000e.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0010_le_cip_pressure_low.r_b_check_ok",
+            "name": "read_fc03_reg0010_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0010_le.r_f_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "ge",
+                "value": 0.3
             },
             "on_failure": [
                 {
                     "type": "popup",
-                    "message": "logfailed",
-                    "level": "error"
+                    "level": "error",
+                    "message": "CIP pressure low",
+                    "error_code": "CIP_PRESSURE_LOW"
                 }
             ],
-            "on_success": []
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg2203_x_alarm2.r_b_check_ok",
+            "name": "read_fc03_reg2203",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Driver alarm",
+                    "error_code": "X_ALARM2"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg2203_y_alarm2.r_b_check_ok",
+            "name": "read_fc03_reg2203",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Driver alarm",
+                    "error_code": "Y_ALARM2"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg2203_y_alarm2_y2.r_b_check_ok",
+            "name": "read_fc03_reg2203",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Driver alarm",
+                    "error_code": "Y_ALARM2_Y2"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg2203_z_alarm2.r_b_check_ok",
+            "name": "read_fc03_reg2203",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Driver alarm",
+                    "error_code": "Z_ALARM2"
+                }
+            ],
+            "device": "${device}"
         }
     ]
 }

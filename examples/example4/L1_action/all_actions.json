@@ -1,216 +1,735 @@
 {
     "type": "action_bundle",
-    "description": "Beverage Filling line L1 atomic actions(iDM-RS stepper + Modbus device)",
     "actions": [
         {
-            "filename": "motor_enable.r_b_enable_done",
-            "type": "modbus_write_verify",
-            "request": "06 18 01 00 01"
-        },
-        {
-            "filename": "motor_pr_abs.r_b_abs_done",
-            "type": "modbus_write_verify",
-            "request": "06 62 00 00 01",
-            "remark": "PR0=absolute position"
-        },
-        {
-            "filename": "motor_pos_h.u16.r_b_pos_h",
-            "type": "modbus_write_verify",
-            "request": "06 62 01 ${hi_high} ${hi_low}",
-            "args": [
-                {
-                    "name": "hi",
-                    "type": "u16"
-                }
-            ]
-        },
-        {
-            "filename": "motor_pos_l.u16.r_b_pos_l",
-            "type": "modbus_write_verify",
-            "request": "06 62 02 ${lo_high} ${lo_low}",
-            "args": [
-                {
-                    "name": "lo",
-                    "type": "u16"
-                }
-            ]
-        },
-        {
-            "filename": "motor_speed.u16.r_b_speed",
-            "type": "modbus_write_verify",
-            "request": "06 62 03 ${sp_high} ${sp_low}",
-            "args": [
-                {
-                    "name": "speed",
-                    "type": "u16"
-                }
-            ]
-        },
-        {
-            "filename": "motor_trigger.r_b_trigger_done",
-            "type": "modbus_write_verify",
-            "request": "06 60 02 00 10",
-            "remark": "trigger path 0"
-        },
-        {
-            "filename": "motor_home_mode.r_b_home_mode",
-            "type": "modbus_write_verify",
-            "request": "06 60 0A 00 02",
-            "remark": "limit homing"
-        },
-        {
-            "filename": "motor_home_trigger.r_b_home_done",
-            "type": "modbus_write_verify",
-            "request": "06 60 02 00 20",
-            "remark": "trigger homing"
-        },
-        {
-            "filename": "motor_status.r_u16_status",
+            "filename": "read_fc03_reg602c.r_i32_value",
             "type": "modbus_read_cache",
-            "request": "03 10 03 00 01",
+            "args": [],
+            "protocol": "modbus",
+            "request": "03 60 2C 00 02",
             "parse": {
                 "start_byte": 2,
-                "length": 2,
+                "length": 4,
                 "endian": "big",
-                "type": "uint16"
+                "type": "int"
             }
         },
         {
-            "filename": "motor_alarm.r_u16_alarm",
+            "filename": "update_ui.s_s",
+            "type": "ui_action",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "target",
+                    "type": "s"
+                },
+                {
+                    "index": 1,
+                    "name": "value",
+                    "type": "s"
+                }
+            ],
+            "action": "update_status",
+            "data": {
+                "target": "${target}",
+                "value": "${value}"
+            }
+        },
+        {
+            "filename": "encode_pr_trigger.u16.r_u16_motor_trigger_word",
+            "type": "calculate",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "point",
+                    "type": "u16",
+                    "min": 0,
+                    "max": 15
+                }
+            ],
+            "expression": "16 + ${param_0}"
+        },
+        {
+            "filename": "trigger_pr_path.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "06 60 02 ${value_high} ${value_low}",
+            "response": "06 60 02 ${value_high} ${value_low}"
+        },
+        {
+            "filename": "remember_pr_state.s_i32.r_b_saved",
+            "type": "set_variable",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "key",
+                    "type": "s"
+                },
+                {
+                    "index": 1,
+                    "name": "value",
+                    "type": "i32"
+                }
+            ]
+        },
+        {
+            "filename": "read_pr_state.s.r_i32_previous_pr",
+            "type": "read_variable",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "key",
+                    "type": "s"
+                }
+            ]
+        },
+        {
+            "filename": "wait_ms.u32.r_b_wait_done",
+            "type": "wait",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "ms",
+                    "type": "u32"
+                }
+            ],
+            "unit": "ms"
+        },
+        {
+            "filename": "write_050011.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "05 00 11 ${value_high} ${value_low}",
+            "response": "05 00 11 ${value_high} ${value_low}"
+        },
+        {
+            "filename": "write_050012.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "05 00 12 ${value_high} ${value_low}",
+            "response": "05 00 12 ${value_high} ${value_low}"
+        },
+        {
+            "filename": "write_050013.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "05 00 13 ${value_high} ${value_low}",
+            "response": "05 00 13 ${value_high} ${value_low}"
+        },
+        {
+            "filename": "write_050008.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "05 00 08 ${value_high} ${value_low}",
+            "response": "05 00 08 ${value_high} ${value_low}"
+        },
+        {
+            "filename": "write_050009.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "05 00 09 ${value_high} ${value_low}",
+            "response": "05 00 09 ${value_high} ${value_low}"
+        },
+        {
+            "filename": "write_05000a.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "05 00 0A ${value_high} ${value_low}",
+            "response": "05 00 0A ${value_high} ${value_low}"
+        },
+        {
+            "filename": "write_05000b.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "05 00 0B ${value_high} ${value_low}",
+            "response": "05 00 0B ${value_high} ${value_low}"
+        },
+        {
+            "filename": "write_05000c.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "05 00 0C ${value_high} ${value_low}",
+            "response": "05 00 0C ${value_high} ${value_low}"
+        },
+        {
+            "filename": "read_fc03_reg2203.r_u16_value",
             "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
             "request": "03 22 03 00 01",
             "parse": {
                 "start_byte": 2,
                 "length": 2,
                 "endian": "big",
-                "type": "uint16"
+                "type": "int"
             }
         },
         {
-            "filename": "conveyor_speed_mode.r_b_speed_mode",
-            "type": "modbus_write_verify",
-            "request": "06 62 00 00 02",
-            "remark": "PR0=speed mode"
-        },
-        {
-            "filename": "conveyor_speed.u16.r_b_speed",
-            "type": "modbus_write_verify",
-            "request": "06 62 03 ${sp_high} ${sp_low}",
-            "args": [
-                {
-                    "name": "speed",
-                    "type": "u16"
-                }
-            ]
-        },
-        {
-            "filename": "conveyor_trigger.r_b_run_done",
-            "type": "modbus_write_verify",
-            "request": "06 60 02 00 10"
-        },
-        {
-            "filename": "conveyor_stop.r_b_stop_done",
-            "type": "modbus_write_verify",
-            "request": "06 60 02 00 40",
-            "remark": "emergency stop"
-        },
-        {
-            "filename": "coil_write.u16_b.r_b_done",
-            "type": "modbus_write_verify",
-            "request": "05 ${coil_high} ${coil_low} ${val}",
-            "args": [
-                {
-                    "name": "coil",
-                    "type": "u16"
-                },
-                {
-                    "name": "on",
-                    "type": "b"
-                }
-            ]
-        },
-        {
-            "filename": "di_read.u16.r_b_triggered",
+            "filename": "read_fc03_reg1003.r_u16_value",
             "type": "modbus_read_cache",
-            "request": "04 ${addr_high} ${addr_low} 00 01",
+            "args": [],
+            "protocol": "modbus",
+            "request": "03 10 03 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "int"
+            }
+        },
+        {
+            "filename": "set_motor_enable.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "06 18 01 ${value_high} ${value_low}",
+            "response": "06 18 01 ${value_high} ${value_low}"
+        },
+        {
+            "filename": "write_066200.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "06 62 00 ${value_high} ${value_low}",
+            "response": "06 62 00 ${value_high} ${value_low}"
+        },
+        {
+            "filename": "write_066203.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "06 62 03 ${value_high} ${value_low}",
+            "response": "06 62 03 ${value_high} ${value_low}"
+        },
+        {
+            "filename": "read_fc04_reg0034.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 34 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc04_reg0041.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 41 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc04_reg0035.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 35 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc04_reg0036.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 36 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc04_reg0037.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 37 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc04_reg0034_byte.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 34 00 01",
             "parse": {
                 "start_byte": 2,
                 "length": 1,
                 "endian": "big",
-                "type": "uint16"
-            },
-            "args": [
-                {
-                    "name": "addr",
-                    "type": "u16"
-                }
-            ]
+                "type": "int"
+            }
         },
         {
-            "filename": "reg_read_float.u16.r_f_value",
+            "filename": "read_fc04_reg0035_byte.r_u16_value",
             "type": "modbus_read_cache",
-            "request": "03 ${reg_high} ${reg_low} 00 02",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 35 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 1,
+                "endian": "big",
+                "type": "int"
+            }
+        },
+        {
+            "filename": "read_fc04_reg0036_byte.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 36 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 1,
+                "endian": "big",
+                "type": "int"
+            }
+        },
+        {
+            "filename": "read_fc04_reg0037_byte.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 37 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 1,
+                "endian": "big",
+                "type": "int"
+            }
+        },
+        {
+            "filename": "read_fc03_reg0020.r_i32_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "03 00 20 00 02",
+            "parse": {
+                "start_byte": 2,
+                "length": 4,
+                "endian": "big",
+                "type": "int"
+            }
+        },
+        {
+            "filename": "read_fc03_reg0010_le.r_f_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "03 00 10 00 02",
             "parse": {
                 "start_byte": 2,
                 "length": 4,
                 "endian": "little",
                 "type": "float"
-            },
-            "args": [
-                {
-                    "name": "reg",
-                    "type": "u16"
-                }
-            ]
+            }
         },
         {
-            "filename": "reg_write.u16_u16.r_b_done",
+            "filename": "write_050014.u16.r_b_written",
             "type": "modbus_write_verify",
-            "request": "06 ${reg_high} ${reg_low} ${val_high} ${val_low}",
             "args": [
                 {
-                    "name": "reg",
-                    "type": "u16"
-                },
-                {
+                    "index": 0,
                     "name": "value",
                     "type": "u16"
                 }
-            ]
+            ],
+            "protocol": "modbus",
+            "request": "05 00 14 ${value_high} ${value_low}",
+            "response": "05 00 14 ${value_high} ${value_low}"
         },
         {
-            "filename": "wait.u16.r_b_wait_done",
-            "type": "wait",
+            "filename": "read_fc04_reg0042.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 42 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc04_reg0043.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 43 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc04_reg0044.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 44 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc04_reg0045.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 45 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc03_reg0000_le.r_f_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "03 00 00 00 02",
+            "parse": {
+                "start_byte": 2,
+                "length": 4,
+                "endian": "little",
+                "type": "float"
+            }
+        },
+        {
+            "filename": "read_fc04_reg0038.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 38 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "write_060001.u16.r_b_written",
+            "type": "modbus_write_verify",
             "args": [
                 {
-                    "name": "ms",
+                    "index": 0,
+                    "name": "value",
                     "type": "u16"
                 }
-            ]
+            ],
+            "protocol": "modbus",
+            "request": "06 00 01 ${value_high} ${value_low}",
+            "response": "06 00 01 ${value_high} ${value_low}"
         },
         {
-            "filename": "popup.s_s",
-            "type": "popup",
-            "args": [
-                {
-                    "name": "message",
-                    "type": "s"
-                },
-                {
-                    "name": "level",
-                    "type": "s"
-                }
-            ]
+            "filename": "read_fc03_reg0012_le.r_f_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "03 00 12 00 02",
+            "parse": {
+                "start_byte": 2,
+                "length": 4,
+                "endian": "little",
+                "type": "float"
+            }
         },
         {
-            "filename": "log.s",
-            "type": "log",
+            "filename": "read_fc04_reg0039.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 39 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc04_reg003a.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 3A 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc04_reg003b.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 3B 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc04_reg0038_byte.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 38 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 1,
+                "endian": "big",
+                "type": "int"
+            }
+        },
+        {
+            "filename": "read_fc04_reg0039_byte.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 39 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 1,
+                "endian": "big",
+                "type": "int"
+            }
+        },
+        {
+            "filename": "read_fc04_reg003a_byte.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 3A 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 1,
+                "endian": "big",
+                "type": "int"
+            }
+        },
+        {
+            "filename": "read_fc04_reg003b_byte.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 3B 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 1,
+                "endian": "big",
+                "type": "int"
+            }
+        },
+        {
+            "filename": "read_fc03_reg0030_le.r_f_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "03 00 30 00 02",
+            "parse": {
+                "start_byte": 2,
+                "length": 4,
+                "endian": "little",
+                "type": "float"
+            }
+        },
+        {
+            "filename": "read_fc04_reg0046.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 46 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "write_05000d.u16.r_b_written",
+            "type": "modbus_write_verify",
             "args": [
                 {
-                    "name": "message",
-                    "type": "s"
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
                 }
-            ]
+            ],
+            "protocol": "modbus",
+            "request": "05 00 0D ${value_high} ${value_low}",
+            "response": "05 00 0D ${value_high} ${value_low}"
+        },
+        {
+            "filename": "read_fc04_reg0047.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 47 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "read_fc04_reg0040.r_u16_value",
+            "type": "modbus_read_cache",
+            "args": [],
+            "protocol": "modbus",
+            "request": "04 00 40 00 01",
+            "parse": {
+                "start_byte": 2,
+                "length": 2,
+                "endian": "big",
+                "type": "uint16"
+            },
+            "response": "04 02 00 01"
+        },
+        {
+            "filename": "write_05000e.u16.r_b_written",
+            "type": "modbus_write_verify",
+            "args": [
+                {
+                    "index": 0,
+                    "name": "value",
+                    "type": "u16"
+                }
+            ],
+            "protocol": "modbus",
+            "request": "05 00 0E ${value_high} ${value_low}",
+            "response": "05 00 0E ${value_high} ${value_low}"
         }
     ]
 }

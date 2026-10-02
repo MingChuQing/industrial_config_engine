@@ -1,0 +1,120 @@
+{
+    "type": "group",
+    "name": "Move axis if changed",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_pr_state.s.r_i32_previous_axis_pr",
+            "params": [
+                "${axis_state_key}"
+            ],
+            "result_key": "previous_axis_pr"
+        },
+        {
+            "type": "group",
+            "name": "Only move changed axis",
+            "mode": "if",
+            "condition": {
+                "type": "expression",
+                "expression": "${axis_pr} != ${previous_axis_pr}"
+            },
+            "then": [
+                {
+                    "type": "node",
+                    "template": "L2_node/all_nodes.json/remember_pr_state.s_i32.r_b_done",
+                    "params": [
+                        "${axis_state_key}",
+                        -1
+                    ]
+                },
+                {
+                    "type": "node",
+                    "template": "L2_node/all_nodes.json/remember_pr_state.s_i32.r_b_done",
+                    "params": [
+                        "axis_failed",
+                        0
+                    ]
+                },
+                {
+                    "type": "group",
+                    "name": "Trigger axis motors",
+                    "mode": "loop",
+                    "loop": {
+                        "type": "foreach",
+                        "items": "axis_devices",
+                        "item_name": "active_motor"
+                    },
+                    "body": [
+                        {
+                            "type": "group",
+                            "template": "L3_group/trigger_motor_pr.group.json",
+                            "params": [
+                                "${active_motor}",
+                                "${axis_pr}"
+                            ]
+                        },
+                        {
+                            "type": "group",
+                            "name": "Record rejected command",
+                            "mode": "if",
+                            "condition": {
+                                "type": "expression",
+                                "expression": "${motor_trigger_ok} != true"
+                            },
+                            "then": [
+                                {
+                                    "type": "node",
+                                    "template": "L2_node/all_nodes.json/remember_pr_state.s_i32.r_b_done",
+                                    "params": [
+                                        "axis_failed",
+                                        1
+                                    ]
+                                }
+                            ],
+                            "else": []
+                        }
+                    ]
+                },
+                {
+                    "type": "group",
+                    "name": "Remember successfully issued point",
+                    "mode": "if",
+                    "condition": {
+                        "type": "expression",
+                        "expression": "${axis_failed} == 0"
+                    },
+                    "then": [
+                        {
+                            "type": "node",
+                            "template": "L2_node/all_nodes.json/remember_pr_state.s_i32.r_b_done",
+                            "params": [
+                                "${axis_state_key}",
+                                "${axis_pr}"
+                            ]
+                        }
+                    ],
+                    "else": []
+                }
+            ],
+            "else": []
+        }
+    ],
+    "args": [
+        {
+            "index": 0,
+            "name": "axis_state_key",
+            "type": "s"
+        },
+        {
+            "index": 1,
+            "name": "axis_pr",
+            "type": "u16"
+        },
+        {
+            "index": 2,
+            "name": "axis_devices",
+            "type": "arr"
+        }
+    ]
+}

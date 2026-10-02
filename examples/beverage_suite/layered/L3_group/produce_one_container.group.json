@@ -1,0 +1,272 @@
+{
+    "type": "group",
+    "name": "produce one container",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/trigger_motor.group.json",
+            "params": [
+                "Infeed",
+                "${recipes[recipe_index].infeed_pr}"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Wait for Infeed",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000.r_b_poll_ready",
+                "Infeed",
+                20,
+                4000,
+                202,
+                "EMPTY_FEED_TIMEOUT",
+                "empty feed timeout"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].empty_entry}"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].empty_work}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "Gripper"
+        },
+        {
+            "type": "group",
+            "name": "Wait for ContainerSensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0001.r_b_poll_ready",
+                "ContainerSensor",
+                20,
+                2000,
+                102,
+                "NO_CONTAINER",
+                "no container"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].empty_entry}"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].fill_entry}"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].fill_work}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_060010.u16.r_b_done",
+            "params": [
+                "${recipes[recipe_index].volume_ml}"
+            ],
+            "device": "${recipes[recipe_index].fill_device}"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "${recipes[recipe_index].fill_device}"
+        },
+        {
+            "type": "group",
+            "name": "Wait for ${recipes[recipe_index].fill_device}",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000.r_b_poll_ready",
+                "${recipes[recipe_index].fill_device}",
+                20,
+                20000,
+                1002,
+                "FILL_TIMEOUT",
+                "fill timeout"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0012.r_u16_value",
+            "params": [],
+            "device": "${recipes[recipe_index].fill_device}",
+            "result_key": "dispensed_ml"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "dispensedMl",
+                "${dispensed_ml}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "${recipes[recipe_index].fill_device}"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].fill_entry}"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].closure_entry}"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].closure_work}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "CapFeeder"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/trigger_motor.group.json",
+            "params": [
+                "Closure",
+                "${recipes[recipe_index].closure_pr}"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Wait for Closure",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000.r_b_poll_ready",
+                "Closure",
+                20,
+                5000,
+                252,
+                "CLOSURE_TIMEOUT",
+                "closure timeout"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "CapFeeder"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].closure_entry}"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].finished_entry}"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].finished_work}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Gripper"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/trigger_motor.group.json",
+            "params": [
+                "Outfeed",
+                "${recipes[recipe_index].outfeed_pr}"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Wait for Outfeed",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000.r_b_poll_ready",
+                "Outfeed",
+                20,
+                4000,
+                202,
+                "OUTFEED_TIMEOUT",
+                "outfeed timeout"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].finished_entry}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/increment.i32.r_i32_completed",
+            "params": [
+                "${completed}"
+            ],
+            "result_key": "completed"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "completed",
+                "${completed}"
+            ]
+        }
+    ]
+}

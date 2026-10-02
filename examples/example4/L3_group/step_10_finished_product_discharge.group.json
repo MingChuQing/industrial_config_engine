@@ -1,0 +1,66 @@
+{
+    "type": "group",
+    "name": "Finished product discharge",
+    "mode": "sequence",
+    "max_nodes": 200,
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/shared_conveyor_start.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "Check discharge sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0040.r_b_poll_ready",
+                "BottleSensor",
+                100,
+                5000,
+                52,
+                "OUT_SENSOR_TIMEOUT",
+                "Discharge sensor not triggered"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/trigger_pr_path.u16.r_b_done",
+            "params": [
+                64
+            ],
+            "device": "Conveyor"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0020.r_i32_value",
+            "params": [],
+            "device": "FlowMeter",
+            "result_key": "totalCount"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "OutputState",
+                "done"
+            ]
+        }
+    ]
+}

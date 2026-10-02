@@ -1,0 +1,187 @@
+{
+  "limitations": [
+    "Engineering-value integers stand in for LE float protocol reads; byte decoding is not tested.",
+    "Stage counts are executed group calls; UI target/value rendering is not tested.",
+    "Device completion is immediate and wait durations advance virtual time only."
+  ],
+  "negative_checks": [
+    {
+      "case": "baseline flavor 0, specification 2 unavailable",
+      "execution_status": "FAILED",
+      "message": "Group argument outside declared range: specification",
+      "modbus_routes": 0,
+      "status": "PASS"
+    }
+  ],
+  "profile": "instant-ready C++ executor compatibility test",
+  "recipes": [
+    {
+      "cip_virtual_ms": 170065,
+      "completed": 12,
+      "diagnostic_reads": {
+        "FlowMeter": 48,
+        "PressureSensor": 61,
+        "Torque": 24
+      },
+      "fill_time_writes": 12,
+      "modbus_routes": 2992,
+      "recipe": "orange_family",
+      "stage_group_counts": {
+        "01": 1,
+        "02": 12,
+        "03": 12,
+        "04": 12,
+        "05": 12,
+        "06": 12,
+        "07": 12,
+        "08": 12,
+        "09": 12,
+        "10": 12,
+        "11": 1,
+        "12": 1
+      },
+      "status": "SUCCESS",
+      "virtual_time_ms": 362590
+    },
+    {
+      "cip_virtual_ms": 170065,
+      "completed": 12,
+      "diagnostic_reads": {
+        "FlowMeter": 48,
+        "PressureSensor": 61,
+        "Torque": 24
+      },
+      "fill_time_writes": 12,
+      "modbus_routes": 2992,
+      "recipe": "orange_can",
+      "stage_group_counts": {
+        "01": 1,
+        "02": 12,
+        "03": 12,
+        "04": 12,
+        "05": 12,
+        "06": 12,
+        "07": 12,
+        "08": 12,
+        "09": 12,
+        "10": 12,
+        "11": 1,
+        "12": 1
+      },
+      "status": "SUCCESS",
+      "virtual_time_ms": 362590
+    },
+    {
+      "cip_virtual_ms": 170065,
+      "completed": 12,
+      "diagnostic_reads": {
+        "FlowMeter": 48,
+        "PressureSensor": 61,
+        "Torque": 24
+      },
+      "fill_time_writes": 12,
+      "modbus_routes": 2992,
+      "recipe": "apple_family",
+      "stage_group_counts": {
+        "01": 1,
+        "02": 12,
+        "03": 12,
+        "04": 12,
+        "05": 12,
+        "06": 12,
+        "07": 12,
+        "08": 12,
+        "09": 12,
+        "10": 12,
+        "11": 1,
+        "12": 1
+      },
+      "status": "SUCCESS",
+      "virtual_time_ms": 362590
+    },
+    {
+      "cip_virtual_ms": 170065,
+      "completed": 12,
+      "diagnostic_reads": {
+        "FlowMeter": 48,
+        "PressureSensor": 61,
+        "Torque": 24
+      },
+      "fill_time_writes": 12,
+      "modbus_routes": 2992,
+      "recipe": "apple_can",
+      "stage_group_counts": {
+        "01": 1,
+        "02": 12,
+        "03": 12,
+        "04": 12,
+        "05": 12,
+        "06": 12,
+        "07": 12,
+        "08": 12,
+        "09": 12,
+        "10": 12,
+        "11": 1,
+        "12": 1
+      },
+      "status": "SUCCESS",
+      "virtual_time_ms": 362590
+    },
+    {
+      "cip_virtual_ms": 170065,
+      "completed": 12,
+      "diagnostic_reads": {
+        "FlowMeter": 48,
+        "PressureSensor": 61,
+        "Torque": 24
+      },
+      "fill_time_writes": 12,
+      "modbus_routes": 2992,
+      "recipe": "grape_family",
+      "stage_group_counts": {
+        "01": 1,
+        "02": 12,
+        "03": 12,
+        "04": 12,
+        "05": 12,
+        "06": 12,
+        "07": 12,
+        "08": 12,
+        "09": 12,
+        "10": 12,
+        "11": 1,
+        "12": 1
+      },
+      "status": "SUCCESS",
+      "virtual_time_ms": 362590
+    },
+    {
+      "cip_virtual_ms": 170065,
+      "completed": 12,
+      "diagnostic_reads": {
+        "FlowMeter": 48,
+        "PressureSensor": 61,
+        "Torque": 24
+      },
+      "fill_time_writes": 12,
+      "modbus_routes": 2992,
+      "recipe": "grape_can",
+      "stage_group_counts": {
+        "01": 1,
+        "02": 12,
+        "03": 12,
+        "04": 12,
+        "05": 12,
+        "06": 12,
+        "07": 12,
+        "08": 12,
+        "09": 12,
+        "10": 12,
+        "11": 1,
+        "12": 1
+      },
+      "status": "SUCCESS",
+      "virtual_time_ms": 362590
+    }
+  ]
+}

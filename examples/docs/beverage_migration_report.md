@@ -1,69 +1,115 @@
-# Beverage Filling System: Monolithic Configuration → Four-Layer Configuration — Migration Comparison Report (public and reproducible)
+# Beverage production configuration
 
-> This report is the **public, reproducible** sample of the "monolithic vs. four-layer configuration comparison" in the paper "A Data-Driven Industrial Control Configuration Language".
-> All numbers can be reproduced directly by counting the files in this repository.
+The immutable reference is `examples/beverage_legacy/beverage_filling_legacy.json`.
+The current configuration is `examples/example4/`. Both exclude PR-table
+commissioning. The original reference has not been changed to disguise the
+new skip behavior.
 
-## 1. Subjects of Comparison
+## Production-point semantics
 
-| Approach | Location | Description |
-|------|------|------|
-| Old approach (monolithic configuration) | `examples/beverage_legacy/beverage_filling_legacy.json` | 12-step process, 13 devices, all configuration in a single JSON, mixing process orchestration with device-level Modbus frames |
-| New approach (four-layer) | `examples/example4/` | L1 21 Actions, L2 13 Nodes, L3 17 parameterized groups, L4 one 12-step flow |
+A production point is a full XYZ tuple, with each component selecting a stored
+PR point 0..15. The caller supplies only a production point index (0..100;
+current table: 17 rows). L3 reads the tuple and uses one reusable axis group
+for X, paired Y1/Y2, and Z. Only changed axes are triggered, in X/Y/Z order.
+Initial per-axis homing is retained separately and establishes the cache.
+There are 21 full-point calls after the initial three homing calls.
 
-## 2. Size Comparison
+The cache starts at -1 and records the last successfully issued PR number.
+The axis cache is invalidated before changed-axis commands, then updated only
+if all associated motors acknowledge success. A partial Y failure leaves Y
+unknown, so both motors are retried on the next call. The cache does not prove
+physical arrival. Invalidate it after manual motion/reconnection/reconfiguration.
+Original 2s/3s waits and four-position/three-coordinate refreshes remain at all
+24 original move locations, including repeated full-point calls.
 
-| Metric | Old approach (monolithic) | New approach (four-layer) | Change |
-|------|----------------|----------------|------|
-| Number of files | 1 | 20 | Separated by layer |
-| Total lines | 4082 | 1319 | **−67.7%** |
-| Total bytes | 215,962 B | 35,241 B | **−83.7%** |
-| Modbus frames (occurrences of `"request"`) | 239 | 0 in the orchestration layer (L3/L4); 18 in the device layer (L1/L2) | Device details frozen in L1/L2 |
-| Group references / unique group definitions | Verbatim repetition | 29 references ← 17 parameterized groups | Reuse rate 41.4% |
+All 14 devices have entries in `device_registry.json`; all 58 Modbus L2 nodes
+have explicit device binding. All 48 Modbus L1 definitions contain PDUs only,
+without station or CRC bytes. The simulated registry resolves and audits the
+port/address; physical RTU framing belongs to a hardware transport adapter.
 
-Reuse distribution (group references in the L4 flow):
+## Polling reuse and names
 
-| Group | Reference count |
-|----|----------|
-| Filling cycle fill_cycle | 4 (four stations) |
-| Four-station bottle detection pos_detect | 4 |
-| Three-axis movement axis_move_seq | 4 (four filling stations) |
-| Level recheck level_recheck | 2 |
-| Valve control cycle rinse_cycle | 3 (rinse/disinfect/drain) |
-| The remaining 12 groups | 1 each |
+All 21 polling sites use one shared L3 definition, with parameters for the
+loaded L2 check node, device, interval, timeout, iteration budget and timeout
+diagnosis. This revision preserves every one of the preceding revision's 354
+ordered observable contracts; it adds no new behavioral differences.
+All generated hash identifiers were replaced with register/decoder/error-code
+names, and every reference was updated. The generator detects naming collisions.
 
-## 3. Key Conclusions
+## Verification and deliberate difference from the reference
 
-1. **Measurable layer isolation**: the orchestration layer (L3/L4) no longer contains any Modbus frames; all device details (register addresses,
-   coil addresses, hexadecimal messages) are frozen in L1/L2, and the LLM only generates combinations of reference names.
-2. **Reuse is parameterization**: the same "filling cycle" (open valve → metering → close valve) is defined once and reused four times with different parameters,
-   replacing the verbatim repetition in the monolithic approach.
-3. **Behavioral equivalence**: the two approaches describe the same filling process with an identical control flow; the migration only changes how the knowledge is organized.
-
-## 4. Reproduction
-
-```bash
-# Count the old approach
-python -c "import json;d=open('examples/beverage_legacy/beverage_filling_legacy.json',encoding='utf-8').read();print('lines',d.count(chr(10))+1,'frames',d.count('\"request\"'))"
-
-# Count the new approach (four-layer)
-find examples/example4 -name '*.json' | xargs wc -l
+```console
+python scripts/verify_beverage.py --report examples/docs/beverage_equivalence_report.json
+python scripts/test_beverage_migration.py -v
+cmake -S . -B build -DBUILD_DEMOS=OFF -DBUILD_TESTING=ON
+cmake --build build --config Release
+ctest --test-dir build -C Release --output-on-failure
 ```
 
-## 5. Coordinate Table (iDM-RS absolute coordinates, in pulses)
+The requested skip rule removes two redundant commands at stage 5: Y1 and Y2
+were already at PR1, so a second `06 60 02 00 11` trigger is omitted. Reference
+operation indices 126 and 127 (zero-based) are recorded in the JSON report.
+The independent verifier applies this explicit rule to the original ordered
+contracts and compares every retained operation with the expanded four layers.
+This is equality after a declared transformation, not raw trace equality.
 
-| Station | X | Y | Z |
-|------|-------|-------|--------|
-| Origin | 0 | 0 | 0 |
-| Bottle pickup (feeding) | 50000 | 0 | 80000 |
-| Filling station 1 | 120000 | 60000 | 150000 |
-| Filling station 2 | 132000 | 60000 | 150000 |
-| Filling station 3 | 144000 | 60000 | 150000 |
-| Filling station 4 | 156000 | 60000 | 150000 |
-| Capping | 170000 | 60000 | 150000 |
-| Coding/marking | 220000 | 60000 | 150000 |
-| Discharge | 260000 | 120000 | 80000 |
+| Operation | Original | Changed-axis configuration |
+|---|---:|---:|
+| Write request and echo | 88 | 86 |
+| Read and compare | 19 | 19 |
+| Read and cache | 112 | 112 |
+| Polling contracts | 21 | 21 |
+| Fixed waits | 32 | 32 |
+| UI updates | 84 | 84 |
+| Total | 356 | 354 |
+| Modbus operation sites | 240 | 238 |
 
-> Note: in the four-layer approach, the L2 layer is a schematic wrapping (each node corresponds to one L1 Action); the complete absolute-positioning command sequence
-> (enable → PR0 mode → position high/low → speed → trigger; see `examples/device_examples/` and the iDM-RS manual)
-> can be expanded into a multi-node combination inside L3 groups as needed. This comparison focuses on the four-layer separation of knowledge organization and size reduction, and does not imply
-> byte-for-byte equivalence of execution semantics.
+All L1/L2 definitions and L3 groups are reachable. Pure calculations and cache
+reads/writes are internal and excluded from the observable contract counts.
+Thirty-one Python tests cover behavior changes and negative controls. C++
+tests exercise all 14 device routes, all 17 point rows, repeated points,
+Z-only changes, paired Y failure/retry, unknown startup state and index/PR bounds.
+Shared-poll tests cover immediate and delayed readiness, timeout diagnostics,
+and invalid node references. FC04 now reads the requested virtual register.
+The existing T1/T2/T3 demos are checked separately for regressions.
+
+Static expansion and focused simulator tests do not establish hardware
+equivalence or full-line simulator equivalence. Separate FC03/FC04 register spaces, byte/float decoding,
+UI effects and failure propagation are not fully modeled by the simulator.
+The successful-command cache therefore represents simulator acknowledgements,
+not physical motion feedback. L2 retains its transport-policy assumptions.
+
+## Representation size
+
+Both formats use four-space indentation and one trailing newline. Scripts,
+documentation and verification reports are excluded. The original has 4,529
+lines and 230,470 UTF-8 bytes. Current components:
+
+| Component | Files | Lines | UTF-8 bytes |
+|---|---:|---:|---:|
+| L1 | 1 | 735 | 22,208 |
+| L2 | 1 | 945 | 30,652 |
+| L3 | 19 | 1,806 | 50,074 |
+| L4 | 1 | 79 | 2,500 |
+| Point table and initial cache | 1 | 126 | 2,758 |
+| Device registry | 1 | 61 | 1,375 |
+| Total | 24 | 3,752 | 109,567 |
+
+Four-layer files alone: 3,565 lines. With point/cache variables: 3,691
+lines. Including the device registry: 3,752 lines, 777 (17.16%) fewer than
+the original 4,529 and 629 fewer than the preceding 4,381-line revision.
+The original omits the connection registry. Counts include every current
+configuration JSON with the same indentation. Internal state tracking and
+serialization affect size; this does not isolate the effect of layering.
+
+## Regeneration
+
+```console
+python scripts/rebuild_beverage.py --output build/beverage-candidate
+python scripts/verify_beverage.py --directory build/beverage-candidate
+```
+
+Use an empty candidate directory and verify before replacing example4. The
+generator derives full XYZ targets by tracking the original axis targets after
+initial homing. The independent verifier derives redundant-write omissions
+separately. The original source SHA-256 is recorded in the report.

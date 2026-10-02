@@ -74,6 +74,8 @@ namespace industrial_config_engine {
         std::string name;
         DataType type = DataType::VOIDDataType;
         std::optional<std::string> default_value;
+        std::optional<int64_t> min_value;
+        std::optional<int64_t> max_value;
         std::string desc;
     };
 

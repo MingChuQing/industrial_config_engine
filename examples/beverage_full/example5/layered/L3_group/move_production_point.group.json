@@ -1,0 +1,111 @@
+{
+    "type": "group",
+    "name": "move production point",
+    "mode": "sequence",
+    "args": [
+        {
+            "index": 0,
+            "name": "point_index",
+            "type": "u16",
+            "min": 0,
+            "max": 100
+        }
+    ],
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/move_axis_if_changed.group.json",
+            "params": [
+                "last_x_pr",
+                "${production_points[point_index].x}",
+                [
+                    "X"
+                ]
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_axis_if_changed.group.json",
+            "params": [
+                "last_y_pr",
+                "${production_points[point_index].y}",
+                [
+                    "Y1",
+                    "Y2"
+                ]
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_axis_if_changed.group.json",
+            "params": [
+                "last_z_pr",
+                "${production_points[point_index].z}",
+                [
+                    "Z"
+                ]
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Wait for X",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+                "X",
+                20,
+                4000,
+                202,
+                "MOTION_TIMEOUT",
+                "motion timeout"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Wait for Y1",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+                "Y1",
+                20,
+                4000,
+                202,
+                "MOTION_TIMEOUT",
+                "motion timeout"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Wait for Y2",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+                "Y2",
+                20,
+                4000,
+                202,
+                "MOTION_TIMEOUT",
+                "motion timeout"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Wait for Z",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+                "Z",
+                20,
+                4000,
+                202,
+                "MOTION_TIMEOUT",
+                "motion timeout"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/refresh_position.group.json",
+            "params": []
+        }
+    ]
+}

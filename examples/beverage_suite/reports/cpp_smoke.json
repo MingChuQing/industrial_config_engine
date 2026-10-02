@@ -1,0 +1,59 @@
+{
+  "profile": "instant-ready C++ executor compatibility test",
+  "recipes": [
+    {
+      "completed": 12,
+      "modbus_routes": 1606,
+      "recipe": "orange_family",
+      "status": "SUCCESS"
+    },
+    {
+      "completed": 12,
+      "modbus_routes": 1606,
+      "recipe": "orange_can",
+      "status": "SUCCESS"
+    },
+    {
+      "completed": 12,
+      "modbus_routes": 1606,
+      "recipe": "orange_small",
+      "status": "SUCCESS"
+    },
+    {
+      "completed": 12,
+      "modbus_routes": 1606,
+      "recipe": "apple_family",
+      "status": "SUCCESS"
+    },
+    {
+      "completed": 12,
+      "modbus_routes": 1606,
+      "recipe": "apple_can",
+      "status": "SUCCESS"
+    },
+    {
+      "completed": 12,
+      "modbus_routes": 1606,
+      "recipe": "apple_small",
+      "status": "SUCCESS"
+    },
+    {
+      "completed": 12,
+      "modbus_routes": 1606,
+      "recipe": "grape_family",
+      "status": "SUCCESS"
+    },
+    {
+      "completed": 12,
+      "modbus_routes": 1606,
+      "recipe": "grape_can",
+      "status": "SUCCESS"
+    },
+    {
+      "completed": 12,
+      "modbus_routes": 1606,
+      "recipe": "grape_small",
+      "status": "SUCCESS"
+    }
+  ]
+}

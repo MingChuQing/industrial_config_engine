@@ -1,0 +1,36 @@
+{
+    "type": "group",
+    "name": "Trigger motor PR",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/encode_pr_trigger.u16.r_u16_motor_trigger_word",
+            "params": [
+                "${motor_pr}"
+            ],
+            "result_key": "motor_trigger_word"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/trigger_pr_path.u16.r_b_done",
+            "params": [
+                "${motor_trigger_word}"
+            ],
+            "device": "${motor_device}",
+            "result_key": "motor_trigger_ok"
+        }
+    ],
+    "args": [
+        {
+            "index": 0,
+            "name": "motor_device",
+            "type": "s"
+        },
+        {
+            "index": 1,
+            "name": "motor_pr",
+            "type": "u16"
+        }
+    ]
+}

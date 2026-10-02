@@ -1,0 +1,149 @@
+{
+    "type": "group",
+    "name": "run recipe",
+    "mode": "sequence",
+    "args": [
+        {
+            "index": 0,
+            "name": "recipe_index",
+            "type": "u16"
+        }
+    ],
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+            "params": [
+                "last_x_pr",
+                -1
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+            "params": [
+                "last_y_pr",
+                -1
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+            "params": [
+                "last_z_pr",
+                -1
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+            "params": [
+                "completed",
+                0
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "OrangeFill"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "AppleFill"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "GrapeFill"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Gripper"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "CapFeeder"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].home_point}"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Two production batches",
+            "mode": "loop",
+            "loop": {
+                "type": "count",
+                "count": 2
+            },
+            "body": [
+                {
+                    "type": "group",
+                    "template": "L3_group/produce_batch.group.json",
+                    "params": []
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "OrangeFill"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "AppleFill"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "GrapeFill"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Gripper"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "CapFeeder"
+        }
+    ]
+}

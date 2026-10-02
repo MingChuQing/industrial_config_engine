@@ -1,0 +1,136 @@
+{
+    "type": "group",
+    "name": "step 06 filling",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "stage",
+                "06"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_060001.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "FlowMeter"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_060010.u16.r_b_done",
+            "params": [
+                "${recipes[recipe_index].volume_ml}"
+            ],
+            "device": "${recipes[recipe_index].fill_device}"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_060011.u16.r_b_done",
+            "params": [
+                "${recipes[recipe_index].fill_time_ms}"
+            ],
+            "device": "${recipes[recipe_index].fill_device}"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "${recipes[recipe_index].fill_device}"
+        },
+        {
+            "type": "group",
+            "name": "Wait for ${recipes[recipe_index].fill_device}",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+                "${recipes[recipe_index].fill_device}",
+                20,
+                20000,
+                1002,
+                "FILL_TIMEOUT",
+                "fill timeout"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0000_le_flow_not_reached.r_b_check_ok",
+            "params": [],
+            "device": "FlowMeter"
+        },
+        {
+            "type": "group",
+            "name": "Check level sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0038_expected.r_b_poll_ready",
+                "LevelSensor",
+                50,
+                8000,
+                162,
+                "LEVEL_TIMEOUT",
+                "Level not reached"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "${recipes[recipe_index].fill_device}"
+        },
+        {
+            "type": "group",
+            "name": "Repeated diagnostic readings",
+            "mode": "loop",
+            "loop": {
+                "type": "count",
+                "count": 4
+            },
+            "body": [
+                {
+                    "type": "node",
+                    "template": "L2_node/all_nodes.json/read_fc03_reg0012_le_fill_pressure_low.r_b_check_ok",
+                    "params": [],
+                    "device": "PressureSensor"
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0000_le.r_f_value",
+            "params": [],
+            "device": "FlowMeter",
+            "result_key": "totalVolume"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0012.r_u16_value",
+            "params": [],
+            "device": "${recipes[recipe_index].fill_device}",
+            "result_key": "dispensed_ml"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "dispensedMl",
+                "${dispensed_ml}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "FillState",
+                "done"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "type": "flow",
+    "name": "grape_small",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/run_recipe.group.json",
+            "params": [
+                2,
+                2
+            ]
+        }
+    ]
+}

@@ -1,0 +1,155 @@
+{
+    "type": "node_bundle",
+    "nodes": [
+        {
+            "filename": "encode_pr_trigger.u16.r_u16_trigger_word",
+            "name": "encode_pr_trigger",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/encode_pr_trigger.u16.r_u16_trigger_word"
+            }
+        },
+        {
+            "filename": "trigger_pr_path.u16.r_b_done",
+            "name": "trigger_pr_path",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/trigger_pr_path.u16.r_b_written"
+            },
+            "judge": {
+                "type": "exists"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_state.s.r_i32_previous_pr",
+            "name": "read_state",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_state.s.r_i32_previous_pr"
+            }
+        },
+        {
+            "filename": "set_state.s_i32.r_b_done",
+            "name": "set_state",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/set_state.s_i32.r_b_saved"
+            }
+        },
+        {
+            "filename": "read_fc03_reg602c.r_i32_value",
+            "name": "read_fc03_reg602c",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg602c.r_i32_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "update_ui.s_s",
+            "name": "update_ui",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/update_ui.s_s"
+            }
+        },
+        {
+            "filename": "read_fc04_reg0000.r_b_poll_ready",
+            "name": "read_fc04_reg0000",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0000.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "wait_ms.u32.r_b_done",
+            "name": "wait_ms",
+            "type": "node",
+            "timeout_ms": 3600000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/wait_ms.u32.r_b_wait_done"
+            }
+        },
+        {
+            "filename": "write_050000.u16.r_b_done",
+            "name": "write_050000",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_050000.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0001.r_b_poll_ready",
+            "name": "read_fc04_reg0001",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0001.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_060010.u16.r_b_done",
+            "name": "write_060010",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_060010.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0012.r_u16_value",
+            "name": "read_fc03_reg0012",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0012.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "increment.i32.r_i32_completed",
+            "name": "increment",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/increment.i32.r_i32_count"
+            }
+        }
+    ]
+}

@@ -1,0 +1,891 @@
+{
+    "type": "node_bundle",
+    "nodes": [
+        {
+            "filename": "encode_pr_trigger.u16.r_u16_trigger_word",
+            "name": "encode_pr_trigger",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/encode_pr_trigger.u16.r_u16_trigger_word"
+            }
+        },
+        {
+            "filename": "trigger_pr_path.u16.r_b_done",
+            "name": "trigger_pr_path",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/trigger_pr_path.u16.r_b_written"
+            },
+            "judge": {
+                "type": "exists"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_state.s.r_i32_previous_pr",
+            "name": "read_state",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_state.s.r_i32_previous_pr"
+            }
+        },
+        {
+            "filename": "set_state.s_i32.r_b_done",
+            "name": "set_state",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/set_state.s_i32.r_b_saved"
+            }
+        },
+        {
+            "filename": "read_fc03_reg602c.r_i32_value",
+            "name": "read_fc03_reg602c",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg602c.r_i32_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "update_ui.s_s",
+            "name": "update_ui",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/update_ui.s_s"
+            }
+        },
+        {
+            "filename": "read_fc04_reg0000_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0000_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0000_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "wait_ms.u32.r_b_done",
+            "name": "wait_ms",
+            "type": "node",
+            "timeout_ms": 3600000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/wait_ms.u32.r_b_wait_done"
+            }
+        },
+        {
+            "filename": "write_050000.u16.r_b_done",
+            "name": "write_050000",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_050000.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_050012.u16.r_b_done",
+            "name": "write_050012",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_050012.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_050013.u16.r_b_done",
+            "name": "write_050013",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_050013.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_050014.u16.r_b_done",
+            "name": "write_050014",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_050014.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_050008.u16.r_b_done",
+            "name": "write_050008",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_050008.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_050009.u16.r_b_done",
+            "name": "write_050009",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_050009.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_05000a.u16.r_b_done",
+            "name": "write_05000a",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_05000a.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_05000b.u16.r_b_done",
+            "name": "write_05000b",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_05000b.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_05000c.u16.r_b_done",
+            "name": "write_05000c",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_05000c.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_05000d.u16.r_b_done",
+            "name": "write_05000d",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_05000d.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_05000e.u16.r_b_done",
+            "name": "write_05000e",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_05000e.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg2203_x_alarm.r_b_check_ok",
+            "name": "read_fc03_reg2203",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Driver alarm",
+                    "error_code": "X_ALARM"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg2203_y_alarm.r_b_check_ok",
+            "name": "read_fc03_reg2203",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Driver alarm",
+                    "error_code": "Y_ALARM"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg2203_y_alarm_y2.r_b_check_ok",
+            "name": "read_fc03_reg2203",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Driver alarm",
+                    "error_code": "Y_ALARM_Y2"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg2203_z_alarm.r_b_check_ok",
+            "name": "read_fc03_reg2203",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Driver alarm",
+                    "error_code": "Z_ALARM"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg1003.r_u16_value",
+            "name": "read_fc03_reg1003",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg1003.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0034_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0034_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0034_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0041_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0041_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0041_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0001_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0001_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0001_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0035_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0035_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0035_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0036_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0036_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0036_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0037_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0037_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0037_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0034.r_u16_value",
+            "name": "read_fc04_reg0034",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0034.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0035.r_u16_value",
+            "name": "read_fc04_reg0035",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0035.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0036.r_u16_value",
+            "name": "read_fc04_reg0036",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0036.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0037.r_u16_value",
+            "name": "read_fc04_reg0037",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0037.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0020.r_i32_value",
+            "name": "read_fc03_reg0020",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0020.r_i32_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0010_le_rinse_pressure_low.r_b_check_ok",
+            "name": "read_fc03_reg0010_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0010_le.r_f_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "ge",
+                "value": 0.2
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Rinse pressure insufficient",
+                    "error_code": "RINSE_PRESSURE_LOW"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0042_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0042_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0042_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0043_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0043_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0043_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0044_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0044_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0044_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0045_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0045_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0045_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_060001.u16.r_b_done",
+            "name": "write_060001",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_060001.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_060010.u16.r_b_done",
+            "name": "write_060010",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_060010.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "write_060011.u16.r_b_done",
+            "name": "write_060011",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/write_060011.u16.r_b_written"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0000_le_flow_not_reached.r_b_check_ok",
+            "name": "read_fc03_reg0000_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0000_le.r_f_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "ge",
+                "value": "${recipes[recipe_index].volume_ml}"
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Dispensed volume below recipe target",
+                    "error_code": "FLOW_NOT_REACHED"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0038_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0038_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0038_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0012_le_fill_pressure_low.r_b_check_ok",
+            "name": "read_fc03_reg0012_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0012_le.r_f_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "ge",
+                "value": 0.1
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Filling pressure insufficient",
+                    "error_code": "FILL_PRESSURE_LOW"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0000_le.r_f_value",
+            "name": "read_fc03_reg0000_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0000_le.r_f_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0012.r_u16_value",
+            "name": "read_fc03_reg0012",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0012.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0039_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0039_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0039_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg003a_expected.r_b_poll_ready",
+            "name": "read_fc04_reg003a_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg003a_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg003b_expected.r_b_poll_ready",
+            "name": "read_fc04_reg003b_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg003b_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0038.r_u16_value",
+            "name": "read_fc04_reg0038",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0038.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0039.r_u16_value",
+            "name": "read_fc04_reg0039",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0039.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg003a.r_u16_value",
+            "name": "read_fc04_reg003a",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg003a.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg003b.r_u16_value",
+            "name": "read_fc04_reg003b",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg003b.r_u16_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0030_le_torque_low.r_b_check_ok",
+            "name": "read_fc03_reg0030_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0030_le.r_f_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "ge",
+                "value": 2.0
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "Cappingtorqueinsufficient",
+                    "error_code": "TORQUE_LOW"
+                }
+            ],
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0046_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0046_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0046_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc03_reg0030_le.r_f_value",
+            "name": "read_fc03_reg0030_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0030_le.r_f_value"
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0047_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0047_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0047_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "read_fc04_reg0040_expected.r_b_poll_ready",
+            "name": "read_fc04_reg0040_expected",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc04_reg0040_expected.r_u16_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "eq",
+                "value": 1
+            },
+            "device": "${device}"
+        },
+        {
+            "filename": "increment.i32.r_i32_completed",
+            "name": "increment",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/increment.i32.r_i32_count"
+            }
+        },
+        {
+            "filename": "read_fc03_reg0010_le_cip_pressure_low.r_b_check_ok",
+            "name": "read_fc03_reg0010_le",
+            "type": "node",
+            "timeout_ms": 3000,
+            "max_retries": 0,
+            "action": {
+                "template": "L1_action/all_actions.json/read_fc03_reg0010_le.r_f_value"
+            },
+            "judge": {
+                "type": "compare",
+                "condition": "ge",
+                "value": 0.3
+            },
+            "on_failure": [
+                {
+                    "type": "popup",
+                    "level": "error",
+                    "message": "CIP pressure low",
+                    "error_code": "CIP_PRESSURE_LOW"
+                }
+            ],
+            "device": "${device}"
+        }
+    ]
+}

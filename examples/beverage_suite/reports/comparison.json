@@ -1,0 +1,429 @@
+{
+  "status": "PASS",
+  "provenance": "Constructed synthetic benchmark; not measured industrial deployment data.",
+  "scope": "Two independently implemented interpreters, same deterministic virtual hardware model; exact timed observable trace equality.",
+  "sizes": {
+    "legacy": {
+      "files": 9,
+      "lines": 24228,
+      "utf8_bytes": 1103377
+    },
+    "L1": {
+      "files": 1,
+      "lines": 187,
+      "utf8_bytes": 5322
+    },
+    "L2": {
+      "files": 1,
+      "lines": 155,
+      "utf8_bytes": 4892
+    },
+    "L3": {
+      "files": 8,
+      "lines": 799,
+      "utf8_bytes": 21868
+    },
+    "L4": {
+      "files": 9,
+      "lines": 126,
+      "utf8_bytes": 2322
+    },
+    "devices": {
+      "files": 1,
+      "lines": 57,
+      "utf8_bytes": 1323
+    },
+    "points_and_recipes": {
+      "files": 1,
+      "lines": 439,
+      "utf8_bytes": 11050
+    }
+  },
+  "per_recipe_sizes": [
+    {
+      "recipe": "orange_family",
+      "legacy": {
+        "files": 1,
+        "lines": 2692,
+        "utf8_bytes": 122607
+      },
+      "L4": {
+        "files": 1,
+        "lines": 14,
+        "utf8_bytes": 260
+      }
+    },
+    {
+      "recipe": "orange_can",
+      "legacy": {
+        "files": 1,
+        "lines": 2692,
+        "utf8_bytes": 122601
+      },
+      "L4": {
+        "files": 1,
+        "lines": 14,
+        "utf8_bytes": 257
+      }
+    },
+    {
+      "recipe": "orange_small",
+      "legacy": {
+        "files": 1,
+        "lines": 2692,
+        "utf8_bytes": 122611
+      },
+      "L4": {
+        "files": 1,
+        "lines": 14,
+        "utf8_bytes": 259
+      }
+    },
+    {
+      "recipe": "apple_family",
+      "legacy": {
+        "files": 1,
+        "lines": 2692,
+        "utf8_bytes": 122595
+      },
+      "L4": {
+        "files": 1,
+        "lines": 14,
+        "utf8_bytes": 259
+      }
+    },
+    {
+      "recipe": "apple_can",
+      "legacy": {
+        "files": 1,
+        "lines": 2692,
+        "utf8_bytes": 122587
+      },
+      "L4": {
+        "files": 1,
+        "lines": 14,
+        "utf8_bytes": 256
+      }
+    },
+    {
+      "recipe": "apple_small",
+      "legacy": {
+        "files": 1,
+        "lines": 2692,
+        "utf8_bytes": 122597
+      },
+      "L4": {
+        "files": 1,
+        "lines": 14,
+        "utf8_bytes": 258
+      }
+    },
+    {
+      "recipe": "grape_family",
+      "legacy": {
+        "files": 1,
+        "lines": 2692,
+        "utf8_bytes": 122595
+      },
+      "L4": {
+        "files": 1,
+        "lines": 14,
+        "utf8_bytes": 259
+      }
+    },
+    {
+      "recipe": "grape_can",
+      "legacy": {
+        "files": 1,
+        "lines": 2692,
+        "utf8_bytes": 122587
+      },
+      "L4": {
+        "files": 1,
+        "lines": 14,
+        "utf8_bytes": 256
+      }
+    },
+    {
+      "recipe": "grape_small",
+      "legacy": {
+        "files": 1,
+        "lines": 2692,
+        "utf8_bytes": 122597
+      },
+      "L4": {
+        "files": 1,
+        "lines": 14,
+        "utf8_bytes": 258
+      }
+    }
+  ],
+  "recipes": [
+    {
+      "recipe": "orange_family",
+      "fault": null,
+      "status": "SUCCESS",
+      "trace_equal": true,
+      "events": 13069,
+      "modbus_transactions": 6660,
+      "simulated_ms": 138970,
+      "finished_containers": 12,
+      "filled_total_ml": 24000,
+      "trace_sha256": "cdc8c5898b0fc7fe8f2d52c17ddd274b565552a5e37641f904eb17e091f9603d",
+      "group_calls": {
+        "L3_group/run_recipe.group.json": 1,
+        "L3_group/move_production_point.group.json": 145,
+        "L3_group/move_axis_if_changed.group.json": 435,
+        "L3_group/trigger_motor.group.json": 280,
+        "L3_group/poll_sensor_until_ready.group.json": 640,
+        "L3_group/refresh_position.group.json": 145,
+        "L3_group/produce_batch.group.json": 2,
+        "L3_group/produce_one_container.group.json": 12
+      }
+    },
+    {
+      "recipe": "orange_can",
+      "fault": null,
+      "status": "SUCCESS",
+      "trace_equal": true,
+      "events": 5053,
+      "modbus_transactions": 2652,
+      "simulated_ms": 38770,
+      "finished_containers": 12,
+      "filled_total_ml": 3960,
+      "trace_sha256": "0e05567c9b6859cc764ae4006631577dd44a19dcfd5c5ca2c48b3158ea3d01ca",
+      "group_calls": {
+        "L3_group/run_recipe.group.json": 1,
+        "L3_group/move_production_point.group.json": 145,
+        "L3_group/move_axis_if_changed.group.json": 435,
+        "L3_group/trigger_motor.group.json": 280,
+        "L3_group/poll_sensor_until_ready.group.json": 640,
+        "L3_group/refresh_position.group.json": 145,
+        "L3_group/produce_batch.group.json": 2,
+        "L3_group/produce_one_container.group.json": 12
+      }
+    },
+    {
+      "recipe": "orange_small",
+      "fault": null,
+      "status": "SUCCESS",
+      "trace_equal": true,
+      "events": 4673,
+      "modbus_transactions": 2462,
+      "simulated_ms": 34020,
+      "finished_containers": 12,
+      "filled_total_ml": 3000,
+      "trace_sha256": "c5fe5e9d57506b54ac0828989a04ec4dca8733b01f75c0b9c91c58c3d5306a21",
+      "group_calls": {
+        "L3_group/run_recipe.group.json": 1,
+        "L3_group/move_production_point.group.json": 145,
+        "L3_group/move_axis_if_changed.group.json": 435,
+        "L3_group/trigger_motor.group.json": 280,
+        "L3_group/poll_sensor_until_ready.group.json": 640,
+        "L3_group/refresh_position.group.json": 145,
+        "L3_group/produce_batch.group.json": 2,
+        "L3_group/produce_one_container.group.json": 12
+      }
+    },
+    {
+      "recipe": "apple_family",
+      "fault": null,
+      "status": "SUCCESS",
+      "trace_equal": true,
+      "events": 14149,
+      "modbus_transactions": 7200,
+      "simulated_ms": 152470,
+      "finished_containers": 12,
+      "filled_total_ml": 24000,
+      "trace_sha256": "5e914ed9a0e06dcf58ea14cdf7074e069b69c715b83a604d680c00c4a8c28bf1",
+      "group_calls": {
+        "L3_group/run_recipe.group.json": 1,
+        "L3_group/move_production_point.group.json": 145,
+        "L3_group/move_axis_if_changed.group.json": 435,
+        "L3_group/trigger_motor.group.json": 280,
+        "L3_group/poll_sensor_until_ready.group.json": 640,
+        "L3_group/refresh_position.group.json": 145,
+        "L3_group/produce_batch.group.json": 2,
+        "L3_group/produce_one_container.group.json": 12
+      }
+    },
+    {
+      "recipe": "apple_can",
+      "fault": null,
+      "status": "SUCCESS",
+      "trace_equal": true,
+      "events": 5245,
+      "modbus_transactions": 2748,
+      "simulated_ms": 41170,
+      "finished_containers": 12,
+      "filled_total_ml": 3960,
+      "trace_sha256": "7a452029e79966c7ef50b7a2d04f2d8b506e7e48609d65c5a7f14b72f1e2b35d",
+      "group_calls": {
+        "L3_group/run_recipe.group.json": 1,
+        "L3_group/move_production_point.group.json": 145,
+        "L3_group/move_axis_if_changed.group.json": 435,
+        "L3_group/trigger_motor.group.json": 280,
+        "L3_group/poll_sensor_until_ready.group.json": 640,
+        "L3_group/refresh_position.group.json": 145,
+        "L3_group/produce_batch.group.json": 2,
+        "L3_group/produce_one_container.group.json": 12
+      }
+    },
+    {
+      "recipe": "apple_small",
+      "fault": null,
+      "status": "SUCCESS",
+      "trace_equal": true,
+      "events": 4817,
+      "modbus_transactions": 2534,
+      "simulated_ms": 35820,
+      "finished_containers": 12,
+      "filled_total_ml": 3000,
+      "trace_sha256": "448415a38eb746cc184796ef83f468687bda0218751673bf573e5b9f47293b19",
+      "group_calls": {
+        "L3_group/run_recipe.group.json": 1,
+        "L3_group/move_production_point.group.json": 145,
+        "L3_group/move_axis_if_changed.group.json": 435,
+        "L3_group/trigger_motor.group.json": 280,
+        "L3_group/poll_sensor_until_ready.group.json": 640,
+        "L3_group/refresh_position.group.json": 145,
+        "L3_group/produce_batch.group.json": 2,
+        "L3_group/produce_one_container.group.json": 12
+      }
+    },
+    {
+      "recipe": "grape_family",
+      "fault": null,
+      "status": "SUCCESS",
+      "trace_equal": true,
+      "events": 12205,
+      "modbus_transactions": 6228,
+      "simulated_ms": 128170,
+      "finished_containers": 12,
+      "filled_total_ml": 24000,
+      "trace_sha256": "425e909384336ebd5944e912c3876a9dbdc3e7e09f1fc1c782fa3399934835c3",
+      "group_calls": {
+        "L3_group/run_recipe.group.json": 1,
+        "L3_group/move_production_point.group.json": 145,
+        "L3_group/move_axis_if_changed.group.json": 435,
+        "L3_group/trigger_motor.group.json": 280,
+        "L3_group/poll_sensor_until_ready.group.json": 640,
+        "L3_group/refresh_position.group.json": 145,
+        "L3_group/produce_batch.group.json": 2,
+        "L3_group/produce_one_container.group.json": 12
+      }
+    },
+    {
+      "recipe": "grape_can",
+      "fault": null,
+      "status": "SUCCESS",
+      "trace_equal": true,
+      "events": 4909,
+      "modbus_transactions": 2580,
+      "simulated_ms": 36970,
+      "finished_containers": 12,
+      "filled_total_ml": 3960,
+      "trace_sha256": "83252462c91f72367c5b1c2e31f731525911367a004a78ab2275dc5a0017d780",
+      "group_calls": {
+        "L3_group/run_recipe.group.json": 1,
+        "L3_group/move_production_point.group.json": 145,
+        "L3_group/move_axis_if_changed.group.json": 435,
+        "L3_group/trigger_motor.group.json": 280,
+        "L3_group/poll_sensor_until_ready.group.json": 640,
+        "L3_group/refresh_position.group.json": 145,
+        "L3_group/produce_batch.group.json": 2,
+        "L3_group/produce_one_container.group.json": 12
+      }
+    },
+    {
+      "recipe": "grape_small",
+      "fault": null,
+      "status": "SUCCESS",
+      "trace_equal": true,
+      "events": 4577,
+      "modbus_transactions": 2414,
+      "simulated_ms": 32820,
+      "finished_containers": 12,
+      "filled_total_ml": 3000,
+      "trace_sha256": "51d4f3ab149e47613cf2ae5312cebdfce1bf46d36e55d980739d6e83717b907f",
+      "group_calls": {
+        "L3_group/run_recipe.group.json": 1,
+        "L3_group/move_production_point.group.json": 145,
+        "L3_group/move_axis_if_changed.group.json": 435,
+        "L3_group/trigger_motor.group.json": 280,
+        "L3_group/poll_sensor_until_ready.group.json": 640,
+        "L3_group/refresh_position.group.json": 145,
+        "L3_group/produce_batch.group.json": 2,
+        "L3_group/produce_one_container.group.json": 12
+      }
+    }
+  ],
+  "fault_cases": [
+    {
+      "recipe": "orange_family",
+      "fault": "infeed_jam",
+      "status": "EMPTY_FEED_TIMEOUT",
+      "trace_equal": true,
+      "events": 352,
+      "modbus_transactions": 179,
+      "simulated_ms": 4145,
+      "finished_containers": 0,
+      "filled_total_ml": 0,
+      "trace_sha256": "29718dba50f31ebed0e06dadc32786c7972457b43d70952103f32c632f963fad",
+      "group_calls": {
+        "L3_group/run_recipe.group.json": 1,
+        "L3_group/move_production_point.group.json": 1,
+        "L3_group/move_axis_if_changed.group.json": 3,
+        "L3_group/trigger_motor.group.json": 5,
+        "L3_group/poll_sensor_until_ready.group.json": 5,
+        "L3_group/refresh_position.group.json": 1,
+        "L3_group/produce_batch.group.json": 1,
+        "L3_group/produce_one_container.group.json": 1
+      }
+    },
+    {
+      "recipe": "orange_family",
+      "fault": "fill_offline",
+      "status": "COMM_OFFLINE",
+      "trace_equal": true,
+      "events": 148,
+      "modbus_transactions": 81,
+      "simulated_ms": 780,
+      "finished_containers": 0,
+      "filled_total_ml": 0,
+      "trace_sha256": "2dd8bb88e92bb5c029ad5ac5dbf0a3adfb7f789be27658fa23f2f2b4ef7790b2",
+      "group_calls": {
+        "L3_group/run_recipe.group.json": 1,
+        "L3_group/move_production_point.group.json": 6,
+        "L3_group/move_axis_if_changed.group.json": 18,
+        "L3_group/trigger_motor.group.json": 14,
+        "L3_group/poll_sensor_until_ready.group.json": 26,
+        "L3_group/refresh_position.group.json": 6,
+        "L3_group/produce_batch.group.json": 1,
+        "L3_group/produce_one_container.group.json": 1
+      }
+    },
+    {
+      "recipe": "orange_family",
+      "fault": "closure_jam",
+      "status": "CLOSURE_TIMEOUT",
+      "trace_equal": true,
+      "events": 1420,
+      "modbus_transactions": 720,
+      "simulated_ms": 16160,
+      "finished_containers": 0,
+      "filled_total_ml": 0,
+      "trace_sha256": "96ab96f027be3cf8e16d7f80c0248c92f953b5f237144f680760639911a1778b",
+      "group_calls": {
+        "L3_group/run_recipe.group.json": 1,
+        "L3_group/move_production_point.group.json": 9,
+        "L3_group/move_axis_if_changed.group.json": 27,
+        "L3_group/trigger_motor.group.json": 20,
+        "L3_group/poll_sensor_until_ready.group.json": 40,
+        "L3_group/refresh_position.group.json": 9,
+        "L3_group/produce_batch.group.json": 1,
+        "L3_group/produce_one_container.group.json": 1
+      }
+    }
+  ]
+}

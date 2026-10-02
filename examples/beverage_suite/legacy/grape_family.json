@@ -1,0 +1,2692 @@
+{
+    "schema": "synthetic_monolithic_v1",
+    "name": "grape_family",
+    "recipe": {
+        "id": "grape_family",
+        "flavor": "grape",
+        "format": "family",
+        "volume_ml": 2000,
+        "fill_device": "GrapeFill",
+        "fill_rate_ml_s": 220,
+        "closure_mode": "screw_large",
+        "closure_pr": 1,
+        "infeed_pr": 1,
+        "outfeed_pr": 4,
+        "home_point": 0,
+        "batches": 2,
+        "units_per_batch": 6,
+        "empty_entry": 1,
+        "empty_work": 2,
+        "fill_entry": 31,
+        "fill_work": 32,
+        "closure_entry": 5,
+        "closure_work": 6,
+        "finished_entry": 7,
+        "finished_work": 8
+    },
+    "actions": [
+        {
+            "type": "setVariable",
+            "key": "last_x_pr",
+            "value": -1
+        },
+        {
+            "type": "setVariable",
+            "key": "last_y_pr",
+            "value": -1
+        },
+        {
+            "type": "setVariable",
+            "key": "last_z_pr",
+            "value": -1
+        },
+        {
+            "type": "setVariable",
+            "key": "completed",
+            "value": 0
+        },
+        {
+            "name": "Write OrangeFill register 0000",
+            "type": "autorequestresponse",
+            "protocol": "modbus",
+            "device": "OrangeFill",
+            "request": "05 00 00 00 00",
+            "response": "05 00 00 00 00"
+        },
+        {
+            "name": "Write AppleFill register 0000",
+            "type": "autorequestresponse",
+            "protocol": "modbus",
+            "device": "AppleFill",
+            "request": "05 00 00 00 00",
+            "response": "05 00 00 00 00"
+        },
+        {
+            "name": "Write GrapeFill register 0000",
+            "type": "autorequestresponse",
+            "protocol": "modbus",
+            "device": "GrapeFill",
+            "request": "05 00 00 00 00",
+            "response": "05 00 00 00 00"
+        },
+        {
+            "name": "Write Gripper register 0000",
+            "type": "autorequestresponse",
+            "protocol": "modbus",
+            "device": "Gripper",
+            "request": "05 00 00 00 00",
+            "response": "05 00 00 00 00"
+        },
+        {
+            "name": "Write CapFeeder register 0000",
+            "type": "autorequestresponse",
+            "protocol": "modbus",
+            "device": "CapFeeder",
+            "request": "05 00 00 00 00",
+            "response": "05 00 00 00 00"
+        },
+        {
+            "type": "ifVariableDiffers",
+            "variable": "last_x_pr",
+            "value": 0,
+            "actions": [
+                {
+                    "name": "Write X register 6002",
+                    "type": "autorequestresponse",
+                    "protocol": "modbus",
+                    "device": "X",
+                    "request": "06 60 02 00 10",
+                    "response": "06 60 02 00 10"
+                },
+                {
+                    "type": "setVariable",
+                    "key": "last_x_pr",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "type": "ifVariableDiffers",
+            "variable": "last_y_pr",
+            "value": 0,
+            "actions": [
+                {
+                    "name": "Write Y1 register 6002",
+                    "type": "autorequestresponse",
+                    "protocol": "modbus",
+                    "device": "Y1",
+                    "request": "06 60 02 00 10",
+                    "response": "06 60 02 00 10"
+                },
+                {
+                    "name": "Write Y2 register 6002",
+                    "type": "autorequestresponse",
+                    "protocol": "modbus",
+                    "device": "Y2",
+                    "request": "06 60 02 00 10",
+                    "response": "06 60 02 00 10"
+                },
+                {
+                    "type": "setVariable",
+                    "key": "last_y_pr",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "type": "ifVariableDiffers",
+            "variable": "last_z_pr",
+            "value": 1,
+            "actions": [
+                {
+                    "name": "Write Z register 6002",
+                    "type": "autorequestresponse",
+                    "protocol": "modbus",
+                    "device": "Z",
+                    "request": "06 60 02 00 11",
+                    "response": "06 60 02 00 11"
+                },
+                {
+                    "type": "setVariable",
+                    "key": "last_z_pr",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "Wait for X",
+            "type": "loopUntilResponse",
+            "protocol": "modbus",
+            "device": "X",
+            "request": "04 00 00 00 01",
+            "expectedResponse": "04 02 00 01",
+            "intervalMs": 20,
+            "timeoutMs": 4000,
+            "maxIterations": 202,
+            "errorCode": "MOTION_TIMEOUT",
+            "timeoutMsg": "motion timeout"
+        },
+        {
+            "name": "Wait for Y1",
+            "type": "loopUntilResponse",
+            "protocol": "modbus",
+            "device": "Y1",
+            "request": "04 00 00 00 01",
+            "expectedResponse": "04 02 00 01",
+            "intervalMs": 20,
+            "timeoutMs": 4000,
+            "maxIterations": 202,
+            "errorCode": "MOTION_TIMEOUT",
+            "timeoutMsg": "motion timeout"
+        },
+        {
+            "name": "Wait for Y2",
+            "type": "loopUntilResponse",
+            "protocol": "modbus",
+            "device": "Y2",
+            "request": "04 00 00 00 01",
+            "expectedResponse": "04 02 00 01",
+            "intervalMs": 20,
+            "timeoutMs": 4000,
+            "maxIterations": 202,
+            "errorCode": "MOTION_TIMEOUT",
+            "timeoutMsg": "motion timeout"
+        },
+        {
+            "name": "Wait for Z",
+            "type": "loopUntilResponse",
+            "protocol": "modbus",
+            "device": "Z",
+            "request": "04 00 00 00 01",
+            "expectedResponse": "04 02 00 01",
+            "intervalMs": 20,
+            "timeoutMs": 4000,
+            "maxIterations": 202,
+            "errorCode": "MOTION_TIMEOUT",
+            "timeoutMsg": "motion timeout"
+        },
+        {
+            "name": "Read X X_position",
+            "type": "readAndCache",
+            "protocol": "modbus",
+            "device": "X",
+            "request": "03 60 2C 00 02",
+            "cacheKey": "X_position",
+            "cacheStartByte": 2,
+            "cacheLength": 4,
+            "cacheEndian": "big",
+            "valueType": "int"
+        },
+        {
+            "name": "Read Y1 Y1_position",
+            "type": "readAndCache",
+            "protocol": "modbus",
+            "device": "Y1",
+            "request": "03 60 2C 00 02",
+            "cacheKey": "Y1_position",
+            "cacheStartByte": 2,
+            "cacheLength": 4,
+            "cacheEndian": "big",
+            "valueType": "int"
+        },
+        {
+            "name": "Read Y2 Y2_position",
+            "type": "readAndCache",
+            "protocol": "modbus",
+            "device": "Y2",
+            "request": "03 60 2C 00 02",
+            "cacheKey": "Y2_position",
+            "cacheStartByte": 2,
+            "cacheLength": 4,
+            "cacheEndian": "big",
+            "valueType": "int"
+        },
+        {
+            "name": "Read Z Z_position",
+            "type": "readAndCache",
+            "protocol": "modbus",
+            "device": "Z",
+            "request": "03 60 2C 00 02",
+            "cacheKey": "Z_position",
+            "cacheStartByte": 2,
+            "cacheLength": 4,
+            "cacheEndian": "big",
+            "valueType": "int"
+        },
+        {
+            "type": "updateUI",
+            "uiTarget": "centerX",
+            "uiValue": "${X_position}"
+        },
+        {
+            "type": "updateUI",
+            "uiTarget": "centerY",
+            "uiValue": "${Y1_position}"
+        },
+        {
+            "type": "updateUI",
+            "uiTarget": "centerZ",
+            "uiValue": "${Z_position}"
+        },
+        {
+            "type": "repeat",
+            "count": 2,
+            "actions": [
+                {
+                    "type": "repeat",
+                    "count": 6,
+                    "actions": [
+                        {
+                            "name": "Write Infeed register 6002",
+                            "type": "autorequestresponse",
+                            "protocol": "modbus",
+                            "device": "Infeed",
+                            "request": "06 60 02 00 11",
+                            "response": "06 60 02 00 11"
+                        },
+                        {
+                            "name": "Wait for Infeed",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Infeed",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "EMPTY_FEED_TIMEOUT",
+                            "timeoutMsg": "empty feed timeout"
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_x_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write X register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "X",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_x_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_y_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write Y1 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y1",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "name": "Write Y2 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y2",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_y_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_z_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write Z register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Z",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_z_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Wait for X",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y1",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y2",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Z",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Read X X_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "X_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y1 Y1_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y1_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y2 Y2_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y2_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Z Z_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Z_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerX",
+                            "uiValue": "${X_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerY",
+                            "uiValue": "${Y1_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerZ",
+                            "uiValue": "${Z_position}"
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_x_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write X register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "X",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_x_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_y_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write Y1 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y1",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "name": "Write Y2 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y2",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_y_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_z_pr",
+                            "value": 2,
+                            "actions": [
+                                {
+                                    "name": "Write Z register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Z",
+                                    "request": "06 60 02 00 12",
+                                    "response": "06 60 02 00 12"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_z_pr",
+                                    "value": 2
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Wait for X",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y1",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y2",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Z",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Read X X_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "X_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y1 Y1_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y1_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y2 Y2_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y2_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Z Z_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Z_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerX",
+                            "uiValue": "${X_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerY",
+                            "uiValue": "${Y1_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerZ",
+                            "uiValue": "${Z_position}"
+                        },
+                        {
+                            "name": "Write Gripper register 0000",
+                            "type": "autorequestresponse",
+                            "protocol": "modbus",
+                            "device": "Gripper",
+                            "request": "05 00 00 FF 00",
+                            "response": "05 00 00 FF 00"
+                        },
+                        {
+                            "name": "Wait for ContainerSensor",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "ContainerSensor",
+                            "request": "04 00 01 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 2000,
+                            "maxIterations": 102,
+                            "errorCode": "NO_CONTAINER",
+                            "timeoutMsg": "no container"
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_x_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write X register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "X",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_x_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_y_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write Y1 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y1",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "name": "Write Y2 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y2",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_y_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_z_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write Z register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Z",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_z_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Wait for X",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y1",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y2",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Z",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Read X X_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "X_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y1 Y1_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y1_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y2 Y2_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y2_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Z Z_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Z_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerX",
+                            "uiValue": "${X_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerY",
+                            "uiValue": "${Y1_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerZ",
+                            "uiValue": "${Z_position}"
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_x_pr",
+                            "value": 6,
+                            "actions": [
+                                {
+                                    "name": "Write X register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "X",
+                                    "request": "06 60 02 00 16",
+                                    "response": "06 60 02 00 16"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_x_pr",
+                                    "value": 6
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_y_pr",
+                            "value": 10,
+                            "actions": [
+                                {
+                                    "name": "Write Y1 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y1",
+                                    "request": "06 60 02 00 1A",
+                                    "response": "06 60 02 00 1A"
+                                },
+                                {
+                                    "name": "Write Y2 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y2",
+                                    "request": "06 60 02 00 1A",
+                                    "response": "06 60 02 00 1A"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_y_pr",
+                                    "value": 10
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_z_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write Z register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Z",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_z_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Wait for X",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y1",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y2",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Z",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Read X X_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "X_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y1 Y1_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y1_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y2 Y2_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y2_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Z Z_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Z_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerX",
+                            "uiValue": "${X_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerY",
+                            "uiValue": "${Y1_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerZ",
+                            "uiValue": "${Z_position}"
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_x_pr",
+                            "value": 6,
+                            "actions": [
+                                {
+                                    "name": "Write X register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "X",
+                                    "request": "06 60 02 00 16",
+                                    "response": "06 60 02 00 16"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_x_pr",
+                                    "value": 6
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_y_pr",
+                            "value": 10,
+                            "actions": [
+                                {
+                                    "name": "Write Y1 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y1",
+                                    "request": "06 60 02 00 1A",
+                                    "response": "06 60 02 00 1A"
+                                },
+                                {
+                                    "name": "Write Y2 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y2",
+                                    "request": "06 60 02 00 1A",
+                                    "response": "06 60 02 00 1A"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_y_pr",
+                                    "value": 10
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_z_pr",
+                            "value": 2,
+                            "actions": [
+                                {
+                                    "name": "Write Z register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Z",
+                                    "request": "06 60 02 00 12",
+                                    "response": "06 60 02 00 12"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_z_pr",
+                                    "value": 2
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Wait for X",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y1",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y2",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Z",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Read X X_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "X_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y1 Y1_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y1_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y2 Y2_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y2_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Z Z_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Z_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerX",
+                            "uiValue": "${X_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerY",
+                            "uiValue": "${Y1_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerZ",
+                            "uiValue": "${Z_position}"
+                        },
+                        {
+                            "name": "Write GrapeFill register 0010",
+                            "type": "autorequestresponse",
+                            "protocol": "modbus",
+                            "device": "GrapeFill",
+                            "request": "06 00 10 07 D0",
+                            "response": "06 00 10 07 D0"
+                        },
+                        {
+                            "name": "Write GrapeFill register 0000",
+                            "type": "autorequestresponse",
+                            "protocol": "modbus",
+                            "device": "GrapeFill",
+                            "request": "05 00 00 FF 00",
+                            "response": "05 00 00 FF 00"
+                        },
+                        {
+                            "name": "Wait for GrapeFill",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "GrapeFill",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 20000,
+                            "maxIterations": 1002,
+                            "errorCode": "FILL_TIMEOUT",
+                            "timeoutMsg": "fill timeout"
+                        },
+                        {
+                            "name": "Read GrapeFill dispensed_ml",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "GrapeFill",
+                            "request": "03 00 12 00 01",
+                            "cacheKey": "dispensed_ml",
+                            "cacheStartByte": 2,
+                            "cacheLength": 2,
+                            "cacheEndian": "big",
+                            "valueType": "uint16"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "dispensedMl",
+                            "uiValue": "${dispensed_ml}"
+                        },
+                        {
+                            "name": "Write GrapeFill register 0000",
+                            "type": "autorequestresponse",
+                            "protocol": "modbus",
+                            "device": "GrapeFill",
+                            "request": "05 00 00 00 00",
+                            "response": "05 00 00 00 00"
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_x_pr",
+                            "value": 6,
+                            "actions": [
+                                {
+                                    "name": "Write X register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "X",
+                                    "request": "06 60 02 00 16",
+                                    "response": "06 60 02 00 16"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_x_pr",
+                                    "value": 6
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_y_pr",
+                            "value": 10,
+                            "actions": [
+                                {
+                                    "name": "Write Y1 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y1",
+                                    "request": "06 60 02 00 1A",
+                                    "response": "06 60 02 00 1A"
+                                },
+                                {
+                                    "name": "Write Y2 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y2",
+                                    "request": "06 60 02 00 1A",
+                                    "response": "06 60 02 00 1A"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_y_pr",
+                                    "value": 10
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_z_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write Z register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Z",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_z_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Wait for X",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y1",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y2",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Z",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Read X X_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "X_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y1 Y1_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y1_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y2 Y2_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y2_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Z Z_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Z_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerX",
+                            "uiValue": "${X_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerY",
+                            "uiValue": "${Y1_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerZ",
+                            "uiValue": "${Z_position}"
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_x_pr",
+                            "value": 7,
+                            "actions": [
+                                {
+                                    "name": "Write X register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "X",
+                                    "request": "06 60 02 00 17",
+                                    "response": "06 60 02 00 17"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_x_pr",
+                                    "value": 7
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_y_pr",
+                            "value": 4,
+                            "actions": [
+                                {
+                                    "name": "Write Y1 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y1",
+                                    "request": "06 60 02 00 14",
+                                    "response": "06 60 02 00 14"
+                                },
+                                {
+                                    "name": "Write Y2 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y2",
+                                    "request": "06 60 02 00 14",
+                                    "response": "06 60 02 00 14"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_y_pr",
+                                    "value": 4
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_z_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write Z register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Z",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_z_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Wait for X",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y1",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y2",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Z",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Read X X_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "X_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y1 Y1_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y1_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y2 Y2_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y2_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Z Z_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Z_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerX",
+                            "uiValue": "${X_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerY",
+                            "uiValue": "${Y1_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerZ",
+                            "uiValue": "${Z_position}"
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_x_pr",
+                            "value": 7,
+                            "actions": [
+                                {
+                                    "name": "Write X register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "X",
+                                    "request": "06 60 02 00 17",
+                                    "response": "06 60 02 00 17"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_x_pr",
+                                    "value": 7
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_y_pr",
+                            "value": 4,
+                            "actions": [
+                                {
+                                    "name": "Write Y1 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y1",
+                                    "request": "06 60 02 00 14",
+                                    "response": "06 60 02 00 14"
+                                },
+                                {
+                                    "name": "Write Y2 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y2",
+                                    "request": "06 60 02 00 14",
+                                    "response": "06 60 02 00 14"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_y_pr",
+                                    "value": 4
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_z_pr",
+                            "value": 2,
+                            "actions": [
+                                {
+                                    "name": "Write Z register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Z",
+                                    "request": "06 60 02 00 12",
+                                    "response": "06 60 02 00 12"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_z_pr",
+                                    "value": 2
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Wait for X",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y1",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y2",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Z",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Read X X_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "X_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y1 Y1_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y1_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y2 Y2_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y2_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Z Z_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Z_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerX",
+                            "uiValue": "${X_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerY",
+                            "uiValue": "${Y1_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerZ",
+                            "uiValue": "${Z_position}"
+                        },
+                        {
+                            "name": "Write CapFeeder register 0000",
+                            "type": "autorequestresponse",
+                            "protocol": "modbus",
+                            "device": "CapFeeder",
+                            "request": "05 00 00 FF 00",
+                            "response": "05 00 00 FF 00"
+                        },
+                        {
+                            "name": "Write Closure register 6002",
+                            "type": "autorequestresponse",
+                            "protocol": "modbus",
+                            "device": "Closure",
+                            "request": "06 60 02 00 11",
+                            "response": "06 60 02 00 11"
+                        },
+                        {
+                            "name": "Wait for Closure",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Closure",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 5000,
+                            "maxIterations": 252,
+                            "errorCode": "CLOSURE_TIMEOUT",
+                            "timeoutMsg": "closure timeout"
+                        },
+                        {
+                            "name": "Write CapFeeder register 0000",
+                            "type": "autorequestresponse",
+                            "protocol": "modbus",
+                            "device": "CapFeeder",
+                            "request": "05 00 00 00 00",
+                            "response": "05 00 00 00 00"
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_x_pr",
+                            "value": 7,
+                            "actions": [
+                                {
+                                    "name": "Write X register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "X",
+                                    "request": "06 60 02 00 17",
+                                    "response": "06 60 02 00 17"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_x_pr",
+                                    "value": 7
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_y_pr",
+                            "value": 4,
+                            "actions": [
+                                {
+                                    "name": "Write Y1 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y1",
+                                    "request": "06 60 02 00 14",
+                                    "response": "06 60 02 00 14"
+                                },
+                                {
+                                    "name": "Write Y2 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y2",
+                                    "request": "06 60 02 00 14",
+                                    "response": "06 60 02 00 14"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_y_pr",
+                                    "value": 4
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_z_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write Z register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Z",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_z_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Wait for X",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y1",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y2",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Z",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Read X X_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "X_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y1 Y1_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y1_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y2 Y2_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y2_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Z Z_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Z_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerX",
+                            "uiValue": "${X_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerY",
+                            "uiValue": "${Y1_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerZ",
+                            "uiValue": "${Z_position}"
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_x_pr",
+                            "value": 10,
+                            "actions": [
+                                {
+                                    "name": "Write X register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "X",
+                                    "request": "06 60 02 00 1A",
+                                    "response": "06 60 02 00 1A"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_x_pr",
+                                    "value": 10
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_y_pr",
+                            "value": 7,
+                            "actions": [
+                                {
+                                    "name": "Write Y1 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y1",
+                                    "request": "06 60 02 00 17",
+                                    "response": "06 60 02 00 17"
+                                },
+                                {
+                                    "name": "Write Y2 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y2",
+                                    "request": "06 60 02 00 17",
+                                    "response": "06 60 02 00 17"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_y_pr",
+                                    "value": 7
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_z_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write Z register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Z",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_z_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Wait for X",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y1",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y2",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Z",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Read X X_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "X_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y1 Y1_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y1_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y2 Y2_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y2_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Z Z_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Z_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerX",
+                            "uiValue": "${X_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerY",
+                            "uiValue": "${Y1_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerZ",
+                            "uiValue": "${Z_position}"
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_x_pr",
+                            "value": 10,
+                            "actions": [
+                                {
+                                    "name": "Write X register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "X",
+                                    "request": "06 60 02 00 1A",
+                                    "response": "06 60 02 00 1A"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_x_pr",
+                                    "value": 10
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_y_pr",
+                            "value": 7,
+                            "actions": [
+                                {
+                                    "name": "Write Y1 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y1",
+                                    "request": "06 60 02 00 17",
+                                    "response": "06 60 02 00 17"
+                                },
+                                {
+                                    "name": "Write Y2 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y2",
+                                    "request": "06 60 02 00 17",
+                                    "response": "06 60 02 00 17"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_y_pr",
+                                    "value": 7
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_z_pr",
+                            "value": 2,
+                            "actions": [
+                                {
+                                    "name": "Write Z register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Z",
+                                    "request": "06 60 02 00 12",
+                                    "response": "06 60 02 00 12"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_z_pr",
+                                    "value": 2
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Wait for X",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y1",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y2",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Z",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Read X X_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "X_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y1 Y1_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y1_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y2 Y2_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y2_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Z Z_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Z_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerX",
+                            "uiValue": "${X_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerY",
+                            "uiValue": "${Y1_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerZ",
+                            "uiValue": "${Z_position}"
+                        },
+                        {
+                            "name": "Write Gripper register 0000",
+                            "type": "autorequestresponse",
+                            "protocol": "modbus",
+                            "device": "Gripper",
+                            "request": "05 00 00 00 00",
+                            "response": "05 00 00 00 00"
+                        },
+                        {
+                            "name": "Write Outfeed register 6002",
+                            "type": "autorequestresponse",
+                            "protocol": "modbus",
+                            "device": "Outfeed",
+                            "request": "06 60 02 00 14",
+                            "response": "06 60 02 00 14"
+                        },
+                        {
+                            "name": "Wait for Outfeed",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Outfeed",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "OUTFEED_TIMEOUT",
+                            "timeoutMsg": "outfeed timeout"
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_x_pr",
+                            "value": 10,
+                            "actions": [
+                                {
+                                    "name": "Write X register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "X",
+                                    "request": "06 60 02 00 1A",
+                                    "response": "06 60 02 00 1A"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_x_pr",
+                                    "value": 10
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_y_pr",
+                            "value": 7,
+                            "actions": [
+                                {
+                                    "name": "Write Y1 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y1",
+                                    "request": "06 60 02 00 17",
+                                    "response": "06 60 02 00 17"
+                                },
+                                {
+                                    "name": "Write Y2 register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Y2",
+                                    "request": "06 60 02 00 17",
+                                    "response": "06 60 02 00 17"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_y_pr",
+                                    "value": 7
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ifVariableDiffers",
+                            "variable": "last_z_pr",
+                            "value": 1,
+                            "actions": [
+                                {
+                                    "name": "Write Z register 6002",
+                                    "type": "autorequestresponse",
+                                    "protocol": "modbus",
+                                    "device": "Z",
+                                    "request": "06 60 02 00 11",
+                                    "response": "06 60 02 00 11"
+                                },
+                                {
+                                    "type": "setVariable",
+                                    "key": "last_z_pr",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Wait for X",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y1",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Y2",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Wait for Z",
+                            "type": "loopUntilResponse",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "04 00 00 00 01",
+                            "expectedResponse": "04 02 00 01",
+                            "intervalMs": 20,
+                            "timeoutMs": 4000,
+                            "maxIterations": 202,
+                            "errorCode": "MOTION_TIMEOUT",
+                            "timeoutMsg": "motion timeout"
+                        },
+                        {
+                            "name": "Read X X_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "X",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "X_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y1 Y1_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y1",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y1_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Y2 Y2_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Y2",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Y2_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "name": "Read Z Z_position",
+                            "type": "readAndCache",
+                            "protocol": "modbus",
+                            "device": "Z",
+                            "request": "03 60 2C 00 02",
+                            "cacheKey": "Z_position",
+                            "cacheStartByte": 2,
+                            "cacheLength": 4,
+                            "cacheEndian": "big",
+                            "valueType": "int"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerX",
+                            "uiValue": "${X_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerY",
+                            "uiValue": "${Y1_position}"
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "centerZ",
+                            "uiValue": "${Z_position}"
+                        },
+                        {
+                            "type": "incrementVariable",
+                            "key": "completed",
+                            "amount": 1
+                        },
+                        {
+                            "type": "updateUI",
+                            "uiTarget": "completed",
+                            "uiValue": "${completed}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Write OrangeFill register 0000",
+            "type": "autorequestresponse",
+            "protocol": "modbus",
+            "device": "OrangeFill",
+            "request": "05 00 00 00 00",
+            "response": "05 00 00 00 00"
+        },
+        {
+            "name": "Write AppleFill register 0000",
+            "type": "autorequestresponse",
+            "protocol": "modbus",
+            "device": "AppleFill",
+            "request": "05 00 00 00 00",
+            "response": "05 00 00 00 00"
+        },
+        {
+            "name": "Write GrapeFill register 0000",
+            "type": "autorequestresponse",
+            "protocol": "modbus",
+            "device": "GrapeFill",
+            "request": "05 00 00 00 00",
+            "response": "05 00 00 00 00"
+        },
+        {
+            "name": "Write Gripper register 0000",
+            "type": "autorequestresponse",
+            "protocol": "modbus",
+            "device": "Gripper",
+            "request": "05 00 00 00 00",
+            "response": "05 00 00 00 00"
+        },
+        {
+            "name": "Write CapFeeder register 0000",
+            "type": "autorequestresponse",
+            "protocol": "modbus",
+            "device": "CapFeeder",
+            "request": "05 00 00 00 00",
+            "response": "05 00 00 00 00"
+        }
+    ]
+}

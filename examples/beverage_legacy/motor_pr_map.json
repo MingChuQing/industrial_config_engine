@@ -1,0 +1,369 @@
+{
+    "status": "example allocation authorized by user; not a discovered live-device map",
+    "manual": "https://www.leisaishop.com/uploadfiles/2311141001_67219.pdf",
+    "pr_base": "0x6200 + 8 * point",
+    "pr_trigger": "write 0x0010 + point to 0x6002",
+    "position_read": "03 60 2C 00 02, signed 32-bit big endian",
+    "device_addresses": {
+        "X": 1,
+        "Y1": 2,
+        "Y2": 3,
+        "Z": 4
+    },
+    "y_pair": "Same target and positive direction; consecutive bus triggers, not hardware-synchronized motion.",
+    "ui_y_source": "Y1 -> Y_position -> centerY; Y2 -> Y2_position (cached separately)",
+    "setup_precondition": "PR points, homing mode and device readiness are configured during one-time commissioning; production only calls the stored points.",
+    "completion": "Original fixed 2s/3s waits retained; not claimed to prove arrival.",
+    "points": {
+        "X": [
+            {
+                "point": 0,
+                "operation": "homing",
+                "position": 0,
+                "speed": 300
+            },
+            {
+                "point": 1,
+                "operation": "absolute",
+                "position": 50000,
+                "speed": 600
+            },
+            {
+                "point": 2,
+                "operation": "absolute",
+                "position": 120000,
+                "speed": 600
+            },
+            {
+                "point": 3,
+                "operation": "absolute",
+                "position": 132000,
+                "speed": 600
+            },
+            {
+                "point": 4,
+                "operation": "absolute",
+                "position": 144000,
+                "speed": 600
+            },
+            {
+                "point": 5,
+                "operation": "absolute",
+                "position": 156000,
+                "speed": 600
+            },
+            {
+                "point": 6,
+                "operation": "absolute",
+                "position": 170000,
+                "speed": 600
+            },
+            {
+                "point": 7,
+                "operation": "absolute",
+                "position": 220000,
+                "speed": 600
+            }
+        ],
+        "Y1": [
+            {
+                "point": 0,
+                "operation": "homing",
+                "position": 0,
+                "speed": 300
+            },
+            {
+                "point": 1,
+                "operation": "absolute",
+                "position": 60000,
+                "speed": 600
+            }
+        ],
+        "Y2": [
+            {
+                "point": 0,
+                "operation": "homing",
+                "position": 0,
+                "speed": 300
+            },
+            {
+                "point": 1,
+                "operation": "absolute",
+                "position": 60000,
+                "speed": 600
+            }
+        ],
+        "Z": [
+            {
+                "point": 0,
+                "operation": "homing",
+                "position": 0,
+                "speed": 300
+            },
+            {
+                "point": 1,
+                "operation": "absolute",
+                "position": 0,
+                "speed": 400
+            },
+            {
+                "point": 2,
+                "operation": "absolute",
+                "position": 80000,
+                "speed": 400
+            },
+            {
+                "point": 3,
+                "operation": "absolute",
+                "position": 150000,
+                "speed": 400
+            }
+        ]
+    },
+    "moves": [
+        {
+            "name": "Xaxis homing(absolute position0)",
+            "axis": "X",
+            "motors": [
+                "X"
+            ],
+            "point": 0,
+            "position": 0,
+            "wait_seconds": 3
+        },
+        {
+            "name": "Yaxis homing(absolute position0)",
+            "axis": "Y",
+            "motors": [
+                "Y1",
+                "Y2"
+            ],
+            "point": 0,
+            "position": 0,
+            "wait_seconds": 3
+        },
+        {
+            "name": "Zaxis homing(absolute position0)",
+            "axis": "Z",
+            "motors": [
+                "Z"
+            ],
+            "point": 0,
+            "position": 0,
+            "wait_seconds": 3
+        },
+        {
+            "name": "Xaxis absolute move to feed position(50000)",
+            "axis": "X",
+            "motors": [
+                "X"
+            ],
+            "point": 1,
+            "position": 50000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Zaxis absolute move to pick station(80000)",
+            "axis": "Z",
+            "motors": [
+                "Z"
+            ],
+            "point": 2,
+            "position": 80000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Zaxis absolute movehoming(0)",
+            "axis": "Z",
+            "motors": [
+                "Z"
+            ],
+            "point": 1,
+            "position": 0,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Yaxis absolute move to conveyor position(60000)",
+            "axis": "Y",
+            "motors": [
+                "Y1",
+                "Y2"
+            ],
+            "point": 1,
+            "position": 60000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Xaxis absolute move to Filling station 1(120000)",
+            "axis": "X",
+            "motors": [
+                "X"
+            ],
+            "point": 2,
+            "position": 120000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Yaxis absolute move to Filling traverse(60000)",
+            "axis": "Y",
+            "motors": [
+                "Y1",
+                "Y2"
+            ],
+            "point": 1,
+            "position": 60000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Zaxis absolute move to Filling station 1(150000)",
+            "axis": "Z",
+            "motors": [
+                "Z"
+            ],
+            "point": 3,
+            "position": 150000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Xaxis absolute move to Filling station 2(132000)",
+            "axis": "X",
+            "motors": [
+                "X"
+            ],
+            "point": 3,
+            "position": 132000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Xaxis absolute move to Filling station 3(144000)",
+            "axis": "X",
+            "motors": [
+                "X"
+            ],
+            "point": 4,
+            "position": 144000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Xaxis absolute move to Filling station 4(156000)",
+            "axis": "X",
+            "motors": [
+                "X"
+            ],
+            "point": 5,
+            "position": 156000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Zaxis absolute move lift(0)",
+            "axis": "Z",
+            "motors": [
+                "Z"
+            ],
+            "point": 1,
+            "position": 0,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Xaxis absolute move back to station 1(120000)",
+            "axis": "X",
+            "motors": [
+                "X"
+            ],
+            "point": 2,
+            "position": 120000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Xaxis absolute move to Cappingstation(170000)",
+            "axis": "X",
+            "motors": [
+                "X"
+            ],
+            "point": 6,
+            "position": 170000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Zaxis absolute move to Cappingstation(150000)",
+            "axis": "Z",
+            "motors": [
+                "Z"
+            ],
+            "point": 3,
+            "position": 150000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Zaxis absolute move lift(0)",
+            "axis": "Z",
+            "motors": [
+                "Z"
+            ],
+            "point": 1,
+            "position": 0,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Xaxis absolute move to codingstation(220000)",
+            "axis": "X",
+            "motors": [
+                "X"
+            ],
+            "point": 7,
+            "position": 220000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Zaxis absolute move to codingstation(150000)",
+            "axis": "Z",
+            "motors": [
+                "Z"
+            ],
+            "point": 3,
+            "position": 150000,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Zaxis absolute move lift(0)",
+            "axis": "Z",
+            "motors": [
+                "Z"
+            ],
+            "point": 1,
+            "position": 0,
+            "wait_seconds": 2
+        },
+        {
+            "name": "Xaxis homing(absolute position0)",
+            "axis": "X",
+            "motors": [
+                "X"
+            ],
+            "point": 0,
+            "position": 0,
+            "wait_seconds": 3
+        },
+        {
+            "name": "Yaxis homing(absolute position0)",
+            "axis": "Y",
+            "motors": [
+                "Y1",
+                "Y2"
+            ],
+            "point": 0,
+            "position": 0,
+            "wait_seconds": 3
+        },
+        {
+            "name": "Zaxis homing(absolute position0)",
+            "axis": "Z",
+            "motors": [
+                "Z"
+            ],
+            "point": 0,
+            "position": 0,
+            "wait_seconds": 3
+        }
+    ]
+}

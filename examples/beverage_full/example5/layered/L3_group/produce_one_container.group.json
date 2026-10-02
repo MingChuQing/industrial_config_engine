@@ -1,0 +1,52 @@
+{
+    "type": "group",
+    "name": "produce one container",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/step_02_empty_bottle_feeding.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "template": "L3_group/step_03_bottle_position_detection.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "template": "L3_group/step_04_in_bottle_rinsing.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "template": "L3_group/step_05_filling_positioning.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "template": "L3_group/step_06_filling.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "template": "L3_group/step_07_level_recheck.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "template": "L3_group/step_08_capping.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "template": "L3_group/step_09_coding_labeling.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "template": "L3_group/step_10_finished_product_discharge.group.json",
+            "params": []
+        }
+    ]
+}

@@ -2,234 +2,77 @@
     "type": "flow",
     "name": "Beverage Filling main flow",
     "mode": "sequence",
-    "timeout_ms": 36000000,
     "body": [
         {
             "type": "group",
-            "name": "Step 1 System initialization",
-            "template": "L3_group/axis_home_seq.group.json",
+            "name": "Step 1: System initialization",
+            "template": "L3_group/step_01_system_initialization.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "Step 1 alarm self-check",
-            "template": "L3_group/alarm_check_seq.group.json",
+            "name": "Step 2: Empty bottle feeding",
+            "template": "L3_group/step_02_empty_bottle_feeding.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "Step 1 valve reset",
-            "template": "L3_group/valve_reset_seq.group.json",
+            "name": "Step 3: Bottle position detection",
+            "template": "L3_group/step_03_bottle_position_detection.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "Step 1 Cylinder reset",
-            "template": "L3_group/cylinder_reset_seq.group.json",
+            "name": "Step 4: In-bottle rinsing",
+            "template": "L3_group/step_04_in_bottle_rinsing.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "Step 2 conveyor start",
-            "template": "L3_group/conveyor_run_seq.group.json",
-            "params": [
-                300
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 2 push bottle check",
-            "template": "L3_group/bottle_feed.group.json",
-            "params": [
-                8,
-                52
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 2 conveyor stop",
-            "template": "L3_group/conveyor_stop_seq.group.json",
+            "name": "Step 5: Filling positioning",
+            "template": "L3_group/step_05_filling_positioning.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "Step 3 Station 1 detect",
-            "template": "L3_group/pos_detect.group.json",
-            "params": [
-                52
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 3 Station 2 detect",
-            "template": "L3_group/pos_detect.group.json",
-            "params": [
-                53
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 3 Station 3 detect",
-            "template": "L3_group/pos_detect.group.json",
-            "params": [
-                54
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 3 Station 4 detect",
-            "template": "L3_group/pos_detect.group.json",
-            "params": [
-                55
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 4 Rinse",
-            "template": "L3_group/rinse_cycle.group.json",
-            "params": [
-                18,
-                5000
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 4 Sanitize",
-            "template": "L3_group/rinse_cycle.group.json",
-            "params": [
-                19,
-                3000
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 4 Drain",
-            "template": "L3_group/rinse_cycle.group.json",
-            "params": [
-                20,
-                3000
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 5 Filling positioning1",
-            "template": "L3_group/axis_move_seq.group.json",
-            "params": [
-                120000,
-                60000,
-                150000
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 5 Filling positioning2",
-            "template": "L3_group/axis_move_seq.group.json",
-            "params": [
-                132000,
-                60000,
-                150000
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 5 Filling positioning3",
-            "template": "L3_group/axis_move_seq.group.json",
-            "params": [
-                144000,
-                60000,
-                150000
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 5 Filling positioning4",
-            "template": "L3_group/axis_move_seq.group.json",
-            "params": [
-                156000,
-                60000,
-                150000
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 6 Filling station1",
-            "template": "L3_group/fill_cycle.group.json",
-            "params": [
-                17,
-                500
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 6 Filling station2",
-            "template": "L3_group/fill_cycle.group.json",
-            "params": [
-                17,
-                500
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 6 Filling station3",
-            "template": "L3_group/fill_cycle.group.json",
-            "params": [
-                17,
-                500
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 6 Filling station4",
-            "template": "L3_group/fill_cycle.group.json",
-            "params": [
-                17,
-                500
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 7 Level recheck1",
-            "template": "L3_group/level_recheck.group.json",
-            "params": [
-                56
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 7 Level recheck2",
-            "template": "L3_group/level_recheck.group.json",
-            "params": [
-                57
-            ]
-        },
-        {
-            "type": "group",
-            "name": "Step 8 Capping",
-            "template": "L3_group/capping_cycle.group.json",
+            "name": "Step 6: Filling",
+            "template": "L3_group/step_06_filling.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "Step 9 coding/labeling",
-            "template": "L3_group/coding_cycle.group.json",
+            "name": "Step 7: Level recheck",
+            "template": "L3_group/step_07_level_recheck.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "Step 10 Push bottle discharge",
-            "template": "L3_group/unload.group.json",
+            "name": "Step 8: Capping",
+            "template": "L3_group/step_08_capping.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "Step 11 CIP cleaning",
-            "template": "L3_group/cip_cycle.group.json",
+            "name": "Step 9: Coding / labeling",
+            "template": "L3_group/step_09_coding_labeling.group.json",
             "params": []
         },
         {
             "type": "group",
-            "name": "Step 12 Homing and standby",
-            "template": "L3_group/home_standby.group.json",
+            "name": "Step 10: Finished product discharge",
+            "template": "L3_group/step_10_finished_product_discharge.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "Step 11: CIP cleaning and sanitizing",
+            "template": "L3_group/step_11_cip_cleaning_and_sanitizing.group.json",
+            "params": []
+        },
+        {
+            "type": "group",
+            "name": "Step 12: Homing and standby",
+            "template": "L3_group/step_12_homing_and_standby.group.json",
             "params": []
         }
     ]

@@ -1,0 +1,90 @@
+{
+    "type": "group",
+    "name": "step 09 coding labeling",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "stage",
+                "09"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].code_entry}"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].code_work}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000c.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000c.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000d.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000d.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "group",
+            "name": "Check coding sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0047_expected.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "CODE_POS_TIMEOUT",
+                "Coding position not ready"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "CodeState",
+                "done"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].code_entry}"
+            ]
+        }
+    ]
+}

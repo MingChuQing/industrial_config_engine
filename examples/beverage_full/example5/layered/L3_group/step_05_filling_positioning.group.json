@@ -1,0 +1,85 @@
+{
+    "type": "group",
+    "name": "step 05 filling positioning",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "stage",
+                "05"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].fill_entry}"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                "${recipes[recipe_index].fill_work}"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check station 1 arrival",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0042_expected.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "FILL1_POS_TIMEOUT",
+                "Station 1 not arrived"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check station 2 arrival",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0043_expected.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "FILL2_POS_TIMEOUT",
+                "Station 2 not arrived"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check station 3 arrival",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0044_expected.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "FILL3_POS_TIMEOUT",
+                "Station 3 not arrived"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check station 4 arrival",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0045_expected.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "FILL4_POS_TIMEOUT",
+                "Station 4 not arrived"
+            ]
+        }
+    ]
+}

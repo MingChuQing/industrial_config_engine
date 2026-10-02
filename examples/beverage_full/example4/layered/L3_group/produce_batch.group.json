@@ -1,0 +1,16 @@
+{
+    "type": "group",
+    "name": "produce batch",
+    "mode": "loop",
+    "loop": {
+        "type": "count",
+        "count": 6
+    },
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/produce_one_container.group.json",
+            "params": []
+        }
+    ]
+}

@@ -1,0 +1,163 @@
+{
+  "status": "PASS",
+  "scope": "Restored twelve-stage synthetic case; two-parameter L4; all shared definitions and data included.",
+  "phases": [
+    {
+      "name": "example4",
+      "recipes": 6,
+      "sizes": {
+        "legacy": {
+          "files": 6,
+          "lines": 30804,
+          "utf8_bytes": 1374677
+        },
+        "L1": {
+          "files": 1,
+          "lines": 774,
+          "utf8_bytes": 23432
+        },
+        "L2": {
+          "files": 1,
+          "lines": 891,
+          "utf8_bytes": 29299
+        },
+        "L3": {
+          "files": 20,
+          "lines": 2266,
+          "utf8_bytes": 63077
+        },
+        "L4": {
+          "files": 6,
+          "lines": 90,
+          "utf8_bytes": 1661
+        },
+        "devices": {
+          "files": 1,
+          "lines": 89,
+          "utf8_bytes": 2063
+        },
+        "points_and_recipes": {
+          "files": 1,
+          "lines": 390,
+          "utf8_bytes": 9567
+        }
+      },
+      "legacy_complete_lines": 30893,
+      "layered_complete_lines": 4500,
+      "reduction_percent": 85.43,
+      "finished_containers": 72,
+      "modbus_transactions": 37122,
+      "all_templates_used": true
+    },
+    {
+      "name": "example5",
+      "recipes": 9,
+      "sizes": {
+        "legacy": {
+          "files": 9,
+          "lines": 46206,
+          "utf8_bytes": 2062032
+        },
+        "L1": {
+          "files": 1,
+          "lines": 774,
+          "utf8_bytes": 23432
+        },
+        "L2": {
+          "files": 1,
+          "lines": 891,
+          "utf8_bytes": 29299
+        },
+        "L3": {
+          "files": 20,
+          "lines": 2266,
+          "utf8_bytes": 63077
+        },
+        "L4": {
+          "files": 9,
+          "lines": 135,
+          "utf8_bytes": 2493
+        },
+        "devices": {
+          "files": 1,
+          "lines": 89,
+          "utf8_bytes": 2063
+        },
+        "points_and_recipes": {
+          "files": 1,
+          "lines": 573,
+          "utf8_bytes": 14197
+        }
+      },
+      "legacy_complete_lines": 46295,
+      "layered_complete_lines": 4728,
+      "reduction_percent": 89.79,
+      "finished_containers": 108,
+      "modbus_transactions": 49020,
+      "all_templates_used": true
+    }
+  ],
+  "extension": {
+    "legacy_net_lines": 15402,
+    "layered_net_lines": 228,
+    "old_six_traces_unchanged": true,
+    "changes": [
+      {
+        "file": "layered/L3_group/run_recipe.group.json",
+        "kind": "modified",
+        "added_lines": 1,
+        "removed_lines": 1,
+        "net_lines": 0
+      },
+      {
+        "file": "layered/L4_flow/apple_small.json",
+        "kind": "new",
+        "added_lines": 15,
+        "removed_lines": 0,
+        "net_lines": 15
+      },
+      {
+        "file": "layered/L4_flow/grape_small.json",
+        "kind": "new",
+        "added_lines": 15,
+        "removed_lines": 0,
+        "net_lines": 15
+      },
+      {
+        "file": "layered/L4_flow/orange_small.json",
+        "kind": "new",
+        "added_lines": 15,
+        "removed_lines": 0,
+        "net_lines": 15
+      },
+      {
+        "file": "legacy/apple_small.json",
+        "kind": "new",
+        "added_lines": 5134,
+        "removed_lines": 0,
+        "net_lines": 5134
+      },
+      {
+        "file": "legacy/grape_small.json",
+        "kind": "new",
+        "added_lines": 5134,
+        "removed_lines": 0,
+        "net_lines": 5134
+      },
+      {
+        "file": "legacy/orange_small.json",
+        "kind": "new",
+        "added_lines": 5134,
+        "removed_lines": 0,
+        "net_lines": 5134
+      },
+      {
+        "file": "system_variables.json",
+        "kind": "modified",
+        "added_lines": 186,
+        "removed_lines": 3,
+        "net_lines": 183
+      }
+    ]
+  }
+}

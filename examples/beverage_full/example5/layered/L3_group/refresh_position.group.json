@@ -1,0 +1,59 @@
+{
+    "type": "group",
+    "name": "refresh position",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg602c.r_i32_value",
+            "params": [],
+            "device": "X",
+            "result_key": "X_position"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg602c.r_i32_value",
+            "params": [],
+            "device": "Y1",
+            "result_key": "Y1_position"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg602c.r_i32_value",
+            "params": [],
+            "device": "Y2",
+            "result_key": "Y2_position"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg602c.r_i32_value",
+            "params": [],
+            "device": "Z",
+            "result_key": "Z_position"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "centerX",
+                "${X_position}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "centerY",
+                "${Y1_position}"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "centerZ",
+                "${Z_position}"
+            ]
+        }
+    ]
+}

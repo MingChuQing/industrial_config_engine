@@ -1,0 +1,87 @@
+{
+    "type": "group",
+    "name": "Capping",
+    "mode": "sequence",
+    "max_nodes": 200,
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                10
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                11
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000b.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+            "params": [
+                3000
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0030_le_torque_low.r_b_check_ok",
+            "params": [],
+            "device": "Torque"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000b.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "group",
+            "name": "check Cap checksensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0046.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "CAP_TIMEOUT",
+                "Cap not in place"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg0030_le.r_f_value",
+            "params": [],
+            "device": "Torque",
+            "result_key": "torqueValue"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                10
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "CapState",
+                "done"
+            ]
+        }
+    ]
+}

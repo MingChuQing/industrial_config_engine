@@ -1,6 +1,41 @@
 
-```markdown
 # Industrial Config Engine
+
+## 一条命令验证完整饮料生产线数据
+
+Windows PowerShell 在仓库根目录运行：
+
+```powershell
+.\verify.ps1
+```
+
+入口会寻找现有的 Python 3.10+，也支持本机已有的 Codex 桌面 Python 运行时，不下载或安装软件。已配置 Python 的其它环境可直接运行（仅使用标准库，不需要连接设备或安装第三方 Python 包）：
+
+```bash
+python scripts/verify_beverage_full.py
+```
+
+该命令会重新生成并核对配置，执行 example4 的 6 个配方和 example5 的 9 个配方、每组 11 类故障、6 项回归/反例测试，再核对完整轨迹、模板覆盖率、配置行数及新增规格的文件差异。它比较的是本次实际计算结果与仓库保存的数据，不是读取历史 `PASS` 字样。任何检查失败都会返回非零退出码；版本化配置和报告不会被覆盖。
+
+验证结果写入 `build/beverage-verification/`。配置核对只忽略 Windows/Linux 换行符差异。完整案例位于 [`examples/beverage_full/`](examples/beverage_full/)，详细工艺见 [说明](examples/beverage_full/README.txt)。
+
+| 完整十二阶段案例 | 单体方案（含设备表） | 四层方案（含全部辅助表） |
+|---|---:|---:|
+| example4：3 种口味 × 2 L、330 mL | 30,893 行 | 4,500 行 |
+| example5：增加 3 种口味的 250 mL | 46,295 行 | 4,728 行 |
+| 新增规格的净增量 | 15,402 行 | 228 行 |
+
+两种表示均保留真实循环。L4 传入口味和规格，复用初始化、上料、瓶位检测、冲洗、灌装定位、灌装、液位复检、封口、喷码贴标、出料、CIP、回零待机十二个工序。全部共享 L1–L3、设备表、点位表及配方表均计入上表。该案例是构造的确定性模拟，行数减少不代表人工工时减少或真实设备验证。
+
+默认命令验证 Python 协议模拟与配置数据，明确报告 C++ 检查未运行。若已安装 CMake 3.14+、CTest 和 C++17 编译器，可用同一入口额外编译并验证实际 C++ 引擎：
+
+```bash
+python scripts/verify_beverage_full.py --cpp
+```
+
+PowerShell 对应命令为 `.\verify.ps1 -Cpp`。
+
+`examples/example4/` 是较早的单条饮料线迁移案例；`examples/beverage_suite/` 是较早的简化九配方案例。它们与上述完整十二阶段案例的工艺范围不同，不能混用统计结果。
 
 ## 📖 Introduction
 
@@ -517,7 +552,6 @@ If you use this project in academic research or a paper, please cite it in the f
 ## 📚 Related Documentation
 
 - [Four-Layer Architecture Design Documentation](examples/docs/)
-```
 
 ---
 

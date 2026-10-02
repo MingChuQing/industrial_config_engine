@@ -1,0 +1,89 @@
+{
+    "configuration_note": "Synthetic devices; old process checks restored, no physical I/O.",
+    "devices": {
+        "X": {
+            "port": "SIM_MOTION",
+            "address": 1
+        },
+        "Y1": {
+            "port": "SIM_MOTION",
+            "address": 2
+        },
+        "Y2": {
+            "port": "SIM_MOTION",
+            "address": 3
+        },
+        "Z": {
+            "port": "SIM_MOTION",
+            "address": 4
+        },
+        "Infeed": {
+            "port": "SIM_MOTION",
+            "address": 5
+        },
+        "Closure": {
+            "port": "SIM_MOTION",
+            "address": 6
+        },
+        "Outfeed": {
+            "port": "SIM_MOTION",
+            "address": 7
+        },
+        "OrangeFill": {
+            "port": "SIM_PROCESS",
+            "address": 1
+        },
+        "AppleFill": {
+            "port": "SIM_PROCESS",
+            "address": 2
+        },
+        "GrapeFill": {
+            "port": "SIM_PROCESS",
+            "address": 3
+        },
+        "Gripper": {
+            "port": "SIM_PROCESS",
+            "address": 4
+        },
+        "CapFeeder": {
+            "port": "SIM_PROCESS",
+            "address": 5
+        },
+        "ContainerSensor": {
+            "port": "SIM_PROCESS",
+            "address": 6
+        },
+        "RinseValve": {
+            "port": "SIM_PROCESS",
+            "address": 7
+        },
+        "CIPValve": {
+            "port": "SIM_PROCESS",
+            "address": 8
+        },
+        "Relay": {
+            "port": "SIM_PROCESS",
+            "address": 9
+        },
+        "BottleSensor": {
+            "port": "SIM_PROCESS",
+            "address": 10
+        },
+        "LevelSensor": {
+            "port": "SIM_PROCESS",
+            "address": 11
+        },
+        "PressureSensor": {
+            "port": "SIM_PROCESS",
+            "address": 12
+        },
+        "FlowMeter": {
+            "port": "SIM_PROCESS",
+            "address": 13
+        },
+        "Torque": {
+            "port": "SIM_PROCESS",
+            "address": 14
+        }
+    }
+}

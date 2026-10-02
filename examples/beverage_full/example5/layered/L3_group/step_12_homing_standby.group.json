@@ -1,0 +1,284 @@
+{
+    "type": "group",
+    "name": "step 12 homing standby",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "stage",
+                "12"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "OrangeFill"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "AppleFill"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "GrapeFill"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Gripper"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "CapFeeder"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050012.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "RinseValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050013.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "CIPValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050014.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "CIPValve"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_050009.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000a.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000b.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000c.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000d.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000e.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "group",
+            "template": "L3_group/trigger_motor.group.json",
+            "params": [
+                "X",
+                0
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/trigger_motor.group.json",
+            "params": [
+                "Y1",
+                0
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/trigger_motor.group.json",
+            "params": [
+                "Y2",
+                0
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/trigger_motor.group.json",
+            "params": [
+                "Z",
+                0
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Wait for X",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+                "X",
+                20,
+                4000,
+                202,
+                "HOME_TIMEOUT",
+                "home timeout"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Wait for Y1",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+                "Y1",
+                20,
+                4000,
+                202,
+                "HOME_TIMEOUT",
+                "home timeout"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Wait for Y2",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+                "Y2",
+                20,
+                4000,
+                202,
+                "HOME_TIMEOUT",
+                "home timeout"
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Wait for Z",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+                "Z",
+                20,
+                4000,
+                202,
+                "HOME_TIMEOUT",
+                "home timeout"
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+            "params": [
+                "last_x_pr",
+                0
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+            "params": [
+                "last_y_pr",
+                0
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+            "params": [
+                "last_z_pr",
+                0
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/refresh_position.group.json",
+            "params": []
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg2203_x_alarm.r_b_check_ok",
+            "params": [],
+            "device": "X"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg2203_y_alarm.r_b_check_ok",
+            "params": [],
+            "device": "Y1"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg2203_y_alarm_y2.r_b_check_ok",
+            "params": [],
+            "device": "Y2"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/read_fc03_reg2203_z_alarm.r_b_check_ok",
+            "params": [],
+            "device": "Z"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "SystemState",
+                "standby"
+            ]
+        }
+    ]
+}

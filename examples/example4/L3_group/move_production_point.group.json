@@ -1,0 +1,62 @@
+{
+    "type": "group",
+    "name": "Move production point",
+    "mode": "sequence",
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/move_axis_if_changed.group.json",
+            "params": [
+                "last_x_pr",
+                "${production_points[point_index].x}",
+                [
+                    "X"
+                ]
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_axis_if_changed.group.json",
+            "params": [
+                "last_y_pr",
+                "${production_points[point_index].y}",
+                [
+                    "Y1",
+                    "Y2"
+                ]
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_axis_if_changed.group.json",
+            "params": [
+                "last_z_pr",
+                "${production_points[point_index].z}",
+                [
+                    "Z"
+                ]
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+            "params": [
+                "${production_points[point_index].wait_ms}"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/refresh_all_motor_positions_and_ui.group.json",
+            "params": []
+        }
+    ],
+    "args": [
+        {
+            "index": 0,
+            "name": "point_index",
+            "type": "u16",
+            "min": 0,
+            "max": 100
+        }
+    ]
+}

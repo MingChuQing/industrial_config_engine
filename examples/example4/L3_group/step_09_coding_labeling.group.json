@@ -1,0 +1,83 @@
+{
+    "type": "group",
+    "name": "Coding / labeling",
+    "mode": "sequence",
+    "max_nodes": 200,
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                12
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                13
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000c.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000c.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000d.u16.r_b_done",
+            "params": [
+                65280
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/write_05000d.u16.r_b_done",
+            "params": [
+                0
+            ],
+            "device": "Relay"
+        },
+        {
+            "type": "group",
+            "name": "Check coding sensor",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0047.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "CODE_POS_TIMEOUT",
+                "Coding position not ready"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                12
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "CodeState",
+                "done"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,61 @@
+{
+    "configuration_note": "EXAMPLE ports and addresses; replace with installed device settings before use. No serial ports are opened by this simulator.",
+    "devices": {
+        "X": {
+            "port": "COM3",
+            "address": 1
+        },
+        "Y1": {
+            "port": "COM3",
+            "address": 2
+        },
+        "Y2": {
+            "port": "COM3",
+            "address": 3
+        },
+        "Z": {
+            "port": "COM3",
+            "address": 4
+        },
+        "BottleSensor": {
+            "port": "COM4",
+            "address": 1
+        },
+        "CIPValve": {
+            "port": "COM4",
+            "address": 2
+        },
+        "Conveyor": {
+            "port": "COM4",
+            "address": 3
+        },
+        "FillingValve": {
+            "port": "COM4",
+            "address": 4
+        },
+        "FlowMeter": {
+            "port": "COM4",
+            "address": 5
+        },
+        "LevelSensor": {
+            "port": "COM4",
+            "address": 6
+        },
+        "PressureSensor": {
+            "port": "COM4",
+            "address": 7
+        },
+        "Relay": {
+            "port": "COM4",
+            "address": 8
+        },
+        "RinseValve": {
+            "port": "COM4",
+            "address": 9
+        },
+        "Torque": {
+            "port": "COM4",
+            "address": 10
+        }
+    }
+}

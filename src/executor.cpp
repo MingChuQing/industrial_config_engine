@@ -53,6 +53,39 @@ namespace industrial_config_engine {
     // ============================================================
     // virtual device registry
     // ============================================================
+    bool DeviceRegistry::configure(const nlohmann::json& config, std::string& error) {
+        error.clear();
+        if (!config.is_object() || !config.contains("devices") || !config["devices"].is_object()) {
+            error = "devices must be an object"; return false;
+        }
+        std::map<std::string, nlohmann::json> next;
+        for (auto it = config["devices"].begin(); it != config["devices"].end(); ++it) {
+            const auto& spec = it.value();
+            if (it.key().empty() || !spec.is_object() || !spec.contains("port") || !spec["port"].is_string() ||
+                spec["port"].get<std::string>().find_first_not_of(" \t\r\n") == std::string::npos ||
+                !spec.contains("address") || !spec["address"].is_number_integer()) {
+                error = "device requires a port and integer address: " + it.key(); return false;
+            }
+            if (spec["address"] < 1 || spec["address"] > 247) {
+                error = "Modbus address out of range: " + it.key(); return false;
+            }
+            for (const auto& old : next) {
+                if (old.second["port"] == spec["port"] && old.second["address"] == spec["address"]) {
+                    error = "duplicate port/address: " + it.key(); return false;
+                }
+            }
+            next[it.key()] = spec;
+        }
+        connections_ = std::move(next);
+        configured_ = true;
+        return true;
+    }
+
+    const nlohmann::json* DeviceRegistry::connection(const std::string& device) const {
+        auto it = connections_.find(device);
+        return it == connections_.end() ? nullptr : &it->second;
+    }
+
     bool DeviceRegistry::isOnline(const std::string& device) const {
         auto it = online_.find(device);
         if (it != online_.end()) return it->second;
@@ -123,8 +156,45 @@ namespace industrial_config_engine {
     // ============================================================
     const nlohmann::json* VariableStore::get(const std::string& key) const {
         auto it = vars_.find(key);
+        if (it != vars_.end()) return &it->second; // preserve literal dotted keys
+        size_t pos = key.find_first_of(".[");
+        if (pos == std::string::npos) return nullptr;
+        it = vars_.find(key.substr(0, pos));
         if (it == vars_.end()) return nullptr;
-        return &it->second;
+        const nlohmann::json* value = &it->second;
+        while (pos < key.size()) {
+            if (key[pos] == '.') {
+                size_t end = key.find_first_of(".[", pos + 1);
+                if (end == std::string::npos) end = key.size();
+                std::string field = key.substr(pos + 1, end - pos - 1);
+                if (field.empty() || !value->is_object() || !value->contains(field)) return nullptr;
+                value = &value->at(field);
+                pos = end;
+            }
+            else if (key[pos] == '[') {
+                size_t end = key.find(']', pos + 1);
+                if (end == std::string::npos || !value->is_array()) return nullptr;
+                std::string token = key.substr(pos + 1, end - pos - 1);
+                size_t index = 0;
+                try {
+                    if (!token.empty() && std::all_of(token.begin(), token.end(), [](unsigned char c) { return std::isdigit(c); })) {
+                        index = static_cast<size_t>(std::stoull(token));
+                    }
+                    else {
+                        auto variable = vars_.find(token);
+                        if (variable == vars_.end() || !variable->second.is_number_integer()) return nullptr;
+                        int64_t number = variable->second.get<int64_t>();
+                        if (number < 0) return nullptr;
+                        index = static_cast<size_t>(number);
+                    }
+                } catch (...) { return nullptr; }
+                if (index >= value->size()) return nullptr;
+                value = &value->at(index);
+                pos = end + 1;
+            }
+            else return nullptr;
+        }
+        return value;
     }
 
     std::string VariableStore::resolve(const std::string& s,
@@ -157,6 +227,10 @@ namespace industrial_config_engine {
     nlohmann::json VariableStore::resolveValue(const nlohmann::json& v,
         std::vector<std::string>* missing) const {
         if (v.is_string()) {
+            const auto& text = v.get_ref<const std::string&>();
+            if (text.size() > 3 && text.compare(0, 2, "${") == 0 && text.find('}') == text.size() - 1) {
+                if (const auto* value = get(text.substr(2, text.size() - 3))) return *value;
+            }
             return nlohmann::json(resolve(v.get<std::string>(), missing));
         }
         if (v.is_array()) {
@@ -641,7 +715,9 @@ namespace industrial_config_engine {
             std::string msg = resolveStr(item.value("message", ""), ctx);
             std::string level = item.value("level", "info");
             trace(ctx, "* popup[" + level + "]: " + msg);
-            ctx.audit.log(ctx.time_ms, "ERROR", "HMI popup: " + msg);
+            nlohmann::json details;
+            if (item.contains("error_code")) details["error_code"] = resolveValue(item["error_code"], ctx);
+            ctx.audit.log(ctx.time_ms, "ERROR", "HMI popup: " + msg, details);
         }
         else if (type == "if") {
             std::string err;
@@ -694,6 +770,13 @@ namespace industrial_config_engine {
             templ = item["node"]["template"].get<std::string>();
         }
         if (templ.empty()) { r.status = ExecStatus::FAILED; r.message = "node item missing template"; return r; }
+        std::vector<std::string> missing_template_vars;
+        auto resolved_template = ctx.vars.resolveValue(templ, &missing_template_vars);
+        if (!missing_template_vars.empty() || !resolved_template.is_string() ||
+            resolved_template.get<std::string>().empty() || resolved_template.get<std::string>().find("${") != std::string::npos) {
+            r.status = ExecStatus::REFERENCE_ERROR; r.message = "Unresolved node template"; return r;
+        }
+        templ = resolved_template.get<std::string>();
 
         const L2Node* node = nullptr;
         for (const auto& key : refKeyCandidates(templ)) {
@@ -743,6 +826,22 @@ namespace industrial_config_engine {
             }
         }
 
+        std::optional<std::string> device_override = node->getDevice();
+        if (item.contains("device")) {
+            if (!item["device"].is_string()) {
+                r.status = ExecStatus::REFERENCE_ERROR; r.message = "Node device must be a string"; return r;
+            }
+            device_override = item["device"].get<std::string>();
+        }
+        if (device_override) {
+            std::vector<std::string> missing;
+            auto value = ctx.vars.resolveValue(*device_override, &missing);
+            if (!missing.empty() || !value.is_string() || trimStr(value.get<std::string>()).empty() ||
+                value.get<std::string>().find("${") != std::string::npos) {
+                r.status = ExecStatus::REFERENCE_ERROR; r.message = "Unresolved or empty node device"; return r;
+            }
+            device_override = value.get<std::string>();
+        }
         const L1Action* act = nullptr;
         const std::string& act_tmpl = node->getAction().template_path;
         if (node->isActionInline()) {
@@ -768,7 +867,7 @@ namespace industrial_config_engine {
             if (!checkSteps(ctx, r)) return r;
             if (act) {
                 try {
-                    r = execAction(*act, params, ctx, out, timed_out);
+                    r = execAction(*act, params, ctx, out, timed_out, device_override);
                 }
                 catch (const std::exception& e) {
                     r.status = ExecStatus::INTERNAL_ERROR;
@@ -867,9 +966,22 @@ namespace industrial_config_engine {
     }
 
     ExecResult Executor::execAction(const L1Action& act, const nlohmann::json& args,
-        ExecContext& ctx, nlohmann::json& out, bool& timed_out) {
+        ExecContext& ctx, nlohmann::json& out, bool& timed_out,
+        const std::optional<std::string>& device_override) {
         ExecResult r;
         std::string type = act.getType();
+        for (size_t i = 0; i < act.getArgs().size(); ++i) {
+            const auto& declaration = act.getArgs()[i];
+            // Bound arithmetic inputs (e.g. PR point 0..15) before calculating
+            // a command word. Keep legacy transport-argument behavior unchanged.
+            if ((type == "calculate" || type == "calculate_check") &&
+                (declaration.min_val || declaration.max_val) && args.is_array() && i < args.size() &&
+                !declaration.validate(args[i])) {
+                r.status = ExecStatus::FAILED;
+                r.message = "Action argument outside declared range: " + declaration.name;
+                return r;
+            }
+        }
 
         // param name -> value (with defaults); numeric strings normalized to numbers (${var} resolution product)
         std::map<std::string, nlohmann::json> amap;
@@ -935,11 +1047,24 @@ namespace industrial_config_engine {
 
         std::string req = substitute(act.getRequest());
 
-        // device: prefer slave_id param, else default
+        // Explicit L2/call binding first; retain legacy slave_id/default fallback.
         std::string device = "default";
         auto sid = amap.find("slave_id");
-        if (sid != amap.end() && !sid->second.is_null()) {
+        if (device_override) {
+            device = *device_override;
+        }
+        else if (sid != amap.end() && !sid->second.is_null()) {
             device = jsonToStr(sid->second);
+        }
+        if (type.compare(0, 7, "modbus_") == 0 && ctx.devices.hasConfiguration()) {
+            const auto* endpoint = ctx.devices.connection(device);
+            if (!endpoint) {
+                r.status = ExecStatus::REFERENCE_ERROR;
+                r.message = "Device absent from connection registry: " + device;
+                return r;
+            }
+            ctx.audit.log(ctx.time_ms, "ROUTE", "resolved device connection",
+                {{"device", device}, {"port", (*endpoint)["port"]}, {"address", (*endpoint)["address"]}, {"request", req}});
         }
 
         auto advanceComm = [&](uint64_t t) { advanceTime(ctx, t); };
@@ -995,15 +1120,15 @@ namespace industrial_config_engine {
             bool ok = true;
             int64_t fn = tok.empty() ? -1 : parseHexToken(tok[0], ok);
             int64_t addr = 0;
-            if (fn == 3 && tok.size() >= 6) {
+            if ((fn == 3 || fn == 4) && tok.size() >= 6) {
                 // with slave byte: 03 slave addr_hi addr_lo cnt_hi cnt_lo
                 addr = (parseHexToken(tok[2], ok) << 8) | parseHexToken(tok[3], ok);
             }
-            else if (fn == 3 && tok.size() >= 5) {
+            else if ((fn == 3 || fn == 4) && tok.size() >= 5) {
                 // no slave byte, two-byte addr: 03 addr_hi addr_lo cnt_hi cnt_lo
                 addr = (parseHexToken(tok[1], ok) << 8) | parseHexToken(tok[2], ok);
             }
-            else if (fn == 3 && tok.size() >= 4) {
+            else if ((fn == 3 || fn == 4) && tok.size() >= 4) {
                 // no slave byte, one-byte addr: 03 addr cnt_hi cnt_lo
                 addr = parseHexToken(tok[1], ok);
             }
@@ -1188,7 +1313,11 @@ namespace industrial_config_engine {
             nlohmann::json loop = g.value("loop", nlohmann::json::object());
             std::string ltype = loop.value("type", "count");
             int64_t count = loop.value("count", 0);
-            int64_t max_iter = loop.value("max_iterations", 10000);
+            auto max_value = resolveValue(loop.value("max_iterations", nlohmann::json(10000)), ctx);
+            if (!max_value.is_number_integer() || max_value <= 0) {
+                r.status = ExecStatus::FAILED; r.message = "Invalid max_iterations"; return r;
+            }
+            int64_t max_iter = max_value.get<int64_t>();
             uint64_t loop_timeout = loop.contains("timeout_ms") ? timeoutValue(loop["timeout_ms"], ctx) : timeout;
             int64_t iter = 0;
 
@@ -1325,7 +1454,15 @@ namespace industrial_config_engine {
             else if (d.default_value.has_value()) {
                 v = nlohmann::json(*d.default_value);
             }
-            if (!v.is_null()) ctx.vars.set(d.name, resolveValue(v, ctx));
+            v = resolveValue(v, ctx);
+            if ((d.min_value || d.max_value) &&
+                (!v.is_number_integer() || (d.min_value && v < *d.min_value) ||
+                 (d.max_value && v > *d.max_value))) {
+                r.status = ExecStatus::FAILED;
+                r.message = "Group argument outside declared range: " + d.name;
+                return r;
+            }
+            if (!v.is_null()) ctx.vars.set(d.name, v);
         }
         r = execGroupMode(group_json, ctx);
         return r;

@@ -1,0 +1,128 @@
+{
+    "type": "group",
+    "name": "Filling positioning",
+    "mode": "sequence",
+    "max_nodes": 200,
+    "body": [
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                4
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                4
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                5
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check station 1 arrival",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0042.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "FILL1_POS_TIMEOUT",
+                "Station 1 not arrived"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                6
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check station 2 arrival",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0043.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "FILL2_POS_TIMEOUT",
+                "Station 2 not arrived"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                7
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check station 3 arrival",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0044.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "FILL3_POS_TIMEOUT",
+                "Station 3 not arrived"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                8
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Check station 4 arrival",
+            "template": "L3_group/poll_sensor_until_ready.group.json",
+            "params": [
+                "L2_node/all_nodes.json/read_fc04_reg0045.r_b_poll_ready",
+                "BottleSensor",
+                50,
+                3000,
+                62,
+                "FILL4_POS_TIMEOUT",
+                "Station 4 not arrived"
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                9
+            ]
+        },
+        {
+            "type": "group",
+            "template": "L3_group/move_production_point.group.json",
+            "params": [
+                4
+            ]
+        },
+        {
+            "type": "node",
+            "template": "L2_node/all_nodes.json/update_ui.s_s",
+            "params": [
+                "FillState",
+                "positioned"
+            ]
+        }
+    ]
+}

@@ -179,13 +179,13 @@ int main(int argc, char** argv) {
     {
         int monoLines = fileLines("examples/beverage_legacy/beverage_filling_legacy.json");
         int l4Lines = treeLines("examples/example4");
-        line("  Monolithic config  : 1 file, " + std::to_string(monoLines) + " lines (239 Modbus frames mixed with process steps)");
-        line("  Four-layer refactor: 20 files, " + std::to_string(l4Lines) + " lines (L1 21 actions + L2 13 nodes + L3 17 groups + L4 1 flow)");
-        if (monoLines > 0 && l4Lines > 0)
-            line("  -> lines -" + std::to_string((int)(100.0 * (monoLines - l4Lines) / monoLines + 0.5)) + "%");
+        line("  Monolithic config  : 1 file, " + std::to_string(monoLines) + " lines (Modbus operations mixed with process steps)");
+        line("  Repaired four-layer configuration: " + std::to_string(l4Lines) + " lines (unchanged-axis triggers omitted)");
         line("  -> Modbus frames in L3/L4 = 0 (all device details frozen in L1/L2)");
-        line("  -> 29 group references generated from 17 parameterized groups (reuse rate 41.4%)");
+        line("  -> Reproduce current counts and static behavior-contract comparison: python scripts/verify_beverage.py");
+        line("  -> Static contract equality is not a simulator or hardware execution-equivalence test.");
         line("  See examples/docs/beverage_migration_report.md for reproduction commands.");
+        line("  Full twelve-stage multi-recipe comparison: python scripts/verify_beverage_full.py");
     }
     line("");
 

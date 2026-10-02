@@ -58,6 +58,9 @@ namespace industrial_config_engine {
     // ============================================================
     class DeviceRegistry {
     public:
+        bool configure(const nlohmann::json& config, std::string& error);
+        const nlohmann::json* connection(const std::string& device) const;
+        bool hasConfiguration() const { return configured_; }
         void setOnline(const std::string& device, bool online) { online_[device] = online; }
         bool isOnline(const std::string& device) const;
 
@@ -76,6 +79,8 @@ namespace industrial_config_engine {
         nlohmann::json snapshot() const;
 
     private:
+        bool configured_ = false;
+        std::map<std::string, nlohmann::json> connections_;
         std::map<std::string, std::map<uint16_t, int64_t>> registers_;
         std::map<std::string, std::map<uint16_t, bool>> coils_;
         std::map<std::string, bool> online_;
@@ -170,7 +175,8 @@ namespace industrial_config_engine {
         ExecResult execBranchItems(const nlohmann::json& branch, ExecContext& ctx);
         ExecResult execGroupMode(const nlohmann::json& g, ExecContext& ctx);
         ExecResult execAction(const L1Action& act, const nlohmann::json& args,
-            ExecContext& ctx, nlohmann::json& out, bool& timed_out);
+            ExecContext& ctx, nlohmann::json& out, bool& timed_out,
+            const std::optional<std::string>& device_override);
 
         // utilities
         void trace(ExecContext& ctx, const std::string& msg) const;

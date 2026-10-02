@@ -2,6 +2,7 @@
 build/
 cmake-build-*/
 out/
+output/
 
 # IDE
 .vs/
@@ -28,6 +29,10 @@ Testing/
 *.gcda
 *.gcno
 *.gcov
+
+# Python configuration verification tools
+__pycache__/
+*.pyc
 
 # vcpkg local install (依赖安装目录)
 vcpkg_installed/

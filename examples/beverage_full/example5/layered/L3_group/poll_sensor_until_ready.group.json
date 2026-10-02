@@ -1,0 +1,85 @@
+{
+    "type": "group",
+    "name": "Poll sensor until ready",
+    "mode": "loop",
+    "args": [
+        {
+            "index": 0,
+            "name": "poll_node",
+            "type": "s"
+        },
+        {
+            "index": 1,
+            "name": "poll_device",
+            "type": "s"
+        },
+        {
+            "index": 2,
+            "name": "poll_interval_ms",
+            "type": "u32"
+        },
+        {
+            "index": 3,
+            "name": "poll_timeout_ms",
+            "type": "u32"
+        },
+        {
+            "index": 4,
+            "name": "poll_max_iterations",
+            "type": "u32"
+        },
+        {
+            "index": 5,
+            "name": "poll_error_code",
+            "type": "s"
+        },
+        {
+            "index": 6,
+            "name": "poll_error_message",
+            "type": "s"
+        }
+    ],
+    "timeout_ms": "${poll_timeout_ms}",
+    "loop": {
+        "type": "do-while",
+        "condition": "${poll_ready} != true",
+        "timeout_ms": "${poll_timeout_ms}",
+        "max_iterations": "${poll_max_iterations}"
+    },
+    "body": [
+        {
+            "type": "node",
+            "template": "${poll_node}",
+            "params": [],
+            "device": "${poll_device}",
+            "result_key": "poll_ready"
+        },
+        {
+            "type": "group",
+            "name": "Wait only when response has not matched",
+            "mode": "if",
+            "condition": {
+                "type": "expression",
+                "expression": "${poll_ready} != true"
+            },
+            "then": [
+                {
+                    "type": "node",
+                    "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+                    "params": [
+                        "${poll_interval_ms}"
+                    ]
+                }
+            ],
+            "else": []
+        }
+    ],
+    "on_timeout": [
+        {
+            "type": "popup",
+            "level": "error",
+            "message": "${poll_error_message}",
+            "error_code": "${poll_error_code}"
+        }
+    ]
+}
