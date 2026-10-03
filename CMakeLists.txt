@@ -45,6 +45,9 @@ target_include_directories(industrial_config_engine PUBLIC
 )
 
 if(BUILD_TESTING)
+    # JSON-in/JSON-out adapter used by the reproducible defect benchmark.
+    add_executable(defect_probe tests/defect_probe.cpp)
+    target_link_libraries(defect_probe industrial_config_engine)
     add_executable(test_device_points tests/test_device_points.cpp)
     target_link_libraries(test_device_points industrial_config_engine)
     add_test(NAME device_points COMMAND test_device_points

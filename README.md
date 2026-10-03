@@ -1,6 +1,75 @@
 
 # Industrial Config Engine
 
+论文与复现实验快照：标签 **icdm2026-review-revision-20261003**。对应修订稿源码和配图见 [docs/paper-revision-20261003/](docs/paper-revision-20261003/)。这是当前评审修订稿（7 页），尚待压缩至 Teen Track 要求的 5 页；不是已完成提交的 camera-ready 版本。
+
+## 一条命令重现配置缺陷、检查结果和修正
+
+Windows PowerShell 在仓库根目录运行：
+
+~~~powershell
+.\verify-defects.ps1
+~~~
+
+其它环境使用 Python 3.10+：
+
+~~~bash
+python scripts/verify_defects.py
+~~~
+
+这会实际调用 C++ 引擎，运行 **18 个配置缺陷 × 正常、缺陷、修正三个版本，共 54 次**。覆盖 example1 真空、example2 送料、example3 检漏，以及完整饮料案例 example4/example5。部分测试运行一个 L3 子过程；正常对照共 8 种，重复运行 18 次。案例包含不支持的结构、变量拼写、循环退出条件、引用错误、参数缺失/类型/范围、判定错误、设备绑定、时长不足、工序顺序和遗漏检查。
+
+入口使用现有 Python 和 C++17 工具链，不下载软件、不连接设备。本工作区可直接使用已有的便携 Zig；其它机器可以使用 PATH 中的 Zig、clang++、g++，或已配置编译器的 CMake。首次运行或 C++ 源码变化时自动构建探针；源码及二进制哈希一致时复用编译结果，每次仍重新执行全部案例。工具缺失、运行异常、正常/修正版本失败或结果偏离已登记基准都会返回非零退出码，不会跳过后报成功。
+
+可指定已有编译器及输出目录：
+
+~~~powershell
+.\verify-defects.ps1 -Compiler C:\tools\zig\zig.exe -OutputDirectory build\defect-verification
+.\verify-defects.ps1 -Help
+~~~
+
+对应 Python 参数为 --compiler、--output、--help；也可通过 ICE_CXX 指定编译器。
+
+结果保存在 **build/defect-verification/**：
+
+- **report.md**：中文逐例对照表，链接到每例的错误说明、实际诊断和修正方案。
+- **report.json**：机器可读的实际结果、统计、编译来源和实验边界。
+- **cases/案例编号/**：control、faulty、fixed 三个完整请求及真实执行日志；请求内的 configuration 是配置，params 是调用参数。repair.diff 展示修正的准确改动。
+- **measured_signatures.json**：本次实测摘要；与 scripts/defect_expectations.json 中登记的回归基准核对，包括正常运行的结果哈希。
+
+| 本组 18 个缺陷的实测结果 | 数量 |
+|---|---:|
+| 顶层结构解析/校验拒绝 | 2 |
+| Executor 执行路径拒绝（内部仍含结构校验） | 10 |
+| 在顶层结构检查之外，Executor 新增拒绝 | 8 |
+| 引擎仍成功执行，但测试程序发现结果差异 | 8 |
+| 修正后通过，并与正常运行结果一致 | 18 |
+| 正常对照被拒绝 | 0 / 18 次（8 种对照） |
+
+**PASS 表示实验被重现，包括已知漏检；不表示所有缺陷均被引擎发现。** 结果对照检查 ROUTE/CHANGE 事件及其虚拟时间、最终变量和虚拟设备状态。它是依赖已知正确基准的回归检查，不能算作引擎验证门或人工审核。修正方案明确恢复原配置，并非程序自动推导修复。Executor 仍执行内部结构检查，因此上述结果是覆盖范围及增量的测量，不是关闭结构检查后的完整消融。这里只测有限的人工配置变异，不能外推 LLM 错误检出率或现场安全性。
+
+实现入口见 [verify_defects.py](scripts/verify_defects.py)、[案例定义](scripts/defect_cases.py) 和 [C++ 探针](tests/defect_probe.cpp)。本命令与下方饮料协议/设备故障验证互补：**配置缺陷**与**设备故障**分别统计。
+
+## 独立人工语义审核材料（R3-4）
+
+在仓库根目录运行：
+
+~~~bash
+python scripts/review_semantics.py prepare
+~~~
+
+材料生成到 build/semantic-review/。审核集含 26 个匿名编号候选：8 个独立正常配置和 18 个变异配置。每例附过程要求、调用参数、变量及可信支持定义/接口契约。仅把 reviewer_packet 文件夹和分配给该审核者的 reviewer_a.json 或 reviewer_b.json 交给审核者；coordinator_only 中的参考标签与来源由协调者保管，审核完成前不要共享。两份判定表由真人分别填写，记录接受/拒绝、依据及耗时；第二名审核者须未参与这些配置的生成或修复。
+
+收到两份完整记录后运行：
+
+~~~bash
+python scripts/review_semantics.py score --reviewer-a build/semantic-review/reviewer_a.json --reviewer-b build/semantic-review/reviewer_b.json --key build/semantic-review/coordinator_only/reference_key.json --output build/semantic-review/results.json
+~~~
+
+计分工具检查记录完整性并输出一致率、Cohen's κ、分歧项和相对参考标签的误判。参考标签是构造实验的预期，不代表已经取得人工共识。空表和不符合独立性声明的表不会产生有效的一致率报告；重复准备材料会保留已填写的判定表。
+
+**当前只提供审核协议和工具，尚无独立真人审核结果。** 自动模拟批准、恢复基准后的测试通过、脚本单元测试都不能作为人工审核可靠性的证据。
+
 ## 一条命令验证完整饮料生产线数据
 
 Windows PowerShell 在仓库根目录运行：

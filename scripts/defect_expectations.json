@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "purpose": "Measured regression baseline, including engine misses; always execute fresh controls, mutants and repairs before comparison.",
+  "cases": {
+    "T1-schema": {
+      "structural_accepted": false,
+      "simulation_status": "FAILED",
+      "oracle_matched": false,
+      "control_observation_sha256": "45af176e55fdf95acfaab727a3b8720f540d5fdef198da2e08d88047aae39e97"
+    },
+    "T1-variable": {
+      "structural_accepted": true,
+      "simulation_status": "CONDITION_ERROR",
+      "oracle_matched": false,
+      "control_observation_sha256": "45af176e55fdf95acfaab727a3b8720f540d5fdef198da2e08d88047aae39e97"
+    },
+    "T1-loop": {
+      "structural_accepted": true,
+      "simulation_status": "TIMEOUT",
+      "oracle_matched": false,
+      "control_observation_sha256": "45af176e55fdf95acfaab727a3b8720f540d5fdef198da2e08d88047aae39e97"
+    },
+    "T1-reference": {
+      "structural_accepted": true,
+      "simulation_status": "REFERENCE_ERROR",
+      "oracle_matched": false,
+      "control_observation_sha256": "eb0abb64fe7f969253aed5193657e7272365fd24718f5430ad553ae3406aa692"
+    },
+    "T2-loop-schema": {
+      "structural_accepted": true,
+      "simulation_status": "FAILED",
+      "oracle_matched": false,
+      "control_observation_sha256": "3c8ade1b374e3ae27d4bfdbabf1596a596c9c8c6b6268b9bb5c4a81c52cb81e7"
+    },
+    "T2-arity": {
+      "structural_accepted": true,
+      "simulation_status": "SUCCESS",
+      "oracle_matched": false,
+      "control_observation_sha256": "3c8ade1b374e3ae27d4bfdbabf1596a596c9c8c6b6268b9bb5c4a81c52cb81e7"
+    },
+    "T2-type": {
+      "structural_accepted": true,
+      "simulation_status": "SUCCESS",
+      "oracle_matched": false,
+      "control_observation_sha256": "3c8ade1b374e3ae27d4bfdbabf1596a596c9c8c6b6268b9bb5c4a81c52cb81e7"
+    },
+    "T2-range": {
+      "structural_accepted": true,
+      "simulation_status": "SUCCESS",
+      "oracle_matched": false,
+      "control_observation_sha256": "3c8ade1b374e3ae27d4bfdbabf1596a596c9c8c6b6268b9bb5c4a81c52cb81e7"
+    },
+    "T3-predicate": {
+      "structural_accepted": true,
+      "simulation_status": "SUCCESS",
+      "oracle_matched": false,
+      "control_observation_sha256": "85706c8aaa551dece37588cdf351218f48b44da01dde89c57941539de88481ee"
+    },
+    "T3-condition-schema": {
+      "structural_accepted": false,
+      "simulation_status": "FAILED",
+      "oracle_matched": false,
+      "control_observation_sha256": "85706c8aaa551dece37588cdf351218f48b44da01dde89c57941539de88481ee"
+    },
+    "T3-result": {
+      "structural_accepted": true,
+      "simulation_status": "SUCCESS",
+      "oracle_matched": false,
+      "control_observation_sha256": "85706c8aaa551dece37588cdf351218f48b44da01dde89c57941539de88481ee"
+    },
+    "B4-range": {
+      "structural_accepted": true,
+      "simulation_status": "FAILED",
+      "oracle_matched": false,
+      "control_observation_sha256": "2414064ba8f3c0a22a7f20a3429913faf0586f37fd64ad7fd8d32d507a733bf3"
+    },
+    "B4-device": {
+      "structural_accepted": true,
+      "simulation_status": "REFERENCE_ERROR",
+      "oracle_matched": false,
+      "control_observation_sha256": "52209208fb33f8221558609a986ed6cc1b2698437404b1cf156e81dea8e7e695"
+    },
+    "B4-reference": {
+      "structural_accepted": true,
+      "simulation_status": "REFERENCE_ERROR",
+      "oracle_matched": false,
+      "control_observation_sha256": "52209208fb33f8221558609a986ed6cc1b2698437404b1cf156e81dea8e7e695"
+    },
+    "B5-duration": {
+      "structural_accepted": true,
+      "simulation_status": "SUCCESS",
+      "oracle_matched": false,
+      "control_observation_sha256": "3bcb93078992677c58ddc6a08e3f200ee149d507c675a780db84c1dc72ed4ccb"
+    },
+    "B5-order": {
+      "structural_accepted": true,
+      "simulation_status": "SUCCESS",
+      "oracle_matched": false,
+      "control_observation_sha256": "3bcb93078992677c58ddc6a08e3f200ee149d507c675a780db84c1dc72ed4ccb"
+    },
+    "B5-omission": {
+      "structural_accepted": true,
+      "simulation_status": "SUCCESS",
+      "oracle_matched": false,
+      "control_observation_sha256": "2381c0725cc5ae7b14d83f4565a4ea18484e929e3f463178c83bfcf54bae8b8c"
+    },
+    "B5-device": {
+      "structural_accepted": true,
+      "simulation_status": "TIMEOUT",
+      "oracle_matched": false,
+      "control_observation_sha256": "2381c0725cc5ae7b14d83f4565a4ea18484e929e3f463178c83bfcf54bae8b8c"
+    }
+  }
+}
