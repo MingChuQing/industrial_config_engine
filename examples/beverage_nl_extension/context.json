@@ -1,0 +1,659 @@
+{
+  "baseline": "beverage_full/example4; existing six recipes, unchanged twelve-stage shared process",
+  "flavors": [
+    {
+      "index": 0,
+      "name": "orange",
+      "device": "OrangeFill",
+      "fill_rate_ml_s": 200
+    },
+    {
+      "index": 1,
+      "name": "apple",
+      "device": "AppleFill",
+      "fill_rate_ml_s": 180
+    },
+    {
+      "index": 2,
+      "name": "grape",
+      "device": "GrapeFill",
+      "fill_rate_ml_s": 220
+    }
+  ],
+  "size_indices": {
+    "family_2L": 0,
+    "can_330mL": 1,
+    "new_small_250mL": 2
+  },
+  "new_size_engineering_data": {
+    "provenance": "Synthetic precommissioned data supplied to the model for this demonstration, using the established beverage benchmark conventions; not inferred from volume or measured on hardware.",
+    "volume_ml": 250,
+    "format": "small",
+    "closure_mode": "screw_small",
+    "closure_pr": 3,
+    "infeed_pr": 3,
+    "outfeed_pr": 6,
+    "home_point": 0,
+    "batches": 2,
+    "units_per_batch": 6,
+    "fill_time_rule": "ceil(1000 * volume_ml / fill_rate_ml_s) integer milliseconds",
+    "station_axis_pr": {
+      "empty": {
+        "x": 3,
+        "y": 3
+      },
+      "rinse": {
+        "x": 13,
+        "y": 3
+      },
+      "fill_by_flavor": {
+        "orange": {
+          "x": 4,
+          "y": 12
+        },
+        "apple": {
+          "x": 5,
+          "y": 12
+        },
+        "grape": {
+          "x": 6,
+          "y": 12
+        }
+      },
+      "closure": {
+        "x": 9,
+        "y": 6
+      },
+      "code": {
+        "x": 14,
+        "y": 3
+      },
+      "finished": {
+        "x": 12,
+        "y": 9
+      }
+    },
+    "z_pr": {
+      "entry": 1,
+      "work": 4
+    },
+    "point_allocation": "Append new production points without changing indices 0..32. Reuse common non-filling stations across flavors. Point array indices are production points, not individual motor PR indices."
+  },
+  "baseline_files": {
+    "system_variables.json": {
+      "production_points": [
+        {
+          "name": "Commissioned home PR0",
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "name": "orange family empty entry",
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        {
+          "name": "orange family empty work",
+          "x": 1,
+          "y": 1,
+          "z": 2
+        },
+        {
+          "name": "orange family rinse entry",
+          "x": 13,
+          "y": 1,
+          "z": 1
+        },
+        {
+          "name": "orange family rinse work",
+          "x": 13,
+          "y": 1,
+          "z": 2
+        },
+        {
+          "name": "orange family fill entry",
+          "x": 4,
+          "y": 10,
+          "z": 1
+        },
+        {
+          "name": "orange family fill work",
+          "x": 4,
+          "y": 10,
+          "z": 2
+        },
+        {
+          "name": "orange family closure entry",
+          "x": 7,
+          "y": 4,
+          "z": 1
+        },
+        {
+          "name": "orange family closure work",
+          "x": 7,
+          "y": 4,
+          "z": 2
+        },
+        {
+          "name": "orange family code entry",
+          "x": 14,
+          "y": 1,
+          "z": 1
+        },
+        {
+          "name": "orange family code work",
+          "x": 14,
+          "y": 1,
+          "z": 2
+        },
+        {
+          "name": "orange family finished entry",
+          "x": 10,
+          "y": 7,
+          "z": 1
+        },
+        {
+          "name": "orange family finished work",
+          "x": 10,
+          "y": 7,
+          "z": 2
+        },
+        {
+          "name": "orange can empty entry",
+          "x": 2,
+          "y": 2,
+          "z": 1
+        },
+        {
+          "name": "orange can empty work",
+          "x": 2,
+          "y": 2,
+          "z": 3
+        },
+        {
+          "name": "orange can rinse entry",
+          "x": 13,
+          "y": 2,
+          "z": 1
+        },
+        {
+          "name": "orange can rinse work",
+          "x": 13,
+          "y": 2,
+          "z": 3
+        },
+        {
+          "name": "orange can fill entry",
+          "x": 4,
+          "y": 11,
+          "z": 1
+        },
+        {
+          "name": "orange can fill work",
+          "x": 4,
+          "y": 11,
+          "z": 3
+        },
+        {
+          "name": "orange can closure entry",
+          "x": 8,
+          "y": 5,
+          "z": 1
+        },
+        {
+          "name": "orange can closure work",
+          "x": 8,
+          "y": 5,
+          "z": 3
+        },
+        {
+          "name": "orange can code entry",
+          "x": 14,
+          "y": 2,
+          "z": 1
+        },
+        {
+          "name": "orange can code work",
+          "x": 14,
+          "y": 2,
+          "z": 3
+        },
+        {
+          "name": "orange can finished entry",
+          "x": 11,
+          "y": 8,
+          "z": 1
+        },
+        {
+          "name": "orange can finished work",
+          "x": 11,
+          "y": 8,
+          "z": 3
+        },
+        {
+          "name": "apple family fill entry",
+          "x": 5,
+          "y": 10,
+          "z": 1
+        },
+        {
+          "name": "apple family fill work",
+          "x": 5,
+          "y": 10,
+          "z": 2
+        },
+        {
+          "name": "apple can fill entry",
+          "x": 5,
+          "y": 11,
+          "z": 1
+        },
+        {
+          "name": "apple can fill work",
+          "x": 5,
+          "y": 11,
+          "z": 3
+        },
+        {
+          "name": "grape family fill entry",
+          "x": 6,
+          "y": 10,
+          "z": 1
+        },
+        {
+          "name": "grape family fill work",
+          "x": 6,
+          "y": 10,
+          "z": 2
+        },
+        {
+          "name": "grape can fill entry",
+          "x": 6,
+          "y": 11,
+          "z": 1
+        },
+        {
+          "name": "grape can fill work",
+          "x": 6,
+          "y": 11,
+          "z": 3
+        }
+      ],
+      "recipes": [
+        {
+          "id": "orange_family",
+          "flavor": "orange",
+          "format": "family",
+          "volume_ml": 2000,
+          "fill_device": "OrangeFill",
+          "fill_rate_ml_s": 200,
+          "fill_time_ms": 10000,
+          "closure_mode": "screw_large",
+          "closure_pr": 1,
+          "infeed_pr": 1,
+          "outfeed_pr": 4,
+          "home_point": 0,
+          "batches": 2,
+          "units_per_batch": 6,
+          "empty_entry": 1,
+          "empty_work": 2,
+          "rinse_entry": 3,
+          "rinse_work": 4,
+          "fill_entry": 5,
+          "fill_work": 6,
+          "closure_entry": 7,
+          "closure_work": 8,
+          "code_entry": 9,
+          "code_work": 10,
+          "finished_entry": 11,
+          "finished_work": 12
+        },
+        {
+          "id": "orange_can",
+          "flavor": "orange",
+          "format": "can",
+          "volume_ml": 330,
+          "fill_device": "OrangeFill",
+          "fill_rate_ml_s": 200,
+          "fill_time_ms": 1650,
+          "closure_mode": "seam_can",
+          "closure_pr": 2,
+          "infeed_pr": 2,
+          "outfeed_pr": 5,
+          "home_point": 0,
+          "batches": 2,
+          "units_per_batch": 6,
+          "empty_entry": 13,
+          "empty_work": 14,
+          "rinse_entry": 15,
+          "rinse_work": 16,
+          "fill_entry": 17,
+          "fill_work": 18,
+          "closure_entry": 19,
+          "closure_work": 20,
+          "code_entry": 21,
+          "code_work": 22,
+          "finished_entry": 23,
+          "finished_work": 24
+        },
+        {
+          "id": "apple_family",
+          "flavor": "apple",
+          "format": "family",
+          "volume_ml": 2000,
+          "fill_device": "AppleFill",
+          "fill_rate_ml_s": 180,
+          "fill_time_ms": 11112,
+          "closure_mode": "screw_large",
+          "closure_pr": 1,
+          "infeed_pr": 1,
+          "outfeed_pr": 4,
+          "home_point": 0,
+          "batches": 2,
+          "units_per_batch": 6,
+          "empty_entry": 1,
+          "empty_work": 2,
+          "rinse_entry": 3,
+          "rinse_work": 4,
+          "fill_entry": 25,
+          "fill_work": 26,
+          "closure_entry": 7,
+          "closure_work": 8,
+          "code_entry": 9,
+          "code_work": 10,
+          "finished_entry": 11,
+          "finished_work": 12
+        },
+        {
+          "id": "apple_can",
+          "flavor": "apple",
+          "format": "can",
+          "volume_ml": 330,
+          "fill_device": "AppleFill",
+          "fill_rate_ml_s": 180,
+          "fill_time_ms": 1834,
+          "closure_mode": "seam_can",
+          "closure_pr": 2,
+          "infeed_pr": 2,
+          "outfeed_pr": 5,
+          "home_point": 0,
+          "batches": 2,
+          "units_per_batch": 6,
+          "empty_entry": 13,
+          "empty_work": 14,
+          "rinse_entry": 15,
+          "rinse_work": 16,
+          "fill_entry": 27,
+          "fill_work": 28,
+          "closure_entry": 19,
+          "closure_work": 20,
+          "code_entry": 21,
+          "code_work": 22,
+          "finished_entry": 23,
+          "finished_work": 24
+        },
+        {
+          "id": "grape_family",
+          "flavor": "grape",
+          "format": "family",
+          "volume_ml": 2000,
+          "fill_device": "GrapeFill",
+          "fill_rate_ml_s": 220,
+          "fill_time_ms": 9091,
+          "closure_mode": "screw_large",
+          "closure_pr": 1,
+          "infeed_pr": 1,
+          "outfeed_pr": 4,
+          "home_point": 0,
+          "batches": 2,
+          "units_per_batch": 6,
+          "empty_entry": 1,
+          "empty_work": 2,
+          "rinse_entry": 3,
+          "rinse_work": 4,
+          "fill_entry": 29,
+          "fill_work": 30,
+          "closure_entry": 7,
+          "closure_work": 8,
+          "code_entry": 9,
+          "code_work": 10,
+          "finished_entry": 11,
+          "finished_work": 12
+        },
+        {
+          "id": "grape_can",
+          "flavor": "grape",
+          "format": "can",
+          "volume_ml": 330,
+          "fill_device": "GrapeFill",
+          "fill_rate_ml_s": 220,
+          "fill_time_ms": 1500,
+          "closure_mode": "seam_can",
+          "closure_pr": 2,
+          "infeed_pr": 2,
+          "outfeed_pr": 5,
+          "home_point": 0,
+          "batches": 2,
+          "units_per_batch": 6,
+          "empty_entry": 13,
+          "empty_work": 14,
+          "rinse_entry": 15,
+          "rinse_work": 16,
+          "fill_entry": 31,
+          "fill_work": 32,
+          "closure_entry": 19,
+          "closure_work": 20,
+          "code_entry": 21,
+          "code_work": 22,
+          "finished_entry": 23,
+          "finished_work": 24
+        }
+      ],
+      "recipe_lookup": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          5
+        ]
+      ],
+      "last_x_pr": -1,
+      "last_y_pr": -1,
+      "last_z_pr": -1,
+      "completed": 0
+    },
+    "layered/L3_group/run_recipe.group.json": {
+      "type": "group",
+      "name": "run recipe",
+      "mode": "sequence",
+      "args": [
+        {
+          "index": 0,
+          "name": "flavor",
+          "type": "u16",
+          "min": 0,
+          "max": 2
+        },
+        {
+          "index": 1,
+          "name": "specification",
+          "type": "u16",
+          "min": 0,
+          "max": 1
+        }
+      ],
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "recipe_index",
+            "${recipe_lookup[flavor][specification]}"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "completed",
+            0
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "last_x_pr",
+            -1
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "last_y_pr",
+            -1
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "last_z_pr",
+            -1
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_01_system_initialization.group.json",
+          "params": []
+        },
+        {
+          "type": "group",
+          "name": "Production batches",
+          "mode": "loop",
+          "loop": {
+            "type": "count",
+            "count": 2
+          },
+          "body": [
+            {
+              "type": "group",
+              "template": "L3_group/produce_batch.group.json",
+              "params": []
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_11_cip_cleaning_sanitizing.group.json",
+          "params": []
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_12_homing_standby.group.json",
+          "params": []
+        }
+      ]
+    },
+    "layered/L4_flow/apple_can.json": {
+      "type": "flow",
+      "name": "apple_can",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/run_recipe.group.json",
+          "params": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    "layered/L4_flow/apple_family.json": {
+      "type": "flow",
+      "name": "apple_family",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/run_recipe.group.json",
+          "params": [
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    "layered/L4_flow/grape_can.json": {
+      "type": "flow",
+      "name": "grape_can",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/run_recipe.group.json",
+          "params": [
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    "layered/L4_flow/grape_family.json": {
+      "type": "flow",
+      "name": "grape_family",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/run_recipe.group.json",
+          "params": [
+            2,
+            0
+          ]
+        }
+      ]
+    },
+    "layered/L4_flow/orange_can.json": {
+      "type": "flow",
+      "name": "orange_can",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/run_recipe.group.json",
+          "params": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "layered/L4_flow/orange_family.json": {
+      "type": "flow",
+      "name": "orange_family",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/run_recipe.group.json",
+          "params": [
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  },
+  "frozen_dependencies": "All remaining baseline L1/L2/L3 files and device_registry.json are trusted and immutable; only the size bound in run_recipe may be extended. Existing group bodies implement all twelve stages."
+}

@@ -1,0 +1,8 @@
+Generation task envelope (2026-10-03; fresh delegated context, no parent conversation history):
+
+You are the generator in a newly recorded one-pass natural-language configuration demonstration. Read ONLY these two task input files: D:/楚楚文档/tmp/industrial_config_engine/examples/beverage_nl_extension/prompt.txt and context.json in the same directory. They contain the user's natural-language extension requirement, supplied engineering data, baseline interfaces, and exact output contract. Do not inspect any other repository files, examples, prior outputs, other agent messages, validators, or expected answers. Generate the requested complete JSON changes object from those inputs. Save your original first completed response verbatim once as UTF-8 D:/楚楚文档/tmp/industrial_config_engine/examples/beverage_nl_extension/raw_response.json using file tools. You may reason and calculate while drafting; do not run validators, simulate, correct after validation, or regenerate after saving. Do not edit existing files or write other files. This generates configuration data only and must not contact hardware. Return a short note with output path, inputs read, and disclose that this is a fresh generation attempt by the current Codex model, not DeepSeek or a historical output. No fabricated success or timing claims.
+
+Coordinator progress message before completion:
+进度提示：请保持一次原始生成，完成后直接保存raw_response.json并返回；不要自行验证或修复。我们在外部单独验证。
+
+The runtime also supplies its standard agent/tool instructions; the exact model version and decoding settings are not exposed by this task interface. This file records the task-specific generation envelope, not a claim that all service-side instructions are reproduced.

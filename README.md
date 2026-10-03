@@ -1,7 +1,7 @@
 
 # Industrial Config Engine
 
-论文与复现实验快照：标签 **icdm2026-review-revision-20261003**。对应修订稿源码和配图见 [docs/paper-revision-20261003/](docs/paper-revision-20261003/)。这是当前评审修订稿（7 页），尚待压缩至 Teen Track 要求的 5 页；不是已完成提交的 camera-ready 版本。
+论文与复现实验快照：标签 **icdm2026-review-revision-20261003**。对应修订稿源码和配图见 [docs/paper-revision-20261003/](docs/paper-revision-20261003/)。这是打标签时的评审修订稿快照（7 页），尚待压缩至 Teen Track 要求的 5 页；不是已完成提交的 camera-ready 版本。
 
 ## 一条命令重现配置缺陷、检查结果和修正
 
@@ -50,7 +50,7 @@ python scripts/verify_defects.py
 
 实现入口见 [verify_defects.py](scripts/verify_defects.py)、[案例定义](scripts/defect_cases.py) 和 [C++ 探针](tests/defect_probe.cpp)。本命令与下方饮料协议/设备故障验证互补：**配置缺陷**与**设备故障**分别统计。
 
-## 独立人工语义审核材料（R3-4）
+## 独立人工语义审核材料（可选研究工具）
 
 在仓库根目录运行：
 
@@ -68,7 +68,7 @@ python scripts/review_semantics.py score --reviewer-a build/semantic-review/revi
 
 计分工具检查记录完整性并输出一致率、Cohen's κ、分歧项和相对参考标签的误判。参考标签是构造实验的预期，不代表已经取得人工共识。空表和不符合独立性声明的表不会产生有效的一致率报告；重复准备材料会保留已填写的判定表。
 
-**当前只提供审核协议和工具，尚无独立真人审核结果。** 自动模拟批准、恢复基准后的测试通过、脚本单元测试都不能作为人工审核可靠性的证据。
+**这些工具供后续研究使用；当前论文不评估人工审核可靠性，也没有独立真人审核结果。** 自动模拟批准、恢复基准后的测试通过、脚本单元测试都不能作为人工审核可靠性的证据。
 
 ## 一条命令验证完整饮料生产线数据
 
@@ -105,6 +105,18 @@ python scripts/verify_beverage_full.py --cpp
 PowerShell 对应命令为 `.\verify.ps1 -Cpp`。
 
 `examples/example4/` 是较早的单条饮料线迁移案例；`examples/beverage_suite/` 是较早的简化九配方案例。它们与上述完整十二阶段案例的工艺范围不同，不能混用统计结果。
+
+## 自然语言扩展演示：增加三种250mL配方
+
+本次新增一份独立记录的 Codex 生成演示：以已有六配方和给定模拟工程数据为上下文，提出增加三种250mL配方的自然语言要求，保留首次原始输出，再应用和验证配置增量。详细输入、原始响应及来源说明见 [beverage_nl_extension/README.txt](examples/beverage_nl_extension/README.txt)。
+
+~~~bash
+python scripts/verify_beverage_nl_extension.py
+~~~
+
+该命令使用 Python 3.10+ 和标准库，重放保存的响应并重新验证，不重新调用 LLM。它先核对输入与基线，按冻结的容量、流量公式和点位要求检查新增数据及修改边界，再运行九个配方和11个故障场景，与固定单体参考比较带时间戳轨迹，并重新检查原有六配方行为不变。每次使用独立的 build/beverage-nl-extension/ 子目录，保留原始输入、候选配置、增量 diff 和实测报告；失败返回非零退出码。哈希校验只允许CRLF/LF文本换行差异。
+
+首次原始输出未经配置修正：9项编辑涉及5个文件，净增228行；三个新入口分别调用 [0,2]、[1,2]、[2,2]。这不是历史 DeepSeek T1–T3 的输出，也不是生成成功率实验。预置点位、设备与流量由输入提供，模型复用已有工序并实例化这些数据。软件模拟不能替代实际设备标定与部署审核。
 
 ## 📖 Introduction
 
