@@ -1,0 +1,571 @@
+﻿配方,阶段,步序,类型,执行频次,设备,生产点位ID,目标/协议/字段,动作,等待ms/规则,成功条件,失败代码,来源
+orange_small,1,1,legacy,每配方一次,,,stage,更新UI=01,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,2,legacy,每配方一次,OrangeFill,,05 00 00 00 00,Write OrangeFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,3,legacy,每配方一次,AppleFill,,05 00 00 00 00,Write AppleFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,4,legacy,每配方一次,GrapeFill,,05 00 00 00 00,Write GrapeFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,5,legacy,每配方一次,Gripper,,05 00 00 00 00,Write Gripper register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,6,legacy,每配方一次,CapFeeder,,05 00 00 00 00,Write CapFeeder register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,7,legacy,每配方一次,RinseValve,,05 00 12 00 00,Write RinseValve register 0012,,响应回显=05 00 12 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,8,legacy,每配方一次,CIPValve,,05 00 13 00 00,Write CIPValve register 0013,,响应回显=05 00 13 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,9,legacy,每配方一次,CIPValve,,05 00 14 00 00,Write CIPValve register 0014,,响应回显=05 00 14 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,10,legacy,每配方一次,Relay,,05 00 08 00 00,Write Relay register 0008,,响应回显=05 00 08 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,11,legacy,每配方一次,Relay,,05 00 09 00 00,Write Relay register 0009,,响应回显=05 00 09 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,12,legacy,每配方一次,Relay,,05 00 0A 00 00,Write Relay register 000A,,响应回显=05 00 0A 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,13,legacy,每配方一次,Relay,,05 00 0B 00 00,Write Relay register 000B,,响应回显=05 00 0B 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,14,legacy,每配方一次,Relay,,05 00 0C 00 00,Write Relay register 000C,,响应回显=05 00 0C 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,15,legacy,每配方一次,Relay,,05 00 0D 00 00,Write Relay register 000D,,响应回显=05 00 0D 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,16,legacy,每配方一次,Relay,,05 00 0E 00 00,Write Relay register 000E,,响应回显=05 00 0E 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,17,trigger,每配方一次,X,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,18,trigger,每配方一次,Y1,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,19,trigger,每配方一次,Y2,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,20,trigger,每配方一次,Z,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,21,ready,每配方一次,X,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,22,ready,每配方一次,Y1,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,23,ready,每配方一次,Y2,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,24,ready,每配方一次,Z,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,25,legacy,每配方一次,,,last_x_pr,设置变量=0,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,26,legacy,每配方一次,,,last_y_pr,设置变量=0,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,27,legacy,每配方一次,,,last_z_pr,设置变量=0,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,28,refresh,每配方一次,X / Y1 / Y2 / Z,,"FC03 0x602C, 2 registers",缓存四电机坐标；更新centerX/centerY/centerZ（centerY=Y1）,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,29,legacy,每配方一次,X,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",X alarm self-check,,equal 0,X_ALARM,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,30,legacy,每配方一次,Y1,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Y1: Y alarm self-check,,equal 0,Y_ALARM,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,31,legacy,每配方一次,Y2,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Y2: Y alarm self-check,,equal 0,Y_ALARM_Y2,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,32,legacy,每配方一次,Z,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Z alarm self-check,,equal 0,Z_ALARM,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,33,legacy,每配方一次,X,,"03 10 03 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""int""}",缓存xStatus,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,34,legacy,每配方一次,Y1,,"03 10 03 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""int""}",缓存yStatus,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,35,legacy,每配方一次,Y2,,"03 10 03 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""int""}",缓存yStatus_Y2,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,36,legacy,每配方一次,Z,,"03 10 03 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""int""}",缓存zStatus,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,1,37,legacy,每配方一次,,,,显式等待(ms),1000,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+orange_small,2,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=02,,,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+orange_small,2,2,legacy,每瓶一次；每配方12次,Relay,,05 00 08 FF 00,Write Relay register 0008,,响应回显=05 00 08 FF 00,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+orange_small,2,3,trigger,每瓶一次；每配方12次,Infeed,,FC06 0x6002=19,触发预设PR3,,写入响应回显,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+orange_small,2,4,ready,每瓶一次；每配方12次,Infeed,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,EMPTY_FEED_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+orange_small,2,5,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 34 00 01,Check bottle sensor and wait (5s),每100ms；截止5000ms,04 02 00 01,BOTTLE_SENSOR_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+orange_small,2,6,legacy,每瓶一次；每配方12次,Relay,,05 00 08 00 00,Write Relay register 0008,,响应回显=05 00 08 00 00,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+orange_small,2,7,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,33,empty_entry,"移动至 small empty entry；PR=(3,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+orange_small,2,8,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,34,empty_work,"移动至 small empty work；PR=(3,3,3,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+orange_small,2,9,coil,每瓶一次；每配方12次,Gripper,,FC05 0x0000,开启,,写入响应回显,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+orange_small,2,10,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 41 00 01,Check pick sensor,每50ms；截止3000ms,04 02 00 01,PICK_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+orange_small,3,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=03,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+orange_small,3,2,present,每瓶一次；每配方12次,ContainerSensor,,FC04 0x0001,确认夹持容器,每20ms；截止2000ms,04 02 00 01,NO_CONTAINER,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+orange_small,3,3,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 34 00 01,Check station 1 sensor,每50ms；截止3000ms,04 02 00 01,POS1_TIMEOUT,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+orange_small,3,4,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 35 00 01,Check station 2 sensor,每50ms；截止3000ms,04 02 00 01,POS2_TIMEOUT,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+orange_small,3,5,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 36 00 01,Check station 3 sensor,每50ms；截止3000ms,04 02 00 01,POS3_TIMEOUT,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+orange_small,3,6,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 37 00 01,Check station 4 sensor,每50ms；截止3000ms,04 02 00 01,POS4_TIMEOUT,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+orange_small,3,7,legacy,每瓶一次；每配方12次,BottleSensor,,"04 00 34 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存pos1State,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+orange_small,3,8,legacy,每瓶一次；每配方12次,BottleSensor,,"04 00 35 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存pos2State,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+orange_small,3,9,legacy,每瓶一次；每配方12次,BottleSensor,,"04 00 36 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存pos3State,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+orange_small,3,10,legacy,每瓶一次；每配方12次,BottleSensor,,"04 00 37 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存pos4State,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+orange_small,3,11,legacy,每瓶一次；每配方12次,FlowMeter,,"03 00 20 00 02；解码={""cacheStartByte"":2,""cacheLength"":4,""cacheEndian"":""big"",""valueType"":""int""}",缓存bottleCount,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+orange_small,3,12,legacy,每瓶一次；每配方12次,,,BottleState,更新UI=all ready,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+orange_small,4,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=04,,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,33,empty_entry,"移动至 small empty entry；PR=(3,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,35,rinse_entry,"移动至 small rinse entry；PR=(13,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,4,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,36,rinse_work,"移动至 small rinse work；PR=(13,3,3,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,5,legacy,每瓶一次；每配方12次,RinseValve,,05 00 12 FF 00,open Rinse valve,,响应回显=05 00 12 FF 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,6,legacy,每瓶一次；每配方12次,,,,显式等待(ms),5000,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,7,legacy,每瓶一次；每配方12次,RinseValve,,05 00 12 00 00,close Rinse valve,,响应回显=05 00 12 00 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,8,legacy,每瓶一次；每配方12次,PressureSensor,,"03 00 10 00 02；解码={""valueStartByte"":2,""valueLength"":4,""valueEndian"":""little"",""valueType"":""float""}",check Rinse pressure>=0.2MPa,,greaterOrEqual 0.2,RINSE_PRESSURE_LOW,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,9,legacy,每瓶一次；每配方12次,CIPValve,,05 00 13 FF 00,open Sanitize valve,,响应回显=05 00 13 FF 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,10,legacy,每瓶一次；每配方12次,,,,显式等待(ms),3000,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,11,legacy,每瓶一次；每配方12次,CIPValve,,05 00 13 00 00,close Sanitize valve,,响应回显=05 00 13 00 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,12,legacy,每瓶一次；每配方12次,CIPValve,,05 00 14 FF 00,open Drain valve,,响应回显=05 00 14 FF 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,13,legacy,每瓶一次；每配方12次,,,,显式等待(ms),3000,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,14,legacy,每瓶一次；每配方12次,CIPValve,,05 00 14 00 00,close Drain valve,,响应回显=05 00 14 00 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,15,legacy,每瓶一次；每配方12次,,,WashState,更新UI=done,,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,4,16,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,35,rinse_entry,"移动至 small rinse entry；PR=(13,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+orange_small,5,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=05,,,,candidate:layered/L3_group/step_05_filling_positioning.group.json
+orange_small,5,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,37,fill_entry,"移动至 orange small fill entry；PR=(4,12,12,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+orange_small,5,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,38,fill_work,"移动至 orange small fill work；PR=(4,12,12,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+orange_small,5,4,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 42 00 01,Check station 1 arrival,每50ms；截止3000ms,04 02 00 01,FILL1_POS_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+orange_small,5,5,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 43 00 01,Check station 2 arrival,每50ms；截止3000ms,04 02 00 01,FILL2_POS_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+orange_small,5,6,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 44 00 01,Check station 3 arrival,每50ms；截止3000ms,04 02 00 01,FILL3_POS_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+orange_small,5,7,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 45 00 01,Check station 4 arrival,每50ms；截止3000ms,04 02 00 01,FILL4_POS_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+orange_small,6,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=06,,,,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,6,2,legacy,每瓶一次；每配方12次,FlowMeter,,06 00 01 00 00,Write FlowMeter register 0001,,响应回显=06 00 01 00 00,,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,6,3,volume,每瓶一次；每配方12次,OrangeFill,,FC06 0x0010,设置容量mL=250,,写入响应回显,,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,6,4,fill_time,每瓶一次；每配方12次,OrangeFill,,FC06 0x0011,设置灌装ms=1250,,写入响应回显,,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,6,5,coil,每瓶一次；每配方12次,OrangeFill,,FC05 0x0000,开启,,写入响应回显,,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,6,6,ready,每瓶一次；每配方12次,OrangeFill,,FC04 0x0000,等待设备完成,每20ms；截止20000ms,04 02 00 01,FILL_TIMEOUT,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,6,7,legacy,每瓶一次；每配方12次,FlowMeter,,"03 00 00 00 02；解码={""valueStartByte"":2,""valueLength"":4,""valueEndian"":""little"",""valueType"":""float""}",检查流量达到配方容量（旧name仍写500ml；实际compareValue如下）,,greaterOrEqual 250,FLOW_NOT_REACHED,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,6,8,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 38 00 01,Check level sensor,每50ms；截止8000ms,04 02 00 01,LEVEL_TIMEOUT,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,6,9,coil,每瓶一次；每配方12次,OrangeFill,,FC05 0x0000,关闭,,写入响应回显,,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,6,10,repeat_legacy,每瓶一次；每配方12次,PressureSensor,,03 00 12 00 02,连续重复检查4次；无额外等待,,greaterOrEqual 0.1,FILL_PRESSURE_LOW,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,6,11,legacy,每瓶一次；每配方12次,FlowMeter,,"03 00 00 00 02；解码={""cacheStartByte"":2,""cacheLength"":4,""cacheEndian"":""little"",""valueType"":""float""}",缓存totalVolume,,,,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,6,12,read_volume,每瓶一次；每配方12次,OrangeFill,,FC03 0x0012,读实灌量dispensed_ml并刷新dispensedMl,,,,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,6,13,legacy,每瓶一次；每配方12次,,,FillState,更新UI=done,,,,candidate:layered/L3_group/step_06_filling.group.json
+orange_small,7,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=07,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+orange_small,7,2,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 38 00 01,Check level 1,每50ms；截止3000ms,04 02 00 01,RECHECK1_FAIL,candidate:layered/L3_group/step_07_level_recheck.group.json
+orange_small,7,3,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 39 00 01,Check level 2,每50ms；截止3000ms,04 02 00 01,RECHECK2_FAIL,candidate:layered/L3_group/step_07_level_recheck.group.json
+orange_small,7,4,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 3A 00 01,Check level 3,每50ms；截止3000ms,04 02 00 01,RECHECK3_FAIL,candidate:layered/L3_group/step_07_level_recheck.group.json
+orange_small,7,5,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 3B 00 01,Check level 4,每50ms；截止3000ms,04 02 00 01,RECHECK4_FAIL,candidate:layered/L3_group/step_07_level_recheck.group.json
+orange_small,7,6,legacy,每瓶一次；每配方12次,LevelSensor,,"04 00 38 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存lv1,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+orange_small,7,7,legacy,每瓶一次；每配方12次,LevelSensor,,"04 00 39 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存lv2,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+orange_small,7,8,legacy,每瓶一次；每配方12次,LevelSensor,,"04 00 3A 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存lv3,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+orange_small,7,9,legacy,每瓶一次；每配方12次,LevelSensor,,"04 00 3B 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存lv4,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+orange_small,7,10,legacy,每瓶一次；每配方12次,,,CheckState,更新UI=qualified,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+orange_small,8,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=08,,,,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,37,fill_entry,"移动至 orange small fill entry；PR=(4,12,12,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,39,closure_entry,"移动至 small closure entry；PR=(9,6,6,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,4,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,40,closure_work,"移动至 small closure work；PR=(9,6,6,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,5,coil,每瓶一次；每配方12次,CapFeeder,,FC05 0x0000,开启,,写入响应回显,,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,6,trigger,每瓶一次；每配方12次,Closure,,FC06 0x6002=19,触发预设PR3,,写入响应回显,,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,7,ready,每瓶一次；每配方12次,Closure,,FC04 0x0000,等待设备完成,每20ms；截止5000ms,04 02 00 01,CLOSURE_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,8,legacy,每瓶一次；每配方12次,Relay,,05 00 0B FF 00,Capping machine start,,响应回显=05 00 0B FF 00,,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,9,legacy,每瓶一次；每配方12次,,,,显式等待(ms),3000,,,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,10,legacy,每瓶一次；每配方12次,Torque,,"03 00 30 00 02；解码={""valueStartByte"":2,""valueLength"":4,""valueEndian"":""little"",""valueType"":""float""}",check Cappingtorque>=2.0N·m,,greaterOrEqual 2.0,TORQUE_LOW,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,11,legacy,每瓶一次；每配方12次,Relay,,05 00 0B 00 00,Capping machine stop,,响应回显=05 00 0B 00 00,,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,12,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 46 00 01,check Cap checksensor,每50ms；截止3000ms,04 02 00 01,CAP_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,13,legacy,每瓶一次；每配方12次,Torque,,"03 00 30 00 02；解码={""cacheStartByte"":2,""cacheLength"":4,""cacheEndian"":""little"",""valueType"":""float""}",缓存torqueValue,,,,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,14,legacy,每瓶一次；每配方12次,,,CapState,更新UI=done,,,,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,15,coil,每瓶一次；每配方12次,CapFeeder,,FC05 0x0000,关闭,,写入响应回显,,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,8,16,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,39,closure_entry,"移动至 small closure entry；PR=(9,6,6,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+orange_small,9,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=09,,,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+orange_small,9,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,41,code_entry,"移动至 small code entry；PR=(14,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_09_coding_labeling.group.json
+orange_small,9,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,42,code_work,"移动至 small code work；PR=(14,3,3,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_09_coding_labeling.group.json
+orange_small,9,4,legacy,每瓶一次；每配方12次,Relay,,05 00 0C FF 00,Coder mark,,响应回显=05 00 0C FF 00,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+orange_small,9,5,legacy,每瓶一次；每配方12次,Relay,,05 00 0C 00 00,Coder stop,,响应回显=05 00 0C 00 00,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+orange_small,9,6,legacy,每瓶一次；每配方12次,Relay,,05 00 0D FF 00,Labeler apply,,响应回显=05 00 0D FF 00,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+orange_small,9,7,legacy,每瓶一次；每配方12次,Relay,,05 00 0D 00 00,Labeler stop,,响应回显=05 00 0D 00 00,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+orange_small,9,8,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 47 00 01,Check coding sensor,每50ms；截止3000ms,04 02 00 01,CODE_POS_TIMEOUT,candidate:layered/L3_group/step_09_coding_labeling.group.json
+orange_small,9,9,legacy,每瓶一次；每配方12次,,,CodeState,更新UI=done,,,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+orange_small,9,10,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,41,code_entry,"移动至 small code entry；PR=(14,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_09_coding_labeling.group.json
+orange_small,10,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=10,,,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+orange_small,10,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,43,finished_entry,"移动至 small finished entry；PR=(12,9,9,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+orange_small,10,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,44,finished_work,"移动至 small finished work；PR=(12,9,9,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+orange_small,10,4,coil,每瓶一次；每配方12次,Gripper,,FC05 0x0000,关闭,,写入响应回显,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+orange_small,10,5,legacy,每瓶一次；每配方12次,Relay,,05 00 08 FF 00,Write Relay register 0008,,响应回显=05 00 08 FF 00,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+orange_small,10,6,trigger,每瓶一次；每配方12次,Outfeed,,FC06 0x6002=22,触发预设PR6,,写入响应回显,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+orange_small,10,7,ready,每瓶一次；每配方12次,Outfeed,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,OUTFEED_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+orange_small,10,8,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 40 00 01,Check discharge sensor,每100ms；截止5000ms,04 02 00 01,OUT_SENSOR_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+orange_small,10,9,legacy,每瓶一次；每配方12次,FlowMeter,,"03 00 20 00 02；解码={""cacheStartByte"":2,""cacheLength"":4,""cacheEndian"":""big"",""valueType"":""int""}",缓存totalCount,,,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+orange_small,10,10,legacy,每瓶一次；每配方12次,Relay,,05 00 08 00 00,Write Relay register 0008,,响应回显=05 00 08 00 00,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+orange_small,10,11,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,43,finished_entry,"移动至 small finished entry；PR=(12,9,9,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+orange_small,10,12,count,每瓶一次；每配方12次,,,completed,完成计数加1并刷新UI,,,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+orange_small,11,1,legacy,每配方一次,,,stage,更新UI=11,,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,2,legacy,每配方一次,CIPValve,,05 00 13 FF 00,Open CIP valve,,响应回显=05 00 13 FF 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,3,legacy,每配方一次,Relay,,05 00 0E FF 00,CIP pump start,,响应回显=05 00 0E FF 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,4,legacy,每配方一次,,,,显式等待(ms),120000,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,5,legacy,每配方一次,PressureSensor,,"03 00 10 00 02；解码={""valueStartByte"":2,""valueLength"":4,""valueEndian"":""little"",""valueType"":""float""}",Check CIP pressure >= 0.3MPa,,greaterOrEqual 0.3,CIP_PRESSURE_LOW,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,6,legacy,每配方一次,CIPValve,,05 00 14 FF 00,open Drain valve,,响应回显=05 00 14 FF 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,7,legacy,每配方一次,,,,显式等待(ms),30000,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,8,legacy,每配方一次,CIPValve,,05 00 14 00 00,close Drain valve,,响应回显=05 00 14 00 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,9,legacy,每配方一次,Relay,,05 00 0E 00 00,CIP pump stop,,响应回显=05 00 0E 00 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,10,legacy,每配方一次,RinseValve,,05 00 12 FF 00,open fresh water Rinse valve,,响应回显=05 00 12 FF 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,11,legacy,每配方一次,,,,显式等待(ms),20000,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,12,legacy,每配方一次,RinseValve,,05 00 12 00 00,close fresh water Rinse valve,,响应回显=05 00 12 00 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,13,legacy,每配方一次,CIPValve,,05 00 13 00 00,Close CIP valve,,响应回显=05 00 13 00 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,11,14,legacy,每配方一次,,,CIPState,更新UI=done,,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+orange_small,12,1,legacy,每配方一次,,,stage,更新UI=12,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,2,legacy,每配方一次,OrangeFill,,05 00 00 00 00,Write OrangeFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,3,legacy,每配方一次,AppleFill,,05 00 00 00 00,Write AppleFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,4,legacy,每配方一次,GrapeFill,,05 00 00 00 00,Write GrapeFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,5,legacy,每配方一次,Gripper,,05 00 00 00 00,Write Gripper register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,6,legacy,每配方一次,CapFeeder,,05 00 00 00 00,Write CapFeeder register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,7,legacy,每配方一次,RinseValve,,05 00 12 00 00,Write RinseValve register 0012,,响应回显=05 00 12 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,8,legacy,每配方一次,CIPValve,,05 00 13 00 00,Write CIPValve register 0013,,响应回显=05 00 13 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,9,legacy,每配方一次,CIPValve,,05 00 14 00 00,Write CIPValve register 0014,,响应回显=05 00 14 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,10,legacy,每配方一次,Relay,,05 00 08 00 00,Write Relay register 0008,,响应回显=05 00 08 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,11,legacy,每配方一次,Relay,,05 00 09 00 00,Write Relay register 0009,,响应回显=05 00 09 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,12,legacy,每配方一次,Relay,,05 00 0A 00 00,Write Relay register 000A,,响应回显=05 00 0A 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,13,legacy,每配方一次,Relay,,05 00 0B 00 00,Write Relay register 000B,,响应回显=05 00 0B 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,14,legacy,每配方一次,Relay,,05 00 0C 00 00,Write Relay register 000C,,响应回显=05 00 0C 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,15,legacy,每配方一次,Relay,,05 00 0D 00 00,Write Relay register 000D,,响应回显=05 00 0D 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,16,legacy,每配方一次,Relay,,05 00 0E 00 00,Write Relay register 000E,,响应回显=05 00 0E 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,17,trigger,每配方一次,X,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,18,trigger,每配方一次,Y1,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,19,trigger,每配方一次,Y2,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,20,trigger,每配方一次,Z,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,21,ready,每配方一次,X,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,22,ready,每配方一次,Y1,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,23,ready,每配方一次,Y2,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,24,ready,每配方一次,Z,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,25,legacy,每配方一次,,,last_x_pr,设置变量=0,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,26,legacy,每配方一次,,,last_y_pr,设置变量=0,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,27,legacy,每配方一次,,,last_z_pr,设置变量=0,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,28,refresh,每配方一次,X / Y1 / Y2 / Z,,"FC03 0x602C, 2 registers",缓存四电机坐标；更新centerX/centerY/centerZ（centerY=Y1）,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,29,legacy,每配方一次,X,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",X alarm self-check,,equal 0,X_ALARM,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,30,legacy,每配方一次,Y1,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Y1: Y alarm self-check,,equal 0,Y_ALARM,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,31,legacy,每配方一次,Y2,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Y2: Y alarm self-check,,equal 0,Y_ALARM_Y2,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,32,legacy,每配方一次,Z,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Z alarm self-check,,equal 0,Z_ALARM,candidate:layered/L3_group/step_12_homing_standby.group.json
+orange_small,12,33,legacy,每配方一次,,,SystemState,更新UI=standby,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,1,1,legacy,每配方一次,,,stage,更新UI=01,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,2,legacy,每配方一次,OrangeFill,,05 00 00 00 00,Write OrangeFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,3,legacy,每配方一次,AppleFill,,05 00 00 00 00,Write AppleFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,4,legacy,每配方一次,GrapeFill,,05 00 00 00 00,Write GrapeFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,5,legacy,每配方一次,Gripper,,05 00 00 00 00,Write Gripper register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,6,legacy,每配方一次,CapFeeder,,05 00 00 00 00,Write CapFeeder register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,7,legacy,每配方一次,RinseValve,,05 00 12 00 00,Write RinseValve register 0012,,响应回显=05 00 12 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,8,legacy,每配方一次,CIPValve,,05 00 13 00 00,Write CIPValve register 0013,,响应回显=05 00 13 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,9,legacy,每配方一次,CIPValve,,05 00 14 00 00,Write CIPValve register 0014,,响应回显=05 00 14 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,10,legacy,每配方一次,Relay,,05 00 08 00 00,Write Relay register 0008,,响应回显=05 00 08 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,11,legacy,每配方一次,Relay,,05 00 09 00 00,Write Relay register 0009,,响应回显=05 00 09 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,12,legacy,每配方一次,Relay,,05 00 0A 00 00,Write Relay register 000A,,响应回显=05 00 0A 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,13,legacy,每配方一次,Relay,,05 00 0B 00 00,Write Relay register 000B,,响应回显=05 00 0B 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,14,legacy,每配方一次,Relay,,05 00 0C 00 00,Write Relay register 000C,,响应回显=05 00 0C 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,15,legacy,每配方一次,Relay,,05 00 0D 00 00,Write Relay register 000D,,响应回显=05 00 0D 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,16,legacy,每配方一次,Relay,,05 00 0E 00 00,Write Relay register 000E,,响应回显=05 00 0E 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,17,trigger,每配方一次,X,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,18,trigger,每配方一次,Y1,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,19,trigger,每配方一次,Y2,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,20,trigger,每配方一次,Z,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,21,ready,每配方一次,X,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,22,ready,每配方一次,Y1,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,23,ready,每配方一次,Y2,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,24,ready,每配方一次,Z,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,25,legacy,每配方一次,,,last_x_pr,设置变量=0,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,26,legacy,每配方一次,,,last_y_pr,设置变量=0,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,27,legacy,每配方一次,,,last_z_pr,设置变量=0,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,28,refresh,每配方一次,X / Y1 / Y2 / Z,,"FC03 0x602C, 2 registers",缓存四电机坐标；更新centerX/centerY/centerZ（centerY=Y1）,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,29,legacy,每配方一次,X,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",X alarm self-check,,equal 0,X_ALARM,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,30,legacy,每配方一次,Y1,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Y1: Y alarm self-check,,equal 0,Y_ALARM,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,31,legacy,每配方一次,Y2,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Y2: Y alarm self-check,,equal 0,Y_ALARM_Y2,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,32,legacy,每配方一次,Z,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Z alarm self-check,,equal 0,Z_ALARM,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,33,legacy,每配方一次,X,,"03 10 03 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""int""}",缓存xStatus,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,34,legacy,每配方一次,Y1,,"03 10 03 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""int""}",缓存yStatus,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,35,legacy,每配方一次,Y2,,"03 10 03 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""int""}",缓存yStatus_Y2,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,36,legacy,每配方一次,Z,,"03 10 03 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""int""}",缓存zStatus,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,1,37,legacy,每配方一次,,,,显式等待(ms),1000,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+apple_small,2,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=02,,,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+apple_small,2,2,legacy,每瓶一次；每配方12次,Relay,,05 00 08 FF 00,Write Relay register 0008,,响应回显=05 00 08 FF 00,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+apple_small,2,3,trigger,每瓶一次；每配方12次,Infeed,,FC06 0x6002=19,触发预设PR3,,写入响应回显,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+apple_small,2,4,ready,每瓶一次；每配方12次,Infeed,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,EMPTY_FEED_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+apple_small,2,5,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 34 00 01,Check bottle sensor and wait (5s),每100ms；截止5000ms,04 02 00 01,BOTTLE_SENSOR_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+apple_small,2,6,legacy,每瓶一次；每配方12次,Relay,,05 00 08 00 00,Write Relay register 0008,,响应回显=05 00 08 00 00,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+apple_small,2,7,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,33,empty_entry,"移动至 small empty entry；PR=(3,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+apple_small,2,8,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,34,empty_work,"移动至 small empty work；PR=(3,3,3,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+apple_small,2,9,coil,每瓶一次；每配方12次,Gripper,,FC05 0x0000,开启,,写入响应回显,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+apple_small,2,10,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 41 00 01,Check pick sensor,每50ms；截止3000ms,04 02 00 01,PICK_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+apple_small,3,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=03,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+apple_small,3,2,present,每瓶一次；每配方12次,ContainerSensor,,FC04 0x0001,确认夹持容器,每20ms；截止2000ms,04 02 00 01,NO_CONTAINER,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+apple_small,3,3,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 34 00 01,Check station 1 sensor,每50ms；截止3000ms,04 02 00 01,POS1_TIMEOUT,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+apple_small,3,4,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 35 00 01,Check station 2 sensor,每50ms；截止3000ms,04 02 00 01,POS2_TIMEOUT,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+apple_small,3,5,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 36 00 01,Check station 3 sensor,每50ms；截止3000ms,04 02 00 01,POS3_TIMEOUT,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+apple_small,3,6,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 37 00 01,Check station 4 sensor,每50ms；截止3000ms,04 02 00 01,POS4_TIMEOUT,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+apple_small,3,7,legacy,每瓶一次；每配方12次,BottleSensor,,"04 00 34 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存pos1State,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+apple_small,3,8,legacy,每瓶一次；每配方12次,BottleSensor,,"04 00 35 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存pos2State,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+apple_small,3,9,legacy,每瓶一次；每配方12次,BottleSensor,,"04 00 36 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存pos3State,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+apple_small,3,10,legacy,每瓶一次；每配方12次,BottleSensor,,"04 00 37 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存pos4State,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+apple_small,3,11,legacy,每瓶一次；每配方12次,FlowMeter,,"03 00 20 00 02；解码={""cacheStartByte"":2,""cacheLength"":4,""cacheEndian"":""big"",""valueType"":""int""}",缓存bottleCount,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+apple_small,3,12,legacy,每瓶一次；每配方12次,,,BottleState,更新UI=all ready,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+apple_small,4,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=04,,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,33,empty_entry,"移动至 small empty entry；PR=(3,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,35,rinse_entry,"移动至 small rinse entry；PR=(13,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,4,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,36,rinse_work,"移动至 small rinse work；PR=(13,3,3,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,5,legacy,每瓶一次；每配方12次,RinseValve,,05 00 12 FF 00,open Rinse valve,,响应回显=05 00 12 FF 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,6,legacy,每瓶一次；每配方12次,,,,显式等待(ms),5000,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,7,legacy,每瓶一次；每配方12次,RinseValve,,05 00 12 00 00,close Rinse valve,,响应回显=05 00 12 00 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,8,legacy,每瓶一次；每配方12次,PressureSensor,,"03 00 10 00 02；解码={""valueStartByte"":2,""valueLength"":4,""valueEndian"":""little"",""valueType"":""float""}",check Rinse pressure>=0.2MPa,,greaterOrEqual 0.2,RINSE_PRESSURE_LOW,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,9,legacy,每瓶一次；每配方12次,CIPValve,,05 00 13 FF 00,open Sanitize valve,,响应回显=05 00 13 FF 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,10,legacy,每瓶一次；每配方12次,,,,显式等待(ms),3000,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,11,legacy,每瓶一次；每配方12次,CIPValve,,05 00 13 00 00,close Sanitize valve,,响应回显=05 00 13 00 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,12,legacy,每瓶一次；每配方12次,CIPValve,,05 00 14 FF 00,open Drain valve,,响应回显=05 00 14 FF 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,13,legacy,每瓶一次；每配方12次,,,,显式等待(ms),3000,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,14,legacy,每瓶一次；每配方12次,CIPValve,,05 00 14 00 00,close Drain valve,,响应回显=05 00 14 00 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,15,legacy,每瓶一次；每配方12次,,,WashState,更新UI=done,,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,4,16,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,35,rinse_entry,"移动至 small rinse entry；PR=(13,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+apple_small,5,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=05,,,,candidate:layered/L3_group/step_05_filling_positioning.group.json
+apple_small,5,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,45,fill_entry,"移动至 apple small fill entry；PR=(5,12,12,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+apple_small,5,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,46,fill_work,"移动至 apple small fill work；PR=(5,12,12,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+apple_small,5,4,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 42 00 01,Check station 1 arrival,每50ms；截止3000ms,04 02 00 01,FILL1_POS_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+apple_small,5,5,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 43 00 01,Check station 2 arrival,每50ms；截止3000ms,04 02 00 01,FILL2_POS_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+apple_small,5,6,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 44 00 01,Check station 3 arrival,每50ms；截止3000ms,04 02 00 01,FILL3_POS_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+apple_small,5,7,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 45 00 01,Check station 4 arrival,每50ms；截止3000ms,04 02 00 01,FILL4_POS_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+apple_small,6,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=06,,,,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,6,2,legacy,每瓶一次；每配方12次,FlowMeter,,06 00 01 00 00,Write FlowMeter register 0001,,响应回显=06 00 01 00 00,,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,6,3,volume,每瓶一次；每配方12次,AppleFill,,FC06 0x0010,设置容量mL=250,,写入响应回显,,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,6,4,fill_time,每瓶一次；每配方12次,AppleFill,,FC06 0x0011,设置灌装ms=1389,,写入响应回显,,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,6,5,coil,每瓶一次；每配方12次,AppleFill,,FC05 0x0000,开启,,写入响应回显,,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,6,6,ready,每瓶一次；每配方12次,AppleFill,,FC04 0x0000,等待设备完成,每20ms；截止20000ms,04 02 00 01,FILL_TIMEOUT,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,6,7,legacy,每瓶一次；每配方12次,FlowMeter,,"03 00 00 00 02；解码={""valueStartByte"":2,""valueLength"":4,""valueEndian"":""little"",""valueType"":""float""}",检查流量达到配方容量（旧name仍写500ml；实际compareValue如下）,,greaterOrEqual 250,FLOW_NOT_REACHED,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,6,8,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 38 00 01,Check level sensor,每50ms；截止8000ms,04 02 00 01,LEVEL_TIMEOUT,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,6,9,coil,每瓶一次；每配方12次,AppleFill,,FC05 0x0000,关闭,,写入响应回显,,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,6,10,repeat_legacy,每瓶一次；每配方12次,PressureSensor,,03 00 12 00 02,连续重复检查4次；无额外等待,,greaterOrEqual 0.1,FILL_PRESSURE_LOW,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,6,11,legacy,每瓶一次；每配方12次,FlowMeter,,"03 00 00 00 02；解码={""cacheStartByte"":2,""cacheLength"":4,""cacheEndian"":""little"",""valueType"":""float""}",缓存totalVolume,,,,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,6,12,read_volume,每瓶一次；每配方12次,AppleFill,,FC03 0x0012,读实灌量dispensed_ml并刷新dispensedMl,,,,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,6,13,legacy,每瓶一次；每配方12次,,,FillState,更新UI=done,,,,candidate:layered/L3_group/step_06_filling.group.json
+apple_small,7,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=07,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+apple_small,7,2,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 38 00 01,Check level 1,每50ms；截止3000ms,04 02 00 01,RECHECK1_FAIL,candidate:layered/L3_group/step_07_level_recheck.group.json
+apple_small,7,3,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 39 00 01,Check level 2,每50ms；截止3000ms,04 02 00 01,RECHECK2_FAIL,candidate:layered/L3_group/step_07_level_recheck.group.json
+apple_small,7,4,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 3A 00 01,Check level 3,每50ms；截止3000ms,04 02 00 01,RECHECK3_FAIL,candidate:layered/L3_group/step_07_level_recheck.group.json
+apple_small,7,5,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 3B 00 01,Check level 4,每50ms；截止3000ms,04 02 00 01,RECHECK4_FAIL,candidate:layered/L3_group/step_07_level_recheck.group.json
+apple_small,7,6,legacy,每瓶一次；每配方12次,LevelSensor,,"04 00 38 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存lv1,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+apple_small,7,7,legacy,每瓶一次；每配方12次,LevelSensor,,"04 00 39 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存lv2,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+apple_small,7,8,legacy,每瓶一次；每配方12次,LevelSensor,,"04 00 3A 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存lv3,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+apple_small,7,9,legacy,每瓶一次；每配方12次,LevelSensor,,"04 00 3B 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存lv4,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+apple_small,7,10,legacy,每瓶一次；每配方12次,,,CheckState,更新UI=qualified,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+apple_small,8,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=08,,,,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,45,fill_entry,"移动至 apple small fill entry；PR=(5,12,12,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,39,closure_entry,"移动至 small closure entry；PR=(9,6,6,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,4,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,40,closure_work,"移动至 small closure work；PR=(9,6,6,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,5,coil,每瓶一次；每配方12次,CapFeeder,,FC05 0x0000,开启,,写入响应回显,,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,6,trigger,每瓶一次；每配方12次,Closure,,FC06 0x6002=19,触发预设PR3,,写入响应回显,,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,7,ready,每瓶一次；每配方12次,Closure,,FC04 0x0000,等待设备完成,每20ms；截止5000ms,04 02 00 01,CLOSURE_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,8,legacy,每瓶一次；每配方12次,Relay,,05 00 0B FF 00,Capping machine start,,响应回显=05 00 0B FF 00,,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,9,legacy,每瓶一次；每配方12次,,,,显式等待(ms),3000,,,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,10,legacy,每瓶一次；每配方12次,Torque,,"03 00 30 00 02；解码={""valueStartByte"":2,""valueLength"":4,""valueEndian"":""little"",""valueType"":""float""}",check Cappingtorque>=2.0N·m,,greaterOrEqual 2.0,TORQUE_LOW,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,11,legacy,每瓶一次；每配方12次,Relay,,05 00 0B 00 00,Capping machine stop,,响应回显=05 00 0B 00 00,,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,12,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 46 00 01,check Cap checksensor,每50ms；截止3000ms,04 02 00 01,CAP_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,13,legacy,每瓶一次；每配方12次,Torque,,"03 00 30 00 02；解码={""cacheStartByte"":2,""cacheLength"":4,""cacheEndian"":""little"",""valueType"":""float""}",缓存torqueValue,,,,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,14,legacy,每瓶一次；每配方12次,,,CapState,更新UI=done,,,,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,15,coil,每瓶一次；每配方12次,CapFeeder,,FC05 0x0000,关闭,,写入响应回显,,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,8,16,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,39,closure_entry,"移动至 small closure entry；PR=(9,6,6,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+apple_small,9,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=09,,,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+apple_small,9,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,41,code_entry,"移动至 small code entry；PR=(14,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_09_coding_labeling.group.json
+apple_small,9,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,42,code_work,"移动至 small code work；PR=(14,3,3,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_09_coding_labeling.group.json
+apple_small,9,4,legacy,每瓶一次；每配方12次,Relay,,05 00 0C FF 00,Coder mark,,响应回显=05 00 0C FF 00,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+apple_small,9,5,legacy,每瓶一次；每配方12次,Relay,,05 00 0C 00 00,Coder stop,,响应回显=05 00 0C 00 00,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+apple_small,9,6,legacy,每瓶一次；每配方12次,Relay,,05 00 0D FF 00,Labeler apply,,响应回显=05 00 0D FF 00,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+apple_small,9,7,legacy,每瓶一次；每配方12次,Relay,,05 00 0D 00 00,Labeler stop,,响应回显=05 00 0D 00 00,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+apple_small,9,8,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 47 00 01,Check coding sensor,每50ms；截止3000ms,04 02 00 01,CODE_POS_TIMEOUT,candidate:layered/L3_group/step_09_coding_labeling.group.json
+apple_small,9,9,legacy,每瓶一次；每配方12次,,,CodeState,更新UI=done,,,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+apple_small,9,10,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,41,code_entry,"移动至 small code entry；PR=(14,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_09_coding_labeling.group.json
+apple_small,10,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=10,,,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+apple_small,10,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,43,finished_entry,"移动至 small finished entry；PR=(12,9,9,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+apple_small,10,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,44,finished_work,"移动至 small finished work；PR=(12,9,9,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+apple_small,10,4,coil,每瓶一次；每配方12次,Gripper,,FC05 0x0000,关闭,,写入响应回显,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+apple_small,10,5,legacy,每瓶一次；每配方12次,Relay,,05 00 08 FF 00,Write Relay register 0008,,响应回显=05 00 08 FF 00,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+apple_small,10,6,trigger,每瓶一次；每配方12次,Outfeed,,FC06 0x6002=22,触发预设PR6,,写入响应回显,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+apple_small,10,7,ready,每瓶一次；每配方12次,Outfeed,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,OUTFEED_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+apple_small,10,8,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 40 00 01,Check discharge sensor,每100ms；截止5000ms,04 02 00 01,OUT_SENSOR_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+apple_small,10,9,legacy,每瓶一次；每配方12次,FlowMeter,,"03 00 20 00 02；解码={""cacheStartByte"":2,""cacheLength"":4,""cacheEndian"":""big"",""valueType"":""int""}",缓存totalCount,,,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+apple_small,10,10,legacy,每瓶一次；每配方12次,Relay,,05 00 08 00 00,Write Relay register 0008,,响应回显=05 00 08 00 00,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+apple_small,10,11,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,43,finished_entry,"移动至 small finished entry；PR=(12,9,9,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+apple_small,10,12,count,每瓶一次；每配方12次,,,completed,完成计数加1并刷新UI,,,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+apple_small,11,1,legacy,每配方一次,,,stage,更新UI=11,,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,2,legacy,每配方一次,CIPValve,,05 00 13 FF 00,Open CIP valve,,响应回显=05 00 13 FF 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,3,legacy,每配方一次,Relay,,05 00 0E FF 00,CIP pump start,,响应回显=05 00 0E FF 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,4,legacy,每配方一次,,,,显式等待(ms),120000,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,5,legacy,每配方一次,PressureSensor,,"03 00 10 00 02；解码={""valueStartByte"":2,""valueLength"":4,""valueEndian"":""little"",""valueType"":""float""}",Check CIP pressure >= 0.3MPa,,greaterOrEqual 0.3,CIP_PRESSURE_LOW,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,6,legacy,每配方一次,CIPValve,,05 00 14 FF 00,open Drain valve,,响应回显=05 00 14 FF 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,7,legacy,每配方一次,,,,显式等待(ms),30000,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,8,legacy,每配方一次,CIPValve,,05 00 14 00 00,close Drain valve,,响应回显=05 00 14 00 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,9,legacy,每配方一次,Relay,,05 00 0E 00 00,CIP pump stop,,响应回显=05 00 0E 00 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,10,legacy,每配方一次,RinseValve,,05 00 12 FF 00,open fresh water Rinse valve,,响应回显=05 00 12 FF 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,11,legacy,每配方一次,,,,显式等待(ms),20000,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,12,legacy,每配方一次,RinseValve,,05 00 12 00 00,close fresh water Rinse valve,,响应回显=05 00 12 00 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,13,legacy,每配方一次,CIPValve,,05 00 13 00 00,Close CIP valve,,响应回显=05 00 13 00 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,11,14,legacy,每配方一次,,,CIPState,更新UI=done,,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+apple_small,12,1,legacy,每配方一次,,,stage,更新UI=12,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,2,legacy,每配方一次,OrangeFill,,05 00 00 00 00,Write OrangeFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,3,legacy,每配方一次,AppleFill,,05 00 00 00 00,Write AppleFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,4,legacy,每配方一次,GrapeFill,,05 00 00 00 00,Write GrapeFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,5,legacy,每配方一次,Gripper,,05 00 00 00 00,Write Gripper register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,6,legacy,每配方一次,CapFeeder,,05 00 00 00 00,Write CapFeeder register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,7,legacy,每配方一次,RinseValve,,05 00 12 00 00,Write RinseValve register 0012,,响应回显=05 00 12 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,8,legacy,每配方一次,CIPValve,,05 00 13 00 00,Write CIPValve register 0013,,响应回显=05 00 13 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,9,legacy,每配方一次,CIPValve,,05 00 14 00 00,Write CIPValve register 0014,,响应回显=05 00 14 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,10,legacy,每配方一次,Relay,,05 00 08 00 00,Write Relay register 0008,,响应回显=05 00 08 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,11,legacy,每配方一次,Relay,,05 00 09 00 00,Write Relay register 0009,,响应回显=05 00 09 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,12,legacy,每配方一次,Relay,,05 00 0A 00 00,Write Relay register 000A,,响应回显=05 00 0A 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,13,legacy,每配方一次,Relay,,05 00 0B 00 00,Write Relay register 000B,,响应回显=05 00 0B 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,14,legacy,每配方一次,Relay,,05 00 0C 00 00,Write Relay register 000C,,响应回显=05 00 0C 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,15,legacy,每配方一次,Relay,,05 00 0D 00 00,Write Relay register 000D,,响应回显=05 00 0D 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,16,legacy,每配方一次,Relay,,05 00 0E 00 00,Write Relay register 000E,,响应回显=05 00 0E 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,17,trigger,每配方一次,X,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,18,trigger,每配方一次,Y1,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,19,trigger,每配方一次,Y2,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,20,trigger,每配方一次,Z,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,21,ready,每配方一次,X,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,22,ready,每配方一次,Y1,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,23,ready,每配方一次,Y2,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,24,ready,每配方一次,Z,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,25,legacy,每配方一次,,,last_x_pr,设置变量=0,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,26,legacy,每配方一次,,,last_y_pr,设置变量=0,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,27,legacy,每配方一次,,,last_z_pr,设置变量=0,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,28,refresh,每配方一次,X / Y1 / Y2 / Z,,"FC03 0x602C, 2 registers",缓存四电机坐标；更新centerX/centerY/centerZ（centerY=Y1）,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,29,legacy,每配方一次,X,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",X alarm self-check,,equal 0,X_ALARM,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,30,legacy,每配方一次,Y1,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Y1: Y alarm self-check,,equal 0,Y_ALARM,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,31,legacy,每配方一次,Y2,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Y2: Y alarm self-check,,equal 0,Y_ALARM_Y2,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,32,legacy,每配方一次,Z,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Z alarm self-check,,equal 0,Z_ALARM,candidate:layered/L3_group/step_12_homing_standby.group.json
+apple_small,12,33,legacy,每配方一次,,,SystemState,更新UI=standby,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,1,1,legacy,每配方一次,,,stage,更新UI=01,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,2,legacy,每配方一次,OrangeFill,,05 00 00 00 00,Write OrangeFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,3,legacy,每配方一次,AppleFill,,05 00 00 00 00,Write AppleFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,4,legacy,每配方一次,GrapeFill,,05 00 00 00 00,Write GrapeFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,5,legacy,每配方一次,Gripper,,05 00 00 00 00,Write Gripper register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,6,legacy,每配方一次,CapFeeder,,05 00 00 00 00,Write CapFeeder register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,7,legacy,每配方一次,RinseValve,,05 00 12 00 00,Write RinseValve register 0012,,响应回显=05 00 12 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,8,legacy,每配方一次,CIPValve,,05 00 13 00 00,Write CIPValve register 0013,,响应回显=05 00 13 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,9,legacy,每配方一次,CIPValve,,05 00 14 00 00,Write CIPValve register 0014,,响应回显=05 00 14 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,10,legacy,每配方一次,Relay,,05 00 08 00 00,Write Relay register 0008,,响应回显=05 00 08 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,11,legacy,每配方一次,Relay,,05 00 09 00 00,Write Relay register 0009,,响应回显=05 00 09 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,12,legacy,每配方一次,Relay,,05 00 0A 00 00,Write Relay register 000A,,响应回显=05 00 0A 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,13,legacy,每配方一次,Relay,,05 00 0B 00 00,Write Relay register 000B,,响应回显=05 00 0B 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,14,legacy,每配方一次,Relay,,05 00 0C 00 00,Write Relay register 000C,,响应回显=05 00 0C 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,15,legacy,每配方一次,Relay,,05 00 0D 00 00,Write Relay register 000D,,响应回显=05 00 0D 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,16,legacy,每配方一次,Relay,,05 00 0E 00 00,Write Relay register 000E,,响应回显=05 00 0E 00 00,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,17,trigger,每配方一次,X,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,18,trigger,每配方一次,Y1,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,19,trigger,每配方一次,Y2,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,20,trigger,每配方一次,Z,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,21,ready,每配方一次,X,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,22,ready,每配方一次,Y1,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,23,ready,每配方一次,Y2,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,24,ready,每配方一次,Z,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,25,legacy,每配方一次,,,last_x_pr,设置变量=0,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,26,legacy,每配方一次,,,last_y_pr,设置变量=0,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,27,legacy,每配方一次,,,last_z_pr,设置变量=0,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,28,refresh,每配方一次,X / Y1 / Y2 / Z,,"FC03 0x602C, 2 registers",缓存四电机坐标；更新centerX/centerY/centerZ（centerY=Y1）,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,29,legacy,每配方一次,X,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",X alarm self-check,,equal 0,X_ALARM,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,30,legacy,每配方一次,Y1,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Y1: Y alarm self-check,,equal 0,Y_ALARM,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,31,legacy,每配方一次,Y2,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Y2: Y alarm self-check,,equal 0,Y_ALARM_Y2,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,32,legacy,每配方一次,Z,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Z alarm self-check,,equal 0,Z_ALARM,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,33,legacy,每配方一次,X,,"03 10 03 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""int""}",缓存xStatus,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,34,legacy,每配方一次,Y1,,"03 10 03 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""int""}",缓存yStatus,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,35,legacy,每配方一次,Y2,,"03 10 03 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""int""}",缓存yStatus_Y2,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,36,legacy,每配方一次,Z,,"03 10 03 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""int""}",缓存zStatus,,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,1,37,legacy,每配方一次,,,,显式等待(ms),1000,,,candidate:layered/L3_group/step_01_system_initialization.group.json
+grape_small,2,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=02,,,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+grape_small,2,2,legacy,每瓶一次；每配方12次,Relay,,05 00 08 FF 00,Write Relay register 0008,,响应回显=05 00 08 FF 00,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+grape_small,2,3,trigger,每瓶一次；每配方12次,Infeed,,FC06 0x6002=19,触发预设PR3,,写入响应回显,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+grape_small,2,4,ready,每瓶一次；每配方12次,Infeed,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,EMPTY_FEED_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+grape_small,2,5,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 34 00 01,Check bottle sensor and wait (5s),每100ms；截止5000ms,04 02 00 01,BOTTLE_SENSOR_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+grape_small,2,6,legacy,每瓶一次；每配方12次,Relay,,05 00 08 00 00,Write Relay register 0008,,响应回显=05 00 08 00 00,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+grape_small,2,7,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,33,empty_entry,"移动至 small empty entry；PR=(3,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+grape_small,2,8,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,34,empty_work,"移动至 small empty work；PR=(3,3,3,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+grape_small,2,9,coil,每瓶一次；每配方12次,Gripper,,FC05 0x0000,开启,,写入响应回显,,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+grape_small,2,10,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 41 00 01,Check pick sensor,每50ms；截止3000ms,04 02 00 01,PICK_TIMEOUT,candidate:layered/L3_group/step_02_empty_bottle_feeding.group.json
+grape_small,3,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=03,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+grape_small,3,2,present,每瓶一次；每配方12次,ContainerSensor,,FC04 0x0001,确认夹持容器,每20ms；截止2000ms,04 02 00 01,NO_CONTAINER,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+grape_small,3,3,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 34 00 01,Check station 1 sensor,每50ms；截止3000ms,04 02 00 01,POS1_TIMEOUT,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+grape_small,3,4,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 35 00 01,Check station 2 sensor,每50ms；截止3000ms,04 02 00 01,POS2_TIMEOUT,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+grape_small,3,5,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 36 00 01,Check station 3 sensor,每50ms；截止3000ms,04 02 00 01,POS3_TIMEOUT,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+grape_small,3,6,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 37 00 01,Check station 4 sensor,每50ms；截止3000ms,04 02 00 01,POS4_TIMEOUT,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+grape_small,3,7,legacy,每瓶一次；每配方12次,BottleSensor,,"04 00 34 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存pos1State,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+grape_small,3,8,legacy,每瓶一次；每配方12次,BottleSensor,,"04 00 35 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存pos2State,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+grape_small,3,9,legacy,每瓶一次；每配方12次,BottleSensor,,"04 00 36 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存pos3State,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+grape_small,3,10,legacy,每瓶一次；每配方12次,BottleSensor,,"04 00 37 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存pos4State,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+grape_small,3,11,legacy,每瓶一次；每配方12次,FlowMeter,,"03 00 20 00 02；解码={""cacheStartByte"":2,""cacheLength"":4,""cacheEndian"":""big"",""valueType"":""int""}",缓存bottleCount,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+grape_small,3,12,legacy,每瓶一次；每配方12次,,,BottleState,更新UI=all ready,,,,candidate:layered/L3_group/step_03_bottle_position_detection.group.json
+grape_small,4,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=04,,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,33,empty_entry,"移动至 small empty entry；PR=(3,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,35,rinse_entry,"移动至 small rinse entry；PR=(13,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,4,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,36,rinse_work,"移动至 small rinse work；PR=(13,3,3,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,5,legacy,每瓶一次；每配方12次,RinseValve,,05 00 12 FF 00,open Rinse valve,,响应回显=05 00 12 FF 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,6,legacy,每瓶一次；每配方12次,,,,显式等待(ms),5000,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,7,legacy,每瓶一次；每配方12次,RinseValve,,05 00 12 00 00,close Rinse valve,,响应回显=05 00 12 00 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,8,legacy,每瓶一次；每配方12次,PressureSensor,,"03 00 10 00 02；解码={""valueStartByte"":2,""valueLength"":4,""valueEndian"":""little"",""valueType"":""float""}",check Rinse pressure>=0.2MPa,,greaterOrEqual 0.2,RINSE_PRESSURE_LOW,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,9,legacy,每瓶一次；每配方12次,CIPValve,,05 00 13 FF 00,open Sanitize valve,,响应回显=05 00 13 FF 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,10,legacy,每瓶一次；每配方12次,,,,显式等待(ms),3000,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,11,legacy,每瓶一次；每配方12次,CIPValve,,05 00 13 00 00,close Sanitize valve,,响应回显=05 00 13 00 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,12,legacy,每瓶一次；每配方12次,CIPValve,,05 00 14 FF 00,open Drain valve,,响应回显=05 00 14 FF 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,13,legacy,每瓶一次；每配方12次,,,,显式等待(ms),3000,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,14,legacy,每瓶一次；每配方12次,CIPValve,,05 00 14 00 00,close Drain valve,,响应回显=05 00 14 00 00,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,15,legacy,每瓶一次；每配方12次,,,WashState,更新UI=done,,,,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,4,16,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,35,rinse_entry,"移动至 small rinse entry；PR=(13,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_04_in_bottle_rinsing.group.json
+grape_small,5,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=05,,,,candidate:layered/L3_group/step_05_filling_positioning.group.json
+grape_small,5,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,47,fill_entry,"移动至 grape small fill entry；PR=(6,12,12,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+grape_small,5,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,48,fill_work,"移动至 grape small fill work；PR=(6,12,12,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+grape_small,5,4,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 42 00 01,Check station 1 arrival,每50ms；截止3000ms,04 02 00 01,FILL1_POS_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+grape_small,5,5,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 43 00 01,Check station 2 arrival,每50ms；截止3000ms,04 02 00 01,FILL2_POS_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+grape_small,5,6,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 44 00 01,Check station 3 arrival,每50ms；截止3000ms,04 02 00 01,FILL3_POS_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+grape_small,5,7,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 45 00 01,Check station 4 arrival,每50ms；截止3000ms,04 02 00 01,FILL4_POS_TIMEOUT,candidate:layered/L3_group/step_05_filling_positioning.group.json
+grape_small,6,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=06,,,,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,6,2,legacy,每瓶一次；每配方12次,FlowMeter,,06 00 01 00 00,Write FlowMeter register 0001,,响应回显=06 00 01 00 00,,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,6,3,volume,每瓶一次；每配方12次,GrapeFill,,FC06 0x0010,设置容量mL=250,,写入响应回显,,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,6,4,fill_time,每瓶一次；每配方12次,GrapeFill,,FC06 0x0011,设置灌装ms=1137,,写入响应回显,,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,6,5,coil,每瓶一次；每配方12次,GrapeFill,,FC05 0x0000,开启,,写入响应回显,,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,6,6,ready,每瓶一次；每配方12次,GrapeFill,,FC04 0x0000,等待设备完成,每20ms；截止20000ms,04 02 00 01,FILL_TIMEOUT,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,6,7,legacy,每瓶一次；每配方12次,FlowMeter,,"03 00 00 00 02；解码={""valueStartByte"":2,""valueLength"":4,""valueEndian"":""little"",""valueType"":""float""}",检查流量达到配方容量（旧name仍写500ml；实际compareValue如下）,,greaterOrEqual 250,FLOW_NOT_REACHED,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,6,8,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 38 00 01,Check level sensor,每50ms；截止8000ms,04 02 00 01,LEVEL_TIMEOUT,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,6,9,coil,每瓶一次；每配方12次,GrapeFill,,FC05 0x0000,关闭,,写入响应回显,,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,6,10,repeat_legacy,每瓶一次；每配方12次,PressureSensor,,03 00 12 00 02,连续重复检查4次；无额外等待,,greaterOrEqual 0.1,FILL_PRESSURE_LOW,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,6,11,legacy,每瓶一次；每配方12次,FlowMeter,,"03 00 00 00 02；解码={""cacheStartByte"":2,""cacheLength"":4,""cacheEndian"":""little"",""valueType"":""float""}",缓存totalVolume,,,,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,6,12,read_volume,每瓶一次；每配方12次,GrapeFill,,FC03 0x0012,读实灌量dispensed_ml并刷新dispensedMl,,,,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,6,13,legacy,每瓶一次；每配方12次,,,FillState,更新UI=done,,,,candidate:layered/L3_group/step_06_filling.group.json
+grape_small,7,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=07,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+grape_small,7,2,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 38 00 01,Check level 1,每50ms；截止3000ms,04 02 00 01,RECHECK1_FAIL,candidate:layered/L3_group/step_07_level_recheck.group.json
+grape_small,7,3,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 39 00 01,Check level 2,每50ms；截止3000ms,04 02 00 01,RECHECK2_FAIL,candidate:layered/L3_group/step_07_level_recheck.group.json
+grape_small,7,4,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 3A 00 01,Check level 3,每50ms；截止3000ms,04 02 00 01,RECHECK3_FAIL,candidate:layered/L3_group/step_07_level_recheck.group.json
+grape_small,7,5,legacy,每瓶一次；每配方12次,LevelSensor,,04 00 3B 00 01,Check level 4,每50ms；截止3000ms,04 02 00 01,RECHECK4_FAIL,candidate:layered/L3_group/step_07_level_recheck.group.json
+grape_small,7,6,legacy,每瓶一次；每配方12次,LevelSensor,,"04 00 38 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存lv1,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+grape_small,7,7,legacy,每瓶一次；每配方12次,LevelSensor,,"04 00 39 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存lv2,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+grape_small,7,8,legacy,每瓶一次；每配方12次,LevelSensor,,"04 00 3A 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存lv3,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+grape_small,7,9,legacy,每瓶一次；每配方12次,LevelSensor,,"04 00 3B 00 01；解码={""cacheStartByte"":2,""cacheLength"":2,""cacheEndian"":""big"",""valueType"":""uint16""}",缓存lv4,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+grape_small,7,10,legacy,每瓶一次；每配方12次,,,CheckState,更新UI=qualified,,,,candidate:layered/L3_group/step_07_level_recheck.group.json
+grape_small,8,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=08,,,,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,47,fill_entry,"移动至 grape small fill entry；PR=(6,12,12,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,39,closure_entry,"移动至 small closure entry；PR=(9,6,6,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,4,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,40,closure_work,"移动至 small closure work；PR=(9,6,6,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,5,coil,每瓶一次；每配方12次,CapFeeder,,FC05 0x0000,开启,,写入响应回显,,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,6,trigger,每瓶一次；每配方12次,Closure,,FC06 0x6002=19,触发预设PR3,,写入响应回显,,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,7,ready,每瓶一次；每配方12次,Closure,,FC04 0x0000,等待设备完成,每20ms；截止5000ms,04 02 00 01,CLOSURE_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,8,legacy,每瓶一次；每配方12次,Relay,,05 00 0B FF 00,Capping machine start,,响应回显=05 00 0B FF 00,,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,9,legacy,每瓶一次；每配方12次,,,,显式等待(ms),3000,,,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,10,legacy,每瓶一次；每配方12次,Torque,,"03 00 30 00 02；解码={""valueStartByte"":2,""valueLength"":4,""valueEndian"":""little"",""valueType"":""float""}",check Cappingtorque>=2.0N·m,,greaterOrEqual 2.0,TORQUE_LOW,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,11,legacy,每瓶一次；每配方12次,Relay,,05 00 0B 00 00,Capping machine stop,,响应回显=05 00 0B 00 00,,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,12,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 46 00 01,check Cap checksensor,每50ms；截止3000ms,04 02 00 01,CAP_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,13,legacy,每瓶一次；每配方12次,Torque,,"03 00 30 00 02；解码={""cacheStartByte"":2,""cacheLength"":4,""cacheEndian"":""little"",""valueType"":""float""}",缓存torqueValue,,,,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,14,legacy,每瓶一次；每配方12次,,,CapState,更新UI=done,,,,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,15,coil,每瓶一次；每配方12次,CapFeeder,,FC05 0x0000,关闭,,写入响应回显,,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,8,16,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,39,closure_entry,"移动至 small closure entry；PR=(9,6,6,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_08_capping.group.json
+grape_small,9,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=09,,,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+grape_small,9,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,41,code_entry,"移动至 small code entry；PR=(14,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_09_coding_labeling.group.json
+grape_small,9,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,42,code_work,"移动至 small code work；PR=(14,3,3,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_09_coding_labeling.group.json
+grape_small,9,4,legacy,每瓶一次；每配方12次,Relay,,05 00 0C FF 00,Coder mark,,响应回显=05 00 0C FF 00,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+grape_small,9,5,legacy,每瓶一次；每配方12次,Relay,,05 00 0C 00 00,Coder stop,,响应回显=05 00 0C 00 00,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+grape_small,9,6,legacy,每瓶一次；每配方12次,Relay,,05 00 0D FF 00,Labeler apply,,响应回显=05 00 0D FF 00,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+grape_small,9,7,legacy,每瓶一次；每配方12次,Relay,,05 00 0D 00 00,Labeler stop,,响应回显=05 00 0D 00 00,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+grape_small,9,8,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 47 00 01,Check coding sensor,每50ms；截止3000ms,04 02 00 01,CODE_POS_TIMEOUT,candidate:layered/L3_group/step_09_coding_labeling.group.json
+grape_small,9,9,legacy,每瓶一次；每配方12次,,,CodeState,更新UI=done,,,,candidate:layered/L3_group/step_09_coding_labeling.group.json
+grape_small,9,10,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,41,code_entry,"移动至 small code entry；PR=(14,3,3,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_09_coding_labeling.group.json
+grape_small,10,1,legacy,每瓶一次；每配方12次,,,stage,更新UI=10,,,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+grape_small,10,2,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,43,finished_entry,"移动至 small finished entry；PR=(12,9,9,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+grape_small,10,3,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,44,finished_work,"移动至 small finished work；PR=(12,9,9,4)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+grape_small,10,4,coil,每瓶一次；每配方12次,Gripper,,FC05 0x0000,关闭,,写入响应回显,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+grape_small,10,5,legacy,每瓶一次；每配方12次,Relay,,05 00 08 FF 00,Write Relay register 0008,,响应回显=05 00 08 FF 00,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+grape_small,10,6,trigger,每瓶一次；每配方12次,Outfeed,,FC06 0x6002=22,触发预设PR6,,写入响应回显,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+grape_small,10,7,ready,每瓶一次；每配方12次,Outfeed,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,OUTFEED_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+grape_small,10,8,legacy,每瓶一次；每配方12次,BottleSensor,,04 00 40 00 01,Check discharge sensor,每100ms；截止5000ms,04 02 00 01,OUT_SENSOR_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+grape_small,10,9,legacy,每瓶一次；每配方12次,FlowMeter,,"03 00 20 00 02；解码={""cacheStartByte"":2,""cacheLength"":4,""cacheEndian"":""big"",""valueType"":""int""}",缓存totalCount,,,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+grape_small,10,10,legacy,每瓶一次；每配方12次,Relay,,05 00 08 00 00,Write Relay register 0008,,响应回显=05 00 08 00 00,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+grape_small,10,11,move,每瓶一次；每配方12次,X / Y1 / Y2 / Z,43,finished_entry,"移动至 small finished entry；PR=(12,9,9,1)；仅变化轴触发",四电机各20ms轮询/4000ms截止,全部就绪；缓存四位置；UI使用X/Y1/Z,MOTION_TIMEOUT,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+grape_small,10,12,count,每瓶一次；每配方12次,,,completed,完成计数加1并刷新UI,,,,candidate:layered/L3_group/step_10_finished_product_discharge.group.json
+grape_small,11,1,legacy,每配方一次,,,stage,更新UI=11,,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,2,legacy,每配方一次,CIPValve,,05 00 13 FF 00,Open CIP valve,,响应回显=05 00 13 FF 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,3,legacy,每配方一次,Relay,,05 00 0E FF 00,CIP pump start,,响应回显=05 00 0E FF 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,4,legacy,每配方一次,,,,显式等待(ms),120000,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,5,legacy,每配方一次,PressureSensor,,"03 00 10 00 02；解码={""valueStartByte"":2,""valueLength"":4,""valueEndian"":""little"",""valueType"":""float""}",Check CIP pressure >= 0.3MPa,,greaterOrEqual 0.3,CIP_PRESSURE_LOW,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,6,legacy,每配方一次,CIPValve,,05 00 14 FF 00,open Drain valve,,响应回显=05 00 14 FF 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,7,legacy,每配方一次,,,,显式等待(ms),30000,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,8,legacy,每配方一次,CIPValve,,05 00 14 00 00,close Drain valve,,响应回显=05 00 14 00 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,9,legacy,每配方一次,Relay,,05 00 0E 00 00,CIP pump stop,,响应回显=05 00 0E 00 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,10,legacy,每配方一次,RinseValve,,05 00 12 FF 00,open fresh water Rinse valve,,响应回显=05 00 12 FF 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,11,legacy,每配方一次,,,,显式等待(ms),20000,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,12,legacy,每配方一次,RinseValve,,05 00 12 00 00,close fresh water Rinse valve,,响应回显=05 00 12 00 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,13,legacy,每配方一次,CIPValve,,05 00 13 00 00,Close CIP valve,,响应回显=05 00 13 00 00,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,11,14,legacy,每配方一次,,,CIPState,更新UI=done,,,,candidate:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json
+grape_small,12,1,legacy,每配方一次,,,stage,更新UI=12,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,2,legacy,每配方一次,OrangeFill,,05 00 00 00 00,Write OrangeFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,3,legacy,每配方一次,AppleFill,,05 00 00 00 00,Write AppleFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,4,legacy,每配方一次,GrapeFill,,05 00 00 00 00,Write GrapeFill register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,5,legacy,每配方一次,Gripper,,05 00 00 00 00,Write Gripper register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,6,legacy,每配方一次,CapFeeder,,05 00 00 00 00,Write CapFeeder register 0000,,响应回显=05 00 00 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,7,legacy,每配方一次,RinseValve,,05 00 12 00 00,Write RinseValve register 0012,,响应回显=05 00 12 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,8,legacy,每配方一次,CIPValve,,05 00 13 00 00,Write CIPValve register 0013,,响应回显=05 00 13 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,9,legacy,每配方一次,CIPValve,,05 00 14 00 00,Write CIPValve register 0014,,响应回显=05 00 14 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,10,legacy,每配方一次,Relay,,05 00 08 00 00,Write Relay register 0008,,响应回显=05 00 08 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,11,legacy,每配方一次,Relay,,05 00 09 00 00,Write Relay register 0009,,响应回显=05 00 09 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,12,legacy,每配方一次,Relay,,05 00 0A 00 00,Write Relay register 000A,,响应回显=05 00 0A 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,13,legacy,每配方一次,Relay,,05 00 0B 00 00,Write Relay register 000B,,响应回显=05 00 0B 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,14,legacy,每配方一次,Relay,,05 00 0C 00 00,Write Relay register 000C,,响应回显=05 00 0C 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,15,legacy,每配方一次,Relay,,05 00 0D 00 00,Write Relay register 000D,,响应回显=05 00 0D 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,16,legacy,每配方一次,Relay,,05 00 0E 00 00,Write Relay register 000E,,响应回显=05 00 0E 00 00,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,17,trigger,每配方一次,X,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,18,trigger,每配方一次,Y1,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,19,trigger,每配方一次,Y2,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,20,trigger,每配方一次,Z,,FC06 0x6002=16,触发预设PR0,,写入响应回显,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,21,ready,每配方一次,X,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,22,ready,每配方一次,Y1,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,23,ready,每配方一次,Y2,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,24,ready,每配方一次,Z,,FC04 0x0000,等待设备完成,每20ms；截止4000ms,04 02 00 01,HOME_TIMEOUT,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,25,legacy,每配方一次,,,last_x_pr,设置变量=0,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,26,legacy,每配方一次,,,last_y_pr,设置变量=0,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,27,legacy,每配方一次,,,last_z_pr,设置变量=0,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,28,refresh,每配方一次,X / Y1 / Y2 / Z,,"FC03 0x602C, 2 registers",缓存四电机坐标；更新centerX/centerY/centerZ（centerY=Y1）,,,,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,29,legacy,每配方一次,X,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",X alarm self-check,,equal 0,X_ALARM,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,30,legacy,每配方一次,Y1,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Y1: Y alarm self-check,,equal 0,Y_ALARM,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,31,legacy,每配方一次,Y2,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Y2: Y alarm self-check,,equal 0,Y_ALARM_Y2,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,32,legacy,每配方一次,Z,,"03 22 03 00 01；解码={""valueStartByte"":2,""valueLength"":2,""valueEndian"":""big"",""valueType"":""int""}",Z alarm self-check,,equal 0,Z_ALARM,candidate:layered/L3_group/step_12_homing_standby.group.json
+grape_small,12,33,legacy,每配方一次,,,SystemState,更新UI=standby,,,,candidate:layered/L3_group/step_12_homing_standby.group.json

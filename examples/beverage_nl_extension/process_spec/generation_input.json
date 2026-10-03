@@ -1,0 +1,4791 @@
+{
+  "schema": "beverage_fuller_generation_input_v1",
+  "scope": "Retrospective fuller-input package for a FUTURE separately recorded generation. NOT the historical model input, NOT a new experiment, and contains no generated candidate or raw response.",
+  "request": "自然语言需求：\n在现有三种口味、2 L 家庭装和 330 mL 罐装生产流程上，增加橙汁、苹果汁和葡萄汁的 250 mL 小瓶装。继续复用原有十二阶段流程；每种口味运行两批，每批六瓶。使用提供的点位和灌装参数，保持六个原有配方及其行为不变，生成三个新的生产入口。\n\n上下文：同目录 context.json 提供原有配置和预先给定的模拟工程数据。系统变量数组从零编号；L4 调用 run_recipe，两个参数依次为口味编号、规格编号。不得修改 L1、L2、设备注册表或工序正文，不得新增设备或省略工序。只允许扩展规格参数范围、追加点位与配方、扩展查找表和新增 L4 文件。\n\n输出约定：只输出一个有效 JSON 对象：{\"changes\":[...] }。每一项包含 file、op、path、value。file 是相对 example4 根目录的路径。op 仅允许 append、replace、create。append 的 path 指向数组，value 是要追加的元素数组；replace 使用 JSON Pointer 定位现有字段，value 是替换值；create 的 path 为空字符串，value 是完整新文件内容。这些操作只表示配置文件增量，不是控制引擎的新语法。不要输出解释、Markdown、验证结论或修复后的第二版。\n",
+  "flavors": [
+    {
+      "index": 0,
+      "name": "orange",
+      "device": "OrangeFill",
+      "fill_rate_ml_s": 200
+    },
+    {
+      "index": 1,
+      "name": "apple",
+      "device": "AppleFill",
+      "fill_rate_ml_s": 180
+    },
+    {
+      "index": 2,
+      "name": "grape",
+      "device": "GrapeFill",
+      "fill_rate_ml_s": 220
+    }
+  ],
+  "size_indices": {
+    "family_2L": 0,
+    "can_330mL": 1,
+    "new_small_250mL": 2
+  },
+  "new_size_engineering_data": {
+    "provenance": "Synthetic precommissioned data supplied to the model for this demonstration, using the established beverage benchmark conventions; not inferred from volume or measured on hardware.",
+    "volume_ml": 250,
+    "format": "small",
+    "closure_mode": "screw_small",
+    "closure_pr": 3,
+    "infeed_pr": 3,
+    "outfeed_pr": 6,
+    "home_point": 0,
+    "batches": 2,
+    "units_per_batch": 6,
+    "fill_time_rule": "ceil(1000 * volume_ml / fill_rate_ml_s) integer milliseconds",
+    "station_axis_pr": {
+      "empty": {
+        "x": 3,
+        "y": 3
+      },
+      "rinse": {
+        "x": 13,
+        "y": 3
+      },
+      "fill_by_flavor": {
+        "orange": {
+          "x": 4,
+          "y": 12
+        },
+        "apple": {
+          "x": 5,
+          "y": 12
+        },
+        "grape": {
+          "x": 6,
+          "y": 12
+        }
+      },
+      "closure": {
+        "x": 9,
+        "y": 6
+      },
+      "code": {
+        "x": 14,
+        "y": 3
+      },
+      "finished": {
+        "x": 12,
+        "y": 9
+      }
+    },
+    "z_pr": {
+      "entry": 1,
+      "work": 4
+    },
+    "point_allocation": "Append new production points without changing indices 0..32. Reuse common non-filling stations across flavors. Point array indices are production points, not individual motor PR indices."
+  },
+  "baseline_documents": {
+    "device_registry.json": {
+      "configuration_note": "Synthetic devices; old process checks restored, no physical I/O.",
+      "devices": {
+        "X": {
+          "port": "SIM_MOTION",
+          "address": 1
+        },
+        "Y1": {
+          "port": "SIM_MOTION",
+          "address": 2
+        },
+        "Y2": {
+          "port": "SIM_MOTION",
+          "address": 3
+        },
+        "Z": {
+          "port": "SIM_MOTION",
+          "address": 4
+        },
+        "Infeed": {
+          "port": "SIM_MOTION",
+          "address": 5
+        },
+        "Closure": {
+          "port": "SIM_MOTION",
+          "address": 6
+        },
+        "Outfeed": {
+          "port": "SIM_MOTION",
+          "address": 7
+        },
+        "OrangeFill": {
+          "port": "SIM_PROCESS",
+          "address": 1
+        },
+        "AppleFill": {
+          "port": "SIM_PROCESS",
+          "address": 2
+        },
+        "GrapeFill": {
+          "port": "SIM_PROCESS",
+          "address": 3
+        },
+        "Gripper": {
+          "port": "SIM_PROCESS",
+          "address": 4
+        },
+        "CapFeeder": {
+          "port": "SIM_PROCESS",
+          "address": 5
+        },
+        "ContainerSensor": {
+          "port": "SIM_PROCESS",
+          "address": 6
+        },
+        "RinseValve": {
+          "port": "SIM_PROCESS",
+          "address": 7
+        },
+        "CIPValve": {
+          "port": "SIM_PROCESS",
+          "address": 8
+        },
+        "Relay": {
+          "port": "SIM_PROCESS",
+          "address": 9
+        },
+        "BottleSensor": {
+          "port": "SIM_PROCESS",
+          "address": 10
+        },
+        "LevelSensor": {
+          "port": "SIM_PROCESS",
+          "address": 11
+        },
+        "PressureSensor": {
+          "port": "SIM_PROCESS",
+          "address": 12
+        },
+        "FlowMeter": {
+          "port": "SIM_PROCESS",
+          "address": 13
+        },
+        "Torque": {
+          "port": "SIM_PROCESS",
+          "address": 14
+        }
+      }
+    },
+    "layered/L1_action/all_actions.json": {
+      "type": "action_bundle",
+      "actions": [
+        {
+          "filename": "encode_pr_trigger.u16.r_u16_trigger_word",
+          "type": "calculate",
+          "args": [
+            {
+              "index": 0,
+              "name": "point",
+              "type": "u16",
+              "min": 0,
+              "max": 15
+            }
+          ],
+          "expression": "16 + ${param_0}"
+        },
+        {
+          "filename": "trigger_pr_path.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "06 60 02 ${value_high} ${value_low}",
+          "response": "06 60 02 ${value_high} ${value_low}"
+        },
+        {
+          "filename": "read_state.s.r_i32_previous_pr",
+          "type": "read_variable",
+          "args": [
+            {
+              "index": 0,
+              "name": "key",
+              "type": "s"
+            }
+          ]
+        },
+        {
+          "filename": "set_state.s_i32.r_b_saved",
+          "type": "set_variable",
+          "args": [
+            {
+              "index": 0,
+              "name": "key",
+              "type": "s"
+            },
+            {
+              "index": 1,
+              "name": "value",
+              "type": "i32"
+            }
+          ]
+        },
+        {
+          "filename": "read_fc03_reg602c.r_i32_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "03 60 2C 00 02",
+          "parse": {
+            "start_byte": 2,
+            "length": 4,
+            "endian": "big",
+            "type": "int"
+          }
+        },
+        {
+          "filename": "update_ui.s_s",
+          "type": "ui_action",
+          "args": [
+            {
+              "index": 0,
+              "name": "target",
+              "type": "s"
+            },
+            {
+              "index": 1,
+              "name": "value",
+              "type": "s"
+            }
+          ],
+          "action": "update_status",
+          "data": {
+            "target": "${target}",
+            "value": "${value}"
+          }
+        },
+        {
+          "filename": "read_fc04_reg0000_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 00 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "wait_ms.u32.r_b_wait_done",
+          "type": "wait",
+          "args": [
+            {
+              "index": 0,
+              "name": "ms",
+              "type": "u32"
+            }
+          ],
+          "unit": "ms"
+        },
+        {
+          "filename": "write_050000.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "05 00 00 ${value_high} ${value_low}",
+          "response": "05 00 00 ${value_high} ${value_low}"
+        },
+        {
+          "filename": "write_050012.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "05 00 12 ${value_high} ${value_low}",
+          "response": "05 00 12 ${value_high} ${value_low}"
+        },
+        {
+          "filename": "write_050013.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "05 00 13 ${value_high} ${value_low}",
+          "response": "05 00 13 ${value_high} ${value_low}"
+        },
+        {
+          "filename": "write_050014.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "05 00 14 ${value_high} ${value_low}",
+          "response": "05 00 14 ${value_high} ${value_low}"
+        },
+        {
+          "filename": "write_050008.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "05 00 08 ${value_high} ${value_low}",
+          "response": "05 00 08 ${value_high} ${value_low}"
+        },
+        {
+          "filename": "write_050009.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "05 00 09 ${value_high} ${value_low}",
+          "response": "05 00 09 ${value_high} ${value_low}"
+        },
+        {
+          "filename": "write_05000a.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "05 00 0A ${value_high} ${value_low}",
+          "response": "05 00 0A ${value_high} ${value_low}"
+        },
+        {
+          "filename": "write_05000b.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "05 00 0B ${value_high} ${value_low}",
+          "response": "05 00 0B ${value_high} ${value_low}"
+        },
+        {
+          "filename": "write_05000c.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "05 00 0C ${value_high} ${value_low}",
+          "response": "05 00 0C ${value_high} ${value_low}"
+        },
+        {
+          "filename": "write_05000d.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "05 00 0D ${value_high} ${value_low}",
+          "response": "05 00 0D ${value_high} ${value_low}"
+        },
+        {
+          "filename": "write_05000e.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "05 00 0E ${value_high} ${value_low}",
+          "response": "05 00 0E ${value_high} ${value_low}"
+        },
+        {
+          "filename": "read_fc03_reg2203.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "03 22 03 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "int"
+          }
+        },
+        {
+          "filename": "read_fc03_reg1003.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "03 10 03 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "int"
+          }
+        },
+        {
+          "filename": "read_fc04_reg0034_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 34 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg0041_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 41 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg0001_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 01 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg0035_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 35 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg0036_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 36 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg0037_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 37 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg0034.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 34 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          }
+        },
+        {
+          "filename": "read_fc04_reg0035.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 35 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          }
+        },
+        {
+          "filename": "read_fc04_reg0036.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 36 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          }
+        },
+        {
+          "filename": "read_fc04_reg0037.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 37 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          }
+        },
+        {
+          "filename": "read_fc03_reg0020.r_i32_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "03 00 20 00 02",
+          "parse": {
+            "start_byte": 2,
+            "length": 4,
+            "endian": "big",
+            "type": "int"
+          }
+        },
+        {
+          "filename": "read_fc03_reg0010_le.r_f_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "03 00 10 00 02",
+          "parse": {
+            "start_byte": 2,
+            "length": 4,
+            "endian": "little",
+            "type": "float"
+          }
+        },
+        {
+          "filename": "read_fc04_reg0042_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 42 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg0043_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 43 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg0044_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 44 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg0045_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 45 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "write_060001.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "06 00 01 ${value_high} ${value_low}",
+          "response": "06 00 01 ${value_high} ${value_low}"
+        },
+        {
+          "filename": "write_060010.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "06 00 10 ${value_high} ${value_low}",
+          "response": "06 00 10 ${value_high} ${value_low}"
+        },
+        {
+          "filename": "write_060011.u16.r_b_written",
+          "type": "modbus_write_verify",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "u16"
+            }
+          ],
+          "protocol": "modbus",
+          "request": "06 00 11 ${value_high} ${value_low}",
+          "response": "06 00 11 ${value_high} ${value_low}"
+        },
+        {
+          "filename": "read_fc03_reg0000_le.r_f_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "03 00 00 00 02",
+          "parse": {
+            "start_byte": 2,
+            "length": 4,
+            "endian": "little",
+            "type": "float"
+          }
+        },
+        {
+          "filename": "read_fc04_reg0038_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 38 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc03_reg0012_le.r_f_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "03 00 12 00 02",
+          "parse": {
+            "start_byte": 2,
+            "length": 4,
+            "endian": "little",
+            "type": "float"
+          }
+        },
+        {
+          "filename": "read_fc03_reg0012.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "03 00 12 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          }
+        },
+        {
+          "filename": "read_fc04_reg0039_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 39 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg003a_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 3A 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg003b_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 3B 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg0038.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 38 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          }
+        },
+        {
+          "filename": "read_fc04_reg0039.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 39 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          }
+        },
+        {
+          "filename": "read_fc04_reg003a.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 3A 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          }
+        },
+        {
+          "filename": "read_fc04_reg003b.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 3B 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          }
+        },
+        {
+          "filename": "read_fc03_reg0030_le.r_f_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "03 00 30 00 02",
+          "parse": {
+            "start_byte": 2,
+            "length": 4,
+            "endian": "little",
+            "type": "float"
+          }
+        },
+        {
+          "filename": "read_fc04_reg0046_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 46 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg0047_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 47 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "read_fc04_reg0040_expected.r_u16_value",
+          "type": "modbus_read_cache",
+          "args": [],
+          "protocol": "modbus",
+          "request": "04 00 40 00 01",
+          "parse": {
+            "start_byte": 2,
+            "length": 2,
+            "endian": "big",
+            "type": "uint16"
+          },
+          "response": "04 02 00 01"
+        },
+        {
+          "filename": "increment.i32.r_i32_count",
+          "type": "calculate",
+          "args": [
+            {
+              "index": 0,
+              "name": "value",
+              "type": "i32"
+            }
+          ],
+          "expression": "${param_0} + 1"
+        }
+      ]
+    },
+    "layered/L2_node/all_nodes.json": {
+      "type": "node_bundle",
+      "nodes": [
+        {
+          "filename": "encode_pr_trigger.u16.r_u16_trigger_word",
+          "name": "encode_pr_trigger",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/encode_pr_trigger.u16.r_u16_trigger_word"
+          }
+        },
+        {
+          "filename": "trigger_pr_path.u16.r_b_done",
+          "name": "trigger_pr_path",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/trigger_pr_path.u16.r_b_written"
+          },
+          "judge": {
+            "type": "exists"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_state.s.r_i32_previous_pr",
+          "name": "read_state",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_state.s.r_i32_previous_pr"
+          }
+        },
+        {
+          "filename": "set_state.s_i32.r_b_done",
+          "name": "set_state",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/set_state.s_i32.r_b_saved"
+          }
+        },
+        {
+          "filename": "read_fc03_reg602c.r_i32_value",
+          "name": "read_fc03_reg602c",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg602c.r_i32_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "update_ui.s_s",
+          "name": "update_ui",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/update_ui.s_s"
+          }
+        },
+        {
+          "filename": "read_fc04_reg0000_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0000_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0000_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "wait_ms.u32.r_b_done",
+          "name": "wait_ms",
+          "type": "node",
+          "timeout_ms": 3600000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/wait_ms.u32.r_b_wait_done"
+          }
+        },
+        {
+          "filename": "write_050000.u16.r_b_done",
+          "name": "write_050000",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_050000.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_050012.u16.r_b_done",
+          "name": "write_050012",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_050012.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_050013.u16.r_b_done",
+          "name": "write_050013",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_050013.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_050014.u16.r_b_done",
+          "name": "write_050014",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_050014.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_050008.u16.r_b_done",
+          "name": "write_050008",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_050008.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_050009.u16.r_b_done",
+          "name": "write_050009",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_050009.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_05000a.u16.r_b_done",
+          "name": "write_05000a",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_05000a.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_05000b.u16.r_b_done",
+          "name": "write_05000b",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_05000b.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_05000c.u16.r_b_done",
+          "name": "write_05000c",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_05000c.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_05000d.u16.r_b_done",
+          "name": "write_05000d",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_05000d.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_05000e.u16.r_b_done",
+          "name": "write_05000e",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_05000e.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg2203_x_alarm.r_b_check_ok",
+          "name": "read_fc03_reg2203",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 0
+          },
+          "on_failure": [
+            {
+              "type": "popup",
+              "level": "error",
+              "message": "Driver alarm",
+              "error_code": "X_ALARM"
+            }
+          ],
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg2203_y_alarm.r_b_check_ok",
+          "name": "read_fc03_reg2203",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 0
+          },
+          "on_failure": [
+            {
+              "type": "popup",
+              "level": "error",
+              "message": "Driver alarm",
+              "error_code": "Y_ALARM"
+            }
+          ],
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg2203_y_alarm_y2.r_b_check_ok",
+          "name": "read_fc03_reg2203",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 0
+          },
+          "on_failure": [
+            {
+              "type": "popup",
+              "level": "error",
+              "message": "Driver alarm",
+              "error_code": "Y_ALARM_Y2"
+            }
+          ],
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg2203_z_alarm.r_b_check_ok",
+          "name": "read_fc03_reg2203",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg2203.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 0
+          },
+          "on_failure": [
+            {
+              "type": "popup",
+              "level": "error",
+              "message": "Driver alarm",
+              "error_code": "Z_ALARM"
+            }
+          ],
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg1003.r_u16_value",
+          "name": "read_fc03_reg1003",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg1003.r_u16_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0034_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0034_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0034_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0041_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0041_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0041_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0001_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0001_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0001_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0035_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0035_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0035_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0036_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0036_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0036_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0037_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0037_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0037_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0034.r_u16_value",
+          "name": "read_fc04_reg0034",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0034.r_u16_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0035.r_u16_value",
+          "name": "read_fc04_reg0035",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0035.r_u16_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0036.r_u16_value",
+          "name": "read_fc04_reg0036",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0036.r_u16_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0037.r_u16_value",
+          "name": "read_fc04_reg0037",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0037.r_u16_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg0020.r_i32_value",
+          "name": "read_fc03_reg0020",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg0020.r_i32_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg0010_le_rinse_pressure_low.r_b_check_ok",
+          "name": "read_fc03_reg0010_le",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg0010_le.r_f_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "ge",
+            "value": 0.2
+          },
+          "on_failure": [
+            {
+              "type": "popup",
+              "level": "error",
+              "message": "Rinse pressure insufficient",
+              "error_code": "RINSE_PRESSURE_LOW"
+            }
+          ],
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0042_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0042_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0042_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0043_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0043_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0043_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0044_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0044_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0044_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0045_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0045_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0045_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_060001.u16.r_b_done",
+          "name": "write_060001",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_060001.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_060010.u16.r_b_done",
+          "name": "write_060010",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_060010.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "write_060011.u16.r_b_done",
+          "name": "write_060011",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/write_060011.u16.r_b_written"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg0000_le_flow_not_reached.r_b_check_ok",
+          "name": "read_fc03_reg0000_le",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg0000_le.r_f_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "ge",
+            "value": "${recipes[recipe_index].volume_ml}"
+          },
+          "on_failure": [
+            {
+              "type": "popup",
+              "level": "error",
+              "message": "Dispensed volume below recipe target",
+              "error_code": "FLOW_NOT_REACHED"
+            }
+          ],
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0038_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0038_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0038_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg0012_le_fill_pressure_low.r_b_check_ok",
+          "name": "read_fc03_reg0012_le",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg0012_le.r_f_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "ge",
+            "value": 0.1
+          },
+          "on_failure": [
+            {
+              "type": "popup",
+              "level": "error",
+              "message": "Filling pressure insufficient",
+              "error_code": "FILL_PRESSURE_LOW"
+            }
+          ],
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg0000_le.r_f_value",
+          "name": "read_fc03_reg0000_le",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg0000_le.r_f_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg0012.r_u16_value",
+          "name": "read_fc03_reg0012",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg0012.r_u16_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0039_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0039_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0039_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg003a_expected.r_b_poll_ready",
+          "name": "read_fc04_reg003a_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg003a_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg003b_expected.r_b_poll_ready",
+          "name": "read_fc04_reg003b_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg003b_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0038.r_u16_value",
+          "name": "read_fc04_reg0038",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0038.r_u16_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0039.r_u16_value",
+          "name": "read_fc04_reg0039",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0039.r_u16_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg003a.r_u16_value",
+          "name": "read_fc04_reg003a",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg003a.r_u16_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg003b.r_u16_value",
+          "name": "read_fc04_reg003b",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg003b.r_u16_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg0030_le_torque_low.r_b_check_ok",
+          "name": "read_fc03_reg0030_le",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg0030_le.r_f_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "ge",
+            "value": 2.0
+          },
+          "on_failure": [
+            {
+              "type": "popup",
+              "level": "error",
+              "message": "Cappingtorqueinsufficient",
+              "error_code": "TORQUE_LOW"
+            }
+          ],
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0046_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0046_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0046_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc03_reg0030_le.r_f_value",
+          "name": "read_fc03_reg0030_le",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg0030_le.r_f_value"
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0047_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0047_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0047_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "read_fc04_reg0040_expected.r_b_poll_ready",
+          "name": "read_fc04_reg0040_expected",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc04_reg0040_expected.r_u16_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "eq",
+            "value": 1
+          },
+          "device": "${device}"
+        },
+        {
+          "filename": "increment.i32.r_i32_completed",
+          "name": "increment",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/increment.i32.r_i32_count"
+          }
+        },
+        {
+          "filename": "read_fc03_reg0010_le_cip_pressure_low.r_b_check_ok",
+          "name": "read_fc03_reg0010_le",
+          "type": "node",
+          "timeout_ms": 3000,
+          "max_retries": 0,
+          "action": {
+            "template": "L1_action/all_actions.json/read_fc03_reg0010_le.r_f_value"
+          },
+          "judge": {
+            "type": "compare",
+            "condition": "ge",
+            "value": 0.3
+          },
+          "on_failure": [
+            {
+              "type": "popup",
+              "level": "error",
+              "message": "CIP pressure low",
+              "error_code": "CIP_PRESSURE_LOW"
+            }
+          ],
+          "device": "${device}"
+        }
+      ]
+    },
+    "layered/L3_group/move_axis_if_changed.group.json": {
+      "type": "group",
+      "name": "move axis if changed",
+      "mode": "sequence",
+      "args": [
+        {
+          "index": 0,
+          "name": "axis_state",
+          "type": "s"
+        },
+        {
+          "index": 1,
+          "name": "axis_pr",
+          "type": "u16"
+        },
+        {
+          "index": 2,
+          "name": "axis_devices",
+          "type": "arr"
+        }
+      ],
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_state.s.r_i32_previous_pr",
+          "params": [
+            "${axis_state}"
+          ],
+          "result_key": "previous_pr"
+        },
+        {
+          "type": "group",
+          "name": "Changed axis",
+          "mode": "if",
+          "condition": {
+            "type": "expression",
+            "expression": "${axis_pr} != ${previous_pr}"
+          },
+          "then": [
+            {
+              "type": "group",
+              "name": "Axis motors",
+              "mode": "loop",
+              "loop": {
+                "type": "foreach",
+                "items": "axis_devices",
+                "item_name": "active_motor"
+              },
+              "body": [
+                {
+                  "type": "group",
+                  "template": "L3_group/trigger_motor.group.json",
+                  "params": [
+                    "${active_motor}",
+                    "${axis_pr}"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "node",
+              "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+              "params": [
+                "${axis_state}",
+                "${axis_pr}"
+              ]
+            }
+          ],
+          "else": []
+        }
+      ]
+    },
+    "layered/L3_group/move_production_point.group.json": {
+      "type": "group",
+      "name": "move production point",
+      "mode": "sequence",
+      "args": [
+        {
+          "index": 0,
+          "name": "point_index",
+          "type": "u16",
+          "min": 0,
+          "max": 100
+        }
+      ],
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/move_axis_if_changed.group.json",
+          "params": [
+            "last_x_pr",
+            "${production_points[point_index].x}",
+            [
+              "X"
+            ]
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_axis_if_changed.group.json",
+          "params": [
+            "last_y_pr",
+            "${production_points[point_index].y}",
+            [
+              "Y1",
+              "Y2"
+            ]
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_axis_if_changed.group.json",
+          "params": [
+            "last_z_pr",
+            "${production_points[point_index].z}",
+            [
+              "Z"
+            ]
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for X",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "X",
+            20,
+            4000,
+            202,
+            "MOTION_TIMEOUT",
+            "motion timeout"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for Y1",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "Y1",
+            20,
+            4000,
+            202,
+            "MOTION_TIMEOUT",
+            "motion timeout"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for Y2",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "Y2",
+            20,
+            4000,
+            202,
+            "MOTION_TIMEOUT",
+            "motion timeout"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for Z",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "Z",
+            20,
+            4000,
+            202,
+            "MOTION_TIMEOUT",
+            "motion timeout"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/refresh_position.group.json",
+          "params": []
+        }
+      ]
+    },
+    "layered/L3_group/poll_sensor_until_ready.group.json": {
+      "type": "group",
+      "name": "Poll sensor until ready",
+      "mode": "loop",
+      "args": [
+        {
+          "index": 0,
+          "name": "poll_node",
+          "type": "s"
+        },
+        {
+          "index": 1,
+          "name": "poll_device",
+          "type": "s"
+        },
+        {
+          "index": 2,
+          "name": "poll_interval_ms",
+          "type": "u32"
+        },
+        {
+          "index": 3,
+          "name": "poll_timeout_ms",
+          "type": "u32"
+        },
+        {
+          "index": 4,
+          "name": "poll_max_iterations",
+          "type": "u32"
+        },
+        {
+          "index": 5,
+          "name": "poll_error_code",
+          "type": "s"
+        },
+        {
+          "index": 6,
+          "name": "poll_error_message",
+          "type": "s"
+        }
+      ],
+      "timeout_ms": "${poll_timeout_ms}",
+      "loop": {
+        "type": "do-while",
+        "condition": "${poll_ready} != true",
+        "timeout_ms": "${poll_timeout_ms}",
+        "max_iterations": "${poll_max_iterations}"
+      },
+      "body": [
+        {
+          "type": "node",
+          "template": "${poll_node}",
+          "params": [],
+          "device": "${poll_device}",
+          "result_key": "poll_ready"
+        },
+        {
+          "type": "group",
+          "name": "Wait only when response has not matched",
+          "mode": "if",
+          "condition": {
+            "type": "expression",
+            "expression": "${poll_ready} != true"
+          },
+          "then": [
+            {
+              "type": "node",
+              "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+              "params": [
+                "${poll_interval_ms}"
+              ]
+            }
+          ],
+          "else": []
+        }
+      ],
+      "on_timeout": [
+        {
+          "type": "popup",
+          "level": "error",
+          "message": "${poll_error_message}",
+          "error_code": "${poll_error_code}"
+        }
+      ]
+    },
+    "layered/L3_group/produce_batch.group.json": {
+      "type": "group",
+      "name": "produce batch",
+      "mode": "loop",
+      "loop": {
+        "type": "count",
+        "count": 6
+      },
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/produce_one_container.group.json",
+          "params": []
+        }
+      ]
+    },
+    "layered/L3_group/produce_one_container.group.json": {
+      "type": "group",
+      "name": "produce one container",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/step_02_empty_bottle_feeding.group.json",
+          "params": []
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_03_bottle_position_detection.group.json",
+          "params": []
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_04_in_bottle_rinsing.group.json",
+          "params": []
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_05_filling_positioning.group.json",
+          "params": []
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_06_filling.group.json",
+          "params": []
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_07_level_recheck.group.json",
+          "params": []
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_08_capping.group.json",
+          "params": []
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_09_coding_labeling.group.json",
+          "params": []
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_10_finished_product_discharge.group.json",
+          "params": []
+        }
+      ]
+    },
+    "layered/L3_group/refresh_position.group.json": {
+      "type": "group",
+      "name": "refresh position",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg602c.r_i32_value",
+          "params": [],
+          "device": "X",
+          "result_key": "X_position"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg602c.r_i32_value",
+          "params": [],
+          "device": "Y1",
+          "result_key": "Y1_position"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg602c.r_i32_value",
+          "params": [],
+          "device": "Y2",
+          "result_key": "Y2_position"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg602c.r_i32_value",
+          "params": [],
+          "device": "Z",
+          "result_key": "Z_position"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "centerX",
+            "${X_position}"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "centerY",
+            "${Y1_position}"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "centerZ",
+            "${Z_position}"
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/run_recipe.group.json": {
+      "type": "group",
+      "name": "run recipe",
+      "mode": "sequence",
+      "args": [
+        {
+          "index": 0,
+          "name": "flavor",
+          "type": "u16",
+          "min": 0,
+          "max": 2
+        },
+        {
+          "index": 1,
+          "name": "specification",
+          "type": "u16",
+          "min": 0,
+          "max": 1
+        }
+      ],
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "recipe_index",
+            "${recipe_lookup[flavor][specification]}"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "completed",
+            0
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "last_x_pr",
+            -1
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "last_y_pr",
+            -1
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "last_z_pr",
+            -1
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_01_system_initialization.group.json",
+          "params": []
+        },
+        {
+          "type": "group",
+          "name": "Production batches",
+          "mode": "loop",
+          "loop": {
+            "type": "count",
+            "count": 2
+          },
+          "body": [
+            {
+              "type": "group",
+              "template": "L3_group/produce_batch.group.json",
+              "params": []
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_11_cip_cleaning_sanitizing.group.json",
+          "params": []
+        },
+        {
+          "type": "group",
+          "template": "L3_group/step_12_homing_standby.group.json",
+          "params": []
+        }
+      ]
+    },
+    "layered/L3_group/step_01_system_initialization.group.json": {
+      "type": "group",
+      "name": "step 01 system initialization",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "stage",
+            "01"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "OrangeFill"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "AppleFill"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "GrapeFill"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Gripper"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "CapFeeder"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050012.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "RinseValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050013.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "CIPValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050014.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "CIPValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050009.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000a.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000b.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000c.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000d.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000e.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "group",
+          "template": "L3_group/trigger_motor.group.json",
+          "params": [
+            "X",
+            0
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/trigger_motor.group.json",
+          "params": [
+            "Y1",
+            0
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/trigger_motor.group.json",
+          "params": [
+            "Y2",
+            0
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/trigger_motor.group.json",
+          "params": [
+            "Z",
+            0
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for X",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "X",
+            20,
+            4000,
+            202,
+            "HOME_TIMEOUT",
+            "home timeout"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for Y1",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "Y1",
+            20,
+            4000,
+            202,
+            "HOME_TIMEOUT",
+            "home timeout"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for Y2",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "Y2",
+            20,
+            4000,
+            202,
+            "HOME_TIMEOUT",
+            "home timeout"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for Z",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "Z",
+            20,
+            4000,
+            202,
+            "HOME_TIMEOUT",
+            "home timeout"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "last_x_pr",
+            0
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "last_y_pr",
+            0
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "last_z_pr",
+            0
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/refresh_position.group.json",
+          "params": []
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg2203_x_alarm.r_b_check_ok",
+          "params": [],
+          "device": "X"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg2203_y_alarm.r_b_check_ok",
+          "params": [],
+          "device": "Y1"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg2203_y_alarm_y2.r_b_check_ok",
+          "params": [],
+          "device": "Y2"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg2203_z_alarm.r_b_check_ok",
+          "params": [],
+          "device": "Z"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg1003.r_u16_value",
+          "params": [],
+          "device": "X",
+          "result_key": "xStatus"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg1003.r_u16_value",
+          "params": [],
+          "device": "Y1",
+          "result_key": "yStatus"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg1003.r_u16_value",
+          "params": [],
+          "device": "Y2",
+          "result_key": "yStatus_Y2"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg1003.r_u16_value",
+          "params": [],
+          "device": "Z",
+          "result_key": "zStatus"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+          "params": [
+            1000
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/step_02_empty_bottle_feeding.group.json": {
+      "type": "group",
+      "name": "step 02 empty bottle feeding",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "stage",
+            "02"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "group",
+          "template": "L3_group/trigger_motor.group.json",
+          "params": [
+            "Infeed",
+            "${recipes[recipe_index].infeed_pr}"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for Infeed",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "Infeed",
+            20,
+            4000,
+            202,
+            "EMPTY_FEED_TIMEOUT",
+            "empty feed timeout"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check bottle sensor and wait (5s)",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0034_expected.r_b_poll_ready",
+            "BottleSensor",
+            100,
+            5000,
+            52,
+            "BOTTLE_SENSOR_TIMEOUT",
+            "Bottle sensor not triggered, check feed"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].empty_entry}"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].empty_work}"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "Gripper"
+        },
+        {
+          "type": "group",
+          "name": "Check pick sensor",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0041_expected.r_b_poll_ready",
+            "BottleSensor",
+            50,
+            3000,
+            62,
+            "PICK_TIMEOUT",
+            "Pick not in place"
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/step_03_bottle_position_detection.group.json": {
+      "type": "group",
+      "name": "step 03 bottle position detection",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "stage",
+            "03"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for ContainerSensor",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0001_expected.r_b_poll_ready",
+            "ContainerSensor",
+            20,
+            2000,
+            102,
+            "NO_CONTAINER",
+            "no container"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check station 1 sensor",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0034_expected.r_b_poll_ready",
+            "BottleSensor",
+            50,
+            3000,
+            62,
+            "POS1_TIMEOUT",
+            "Station 1 not ready"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check station 2 sensor",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0035_expected.r_b_poll_ready",
+            "BottleSensor",
+            50,
+            3000,
+            62,
+            "POS2_TIMEOUT",
+            "Station 2 not ready"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check station 3 sensor",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0036_expected.r_b_poll_ready",
+            "BottleSensor",
+            50,
+            3000,
+            62,
+            "POS3_TIMEOUT",
+            "Station 3 not ready"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check station 4 sensor",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0037_expected.r_b_poll_ready",
+            "BottleSensor",
+            50,
+            3000,
+            62,
+            "POS4_TIMEOUT",
+            "Station 4 not ready"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc04_reg0034.r_u16_value",
+          "params": [],
+          "device": "BottleSensor",
+          "result_key": "pos1State"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc04_reg0035.r_u16_value",
+          "params": [],
+          "device": "BottleSensor",
+          "result_key": "pos2State"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc04_reg0036.r_u16_value",
+          "params": [],
+          "device": "BottleSensor",
+          "result_key": "pos3State"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc04_reg0037.r_u16_value",
+          "params": [],
+          "device": "BottleSensor",
+          "result_key": "pos4State"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg0020.r_i32_value",
+          "params": [],
+          "device": "FlowMeter",
+          "result_key": "bottleCount"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "BottleState",
+            "all ready"
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/step_04_in_bottle_rinsing.group.json": {
+      "type": "group",
+      "name": "step 04 in bottle rinsing",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "stage",
+            "04"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].empty_entry}"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].rinse_entry}"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].rinse_work}"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050012.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "RinseValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+          "params": [
+            5000
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050012.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "RinseValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg0010_le_rinse_pressure_low.r_b_check_ok",
+          "params": [],
+          "device": "PressureSensor"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050013.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "CIPValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+          "params": [
+            3000
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050013.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "CIPValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050014.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "CIPValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+          "params": [
+            3000
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050014.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "CIPValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "WashState",
+            "done"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].rinse_entry}"
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/step_05_filling_positioning.group.json": {
+      "type": "group",
+      "name": "step 05 filling positioning",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "stage",
+            "05"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].fill_entry}"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].fill_work}"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check station 1 arrival",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0042_expected.r_b_poll_ready",
+            "BottleSensor",
+            50,
+            3000,
+            62,
+            "FILL1_POS_TIMEOUT",
+            "Station 1 not arrived"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check station 2 arrival",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0043_expected.r_b_poll_ready",
+            "BottleSensor",
+            50,
+            3000,
+            62,
+            "FILL2_POS_TIMEOUT",
+            "Station 2 not arrived"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check station 3 arrival",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0044_expected.r_b_poll_ready",
+            "BottleSensor",
+            50,
+            3000,
+            62,
+            "FILL3_POS_TIMEOUT",
+            "Station 3 not arrived"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check station 4 arrival",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0045_expected.r_b_poll_ready",
+            "BottleSensor",
+            50,
+            3000,
+            62,
+            "FILL4_POS_TIMEOUT",
+            "Station 4 not arrived"
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/step_06_filling.group.json": {
+      "type": "group",
+      "name": "step 06 filling",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "stage",
+            "06"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_060001.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "FlowMeter"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_060010.u16.r_b_done",
+          "params": [
+            "${recipes[recipe_index].volume_ml}"
+          ],
+          "device": "${recipes[recipe_index].fill_device}"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_060011.u16.r_b_done",
+          "params": [
+            "${recipes[recipe_index].fill_time_ms}"
+          ],
+          "device": "${recipes[recipe_index].fill_device}"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "${recipes[recipe_index].fill_device}"
+        },
+        {
+          "type": "group",
+          "name": "Wait for ${recipes[recipe_index].fill_device}",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "${recipes[recipe_index].fill_device}",
+            20,
+            20000,
+            1002,
+            "FILL_TIMEOUT",
+            "fill timeout"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg0000_le_flow_not_reached.r_b_check_ok",
+          "params": [],
+          "device": "FlowMeter"
+        },
+        {
+          "type": "group",
+          "name": "Check level sensor",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0038_expected.r_b_poll_ready",
+            "LevelSensor",
+            50,
+            8000,
+            162,
+            "LEVEL_TIMEOUT",
+            "Level not reached"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "${recipes[recipe_index].fill_device}"
+        },
+        {
+          "type": "group",
+          "name": "Repeated diagnostic readings",
+          "mode": "loop",
+          "loop": {
+            "type": "count",
+            "count": 4
+          },
+          "body": [
+            {
+              "type": "node",
+              "template": "L2_node/all_nodes.json/read_fc03_reg0012_le_fill_pressure_low.r_b_check_ok",
+              "params": [],
+              "device": "PressureSensor"
+            }
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg0000_le.r_f_value",
+          "params": [],
+          "device": "FlowMeter",
+          "result_key": "totalVolume"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg0012.r_u16_value",
+          "params": [],
+          "device": "${recipes[recipe_index].fill_device}",
+          "result_key": "dispensed_ml"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "dispensedMl",
+            "${dispensed_ml}"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "FillState",
+            "done"
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/step_07_level_recheck.group.json": {
+      "type": "group",
+      "name": "step 07 level recheck",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "stage",
+            "07"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check level 1",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0038_expected.r_b_poll_ready",
+            "LevelSensor",
+            50,
+            3000,
+            62,
+            "RECHECK1_FAIL",
+            "Level 1 recheck failed"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check level 2",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0039_expected.r_b_poll_ready",
+            "LevelSensor",
+            50,
+            3000,
+            62,
+            "RECHECK2_FAIL",
+            "Level 2 recheck failed"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check level 3",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg003a_expected.r_b_poll_ready",
+            "LevelSensor",
+            50,
+            3000,
+            62,
+            "RECHECK3_FAIL",
+            "Level 3 recheck failed"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check level 4",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg003b_expected.r_b_poll_ready",
+            "LevelSensor",
+            50,
+            3000,
+            62,
+            "RECHECK4_FAIL",
+            "Level 4 recheck failed"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc04_reg0038.r_u16_value",
+          "params": [],
+          "device": "LevelSensor",
+          "result_key": "lv1"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc04_reg0039.r_u16_value",
+          "params": [],
+          "device": "LevelSensor",
+          "result_key": "lv2"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc04_reg003a.r_u16_value",
+          "params": [],
+          "device": "LevelSensor",
+          "result_key": "lv3"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc04_reg003b.r_u16_value",
+          "params": [],
+          "device": "LevelSensor",
+          "result_key": "lv4"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "CheckState",
+            "qualified"
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/step_08_capping.group.json": {
+      "type": "group",
+      "name": "step 08 capping",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "stage",
+            "08"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].fill_entry}"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].closure_entry}"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].closure_work}"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "CapFeeder"
+        },
+        {
+          "type": "group",
+          "template": "L3_group/trigger_motor.group.json",
+          "params": [
+            "Closure",
+            "${recipes[recipe_index].closure_pr}"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for Closure",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "Closure",
+            20,
+            5000,
+            252,
+            "CLOSURE_TIMEOUT",
+            "closure timeout"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000b.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+          "params": [
+            3000
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg0030_le_torque_low.r_b_check_ok",
+          "params": [],
+          "device": "Torque"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000b.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "group",
+          "name": "check Cap checksensor",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0046_expected.r_b_poll_ready",
+            "BottleSensor",
+            50,
+            3000,
+            62,
+            "CAP_TIMEOUT",
+            "Cap not in place"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg0030_le.r_f_value",
+          "params": [],
+          "device": "Torque",
+          "result_key": "torqueValue"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "CapState",
+            "done"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "CapFeeder"
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].closure_entry}"
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/step_09_coding_labeling.group.json": {
+      "type": "group",
+      "name": "step 09 coding labeling",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "stage",
+            "09"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].code_entry}"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].code_work}"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000c.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000c.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000d.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000d.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "group",
+          "name": "Check coding sensor",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0047_expected.r_b_poll_ready",
+            "BottleSensor",
+            50,
+            3000,
+            62,
+            "CODE_POS_TIMEOUT",
+            "Coding position not ready"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "CodeState",
+            "done"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].code_entry}"
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/step_10_finished_product_discharge.group.json": {
+      "type": "group",
+      "name": "step 10 finished product discharge",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "stage",
+            "10"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].finished_entry}"
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].finished_work}"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Gripper"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "group",
+          "template": "L3_group/trigger_motor.group.json",
+          "params": [
+            "Outfeed",
+            "${recipes[recipe_index].outfeed_pr}"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for Outfeed",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "Outfeed",
+            20,
+            4000,
+            202,
+            "OUTFEED_TIMEOUT",
+            "outfeed timeout"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Check discharge sensor",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0040_expected.r_b_poll_ready",
+            "BottleSensor",
+            100,
+            5000,
+            52,
+            "OUT_SENSOR_TIMEOUT",
+            "Discharge sensor not triggered"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg0020.r_i32_value",
+          "params": [],
+          "device": "FlowMeter",
+          "result_key": "totalCount"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "group",
+          "template": "L3_group/move_production_point.group.json",
+          "params": [
+            "${recipes[recipe_index].finished_entry}"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/increment.i32.r_i32_completed",
+          "params": [
+            "${completed}"
+          ],
+          "result_key": "completed"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "completed",
+            "${completed}"
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/step_11_cip_cleaning_sanitizing.group.json": {
+      "type": "group",
+      "name": "step 11 cip cleaning sanitizing",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "stage",
+            "11"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050013.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "CIPValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000e.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+          "params": [
+            120000
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg0010_le_cip_pressure_low.r_b_check_ok",
+          "params": [],
+          "device": "PressureSensor"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050014.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "CIPValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+          "params": [
+            30000
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050014.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "CIPValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000e.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050012.u16.r_b_done",
+          "params": [
+            65280
+          ],
+          "device": "RinseValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/wait_ms.u32.r_b_done",
+          "params": [
+            20000
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050012.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "RinseValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050013.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "CIPValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "CIPState",
+            "done"
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/step_12_homing_standby.group.json": {
+      "type": "group",
+      "name": "step 12 homing standby",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "stage",
+            "12"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "OrangeFill"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "AppleFill"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "GrapeFill"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Gripper"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050000.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "CapFeeder"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050012.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "RinseValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050013.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "CIPValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050014.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "CIPValve"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050008.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_050009.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000a.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000b.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000c.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000d.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/write_05000e.u16.r_b_done",
+          "params": [
+            0
+          ],
+          "device": "Relay"
+        },
+        {
+          "type": "group",
+          "template": "L3_group/trigger_motor.group.json",
+          "params": [
+            "X",
+            0
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/trigger_motor.group.json",
+          "params": [
+            "Y1",
+            0
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/trigger_motor.group.json",
+          "params": [
+            "Y2",
+            0
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/trigger_motor.group.json",
+          "params": [
+            "Z",
+            0
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for X",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "X",
+            20,
+            4000,
+            202,
+            "HOME_TIMEOUT",
+            "home timeout"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for Y1",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "Y1",
+            20,
+            4000,
+            202,
+            "HOME_TIMEOUT",
+            "home timeout"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for Y2",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "Y2",
+            20,
+            4000,
+            202,
+            "HOME_TIMEOUT",
+            "home timeout"
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Wait for Z",
+          "template": "L3_group/poll_sensor_until_ready.group.json",
+          "params": [
+            "L2_node/all_nodes.json/read_fc04_reg0000_expected.r_b_poll_ready",
+            "Z",
+            20,
+            4000,
+            202,
+            "HOME_TIMEOUT",
+            "home timeout"
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "last_x_pr",
+            0
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "last_y_pr",
+            0
+          ]
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/set_state.s_i32.r_b_done",
+          "params": [
+            "last_z_pr",
+            0
+          ]
+        },
+        {
+          "type": "group",
+          "template": "L3_group/refresh_position.group.json",
+          "params": []
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg2203_x_alarm.r_b_check_ok",
+          "params": [],
+          "device": "X"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg2203_y_alarm.r_b_check_ok",
+          "params": [],
+          "device": "Y1"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg2203_y_alarm_y2.r_b_check_ok",
+          "params": [],
+          "device": "Y2"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/read_fc03_reg2203_z_alarm.r_b_check_ok",
+          "params": [],
+          "device": "Z"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/update_ui.s_s",
+          "params": [
+            "SystemState",
+            "standby"
+          ]
+        }
+      ]
+    },
+    "layered/L3_group/trigger_motor.group.json": {
+      "type": "group",
+      "name": "trigger motor",
+      "mode": "sequence",
+      "args": [
+        {
+          "index": 0,
+          "name": "motor_device",
+          "type": "s"
+        },
+        {
+          "index": 1,
+          "name": "motor_pr",
+          "type": "u16"
+        }
+      ],
+      "body": [
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/encode_pr_trigger.u16.r_u16_trigger_word",
+          "params": [
+            "${motor_pr}"
+          ],
+          "result_key": "trigger_word"
+        },
+        {
+          "type": "node",
+          "template": "L2_node/all_nodes.json/trigger_pr_path.u16.r_b_done",
+          "params": [
+            "${trigger_word}"
+          ],
+          "device": "${motor_device}"
+        }
+      ]
+    },
+    "layered/L4_flow/apple_can.json": {
+      "type": "flow",
+      "name": "apple_can",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/run_recipe.group.json",
+          "params": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    "layered/L4_flow/apple_family.json": {
+      "type": "flow",
+      "name": "apple_family",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/run_recipe.group.json",
+          "params": [
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    "layered/L4_flow/grape_can.json": {
+      "type": "flow",
+      "name": "grape_can",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/run_recipe.group.json",
+          "params": [
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    "layered/L4_flow/grape_family.json": {
+      "type": "flow",
+      "name": "grape_family",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/run_recipe.group.json",
+          "params": [
+            2,
+            0
+          ]
+        }
+      ]
+    },
+    "layered/L4_flow/orange_can.json": {
+      "type": "flow",
+      "name": "orange_can",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/run_recipe.group.json",
+          "params": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "layered/L4_flow/orange_family.json": {
+      "type": "flow",
+      "name": "orange_family",
+      "mode": "sequence",
+      "body": [
+        {
+          "type": "group",
+          "template": "L3_group/run_recipe.group.json",
+          "params": [
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    "system_variables.json": {
+      "production_points": [
+        {
+          "name": "Commissioned home PR0",
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "name": "orange family empty entry",
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        {
+          "name": "orange family empty work",
+          "x": 1,
+          "y": 1,
+          "z": 2
+        },
+        {
+          "name": "orange family rinse entry",
+          "x": 13,
+          "y": 1,
+          "z": 1
+        },
+        {
+          "name": "orange family rinse work",
+          "x": 13,
+          "y": 1,
+          "z": 2
+        },
+        {
+          "name": "orange family fill entry",
+          "x": 4,
+          "y": 10,
+          "z": 1
+        },
+        {
+          "name": "orange family fill work",
+          "x": 4,
+          "y": 10,
+          "z": 2
+        },
+        {
+          "name": "orange family closure entry",
+          "x": 7,
+          "y": 4,
+          "z": 1
+        },
+        {
+          "name": "orange family closure work",
+          "x": 7,
+          "y": 4,
+          "z": 2
+        },
+        {
+          "name": "orange family code entry",
+          "x": 14,
+          "y": 1,
+          "z": 1
+        },
+        {
+          "name": "orange family code work",
+          "x": 14,
+          "y": 1,
+          "z": 2
+        },
+        {
+          "name": "orange family finished entry",
+          "x": 10,
+          "y": 7,
+          "z": 1
+        },
+        {
+          "name": "orange family finished work",
+          "x": 10,
+          "y": 7,
+          "z": 2
+        },
+        {
+          "name": "orange can empty entry",
+          "x": 2,
+          "y": 2,
+          "z": 1
+        },
+        {
+          "name": "orange can empty work",
+          "x": 2,
+          "y": 2,
+          "z": 3
+        },
+        {
+          "name": "orange can rinse entry",
+          "x": 13,
+          "y": 2,
+          "z": 1
+        },
+        {
+          "name": "orange can rinse work",
+          "x": 13,
+          "y": 2,
+          "z": 3
+        },
+        {
+          "name": "orange can fill entry",
+          "x": 4,
+          "y": 11,
+          "z": 1
+        },
+        {
+          "name": "orange can fill work",
+          "x": 4,
+          "y": 11,
+          "z": 3
+        },
+        {
+          "name": "orange can closure entry",
+          "x": 8,
+          "y": 5,
+          "z": 1
+        },
+        {
+          "name": "orange can closure work",
+          "x": 8,
+          "y": 5,
+          "z": 3
+        },
+        {
+          "name": "orange can code entry",
+          "x": 14,
+          "y": 2,
+          "z": 1
+        },
+        {
+          "name": "orange can code work",
+          "x": 14,
+          "y": 2,
+          "z": 3
+        },
+        {
+          "name": "orange can finished entry",
+          "x": 11,
+          "y": 8,
+          "z": 1
+        },
+        {
+          "name": "orange can finished work",
+          "x": 11,
+          "y": 8,
+          "z": 3
+        },
+        {
+          "name": "apple family fill entry",
+          "x": 5,
+          "y": 10,
+          "z": 1
+        },
+        {
+          "name": "apple family fill work",
+          "x": 5,
+          "y": 10,
+          "z": 2
+        },
+        {
+          "name": "apple can fill entry",
+          "x": 5,
+          "y": 11,
+          "z": 1
+        },
+        {
+          "name": "apple can fill work",
+          "x": 5,
+          "y": 11,
+          "z": 3
+        },
+        {
+          "name": "grape family fill entry",
+          "x": 6,
+          "y": 10,
+          "z": 1
+        },
+        {
+          "name": "grape family fill work",
+          "x": 6,
+          "y": 10,
+          "z": 2
+        },
+        {
+          "name": "grape can fill entry",
+          "x": 6,
+          "y": 11,
+          "z": 1
+        },
+        {
+          "name": "grape can fill work",
+          "x": 6,
+          "y": 11,
+          "z": 3
+        }
+      ],
+      "recipes": [
+        {
+          "id": "orange_family",
+          "flavor": "orange",
+          "format": "family",
+          "volume_ml": 2000,
+          "fill_device": "OrangeFill",
+          "fill_rate_ml_s": 200,
+          "fill_time_ms": 10000,
+          "closure_mode": "screw_large",
+          "closure_pr": 1,
+          "infeed_pr": 1,
+          "outfeed_pr": 4,
+          "home_point": 0,
+          "batches": 2,
+          "units_per_batch": 6,
+          "empty_entry": 1,
+          "empty_work": 2,
+          "rinse_entry": 3,
+          "rinse_work": 4,
+          "fill_entry": 5,
+          "fill_work": 6,
+          "closure_entry": 7,
+          "closure_work": 8,
+          "code_entry": 9,
+          "code_work": 10,
+          "finished_entry": 11,
+          "finished_work": 12
+        },
+        {
+          "id": "orange_can",
+          "flavor": "orange",
+          "format": "can",
+          "volume_ml": 330,
+          "fill_device": "OrangeFill",
+          "fill_rate_ml_s": 200,
+          "fill_time_ms": 1650,
+          "closure_mode": "seam_can",
+          "closure_pr": 2,
+          "infeed_pr": 2,
+          "outfeed_pr": 5,
+          "home_point": 0,
+          "batches": 2,
+          "units_per_batch": 6,
+          "empty_entry": 13,
+          "empty_work": 14,
+          "rinse_entry": 15,
+          "rinse_work": 16,
+          "fill_entry": 17,
+          "fill_work": 18,
+          "closure_entry": 19,
+          "closure_work": 20,
+          "code_entry": 21,
+          "code_work": 22,
+          "finished_entry": 23,
+          "finished_work": 24
+        },
+        {
+          "id": "apple_family",
+          "flavor": "apple",
+          "format": "family",
+          "volume_ml": 2000,
+          "fill_device": "AppleFill",
+          "fill_rate_ml_s": 180,
+          "fill_time_ms": 11112,
+          "closure_mode": "screw_large",
+          "closure_pr": 1,
+          "infeed_pr": 1,
+          "outfeed_pr": 4,
+          "home_point": 0,
+          "batches": 2,
+          "units_per_batch": 6,
+          "empty_entry": 1,
+          "empty_work": 2,
+          "rinse_entry": 3,
+          "rinse_work": 4,
+          "fill_entry": 25,
+          "fill_work": 26,
+          "closure_entry": 7,
+          "closure_work": 8,
+          "code_entry": 9,
+          "code_work": 10,
+          "finished_entry": 11,
+          "finished_work": 12
+        },
+        {
+          "id": "apple_can",
+          "flavor": "apple",
+          "format": "can",
+          "volume_ml": 330,
+          "fill_device": "AppleFill",
+          "fill_rate_ml_s": 180,
+          "fill_time_ms": 1834,
+          "closure_mode": "seam_can",
+          "closure_pr": 2,
+          "infeed_pr": 2,
+          "outfeed_pr": 5,
+          "home_point": 0,
+          "batches": 2,
+          "units_per_batch": 6,
+          "empty_entry": 13,
+          "empty_work": 14,
+          "rinse_entry": 15,
+          "rinse_work": 16,
+          "fill_entry": 27,
+          "fill_work": 28,
+          "closure_entry": 19,
+          "closure_work": 20,
+          "code_entry": 21,
+          "code_work": 22,
+          "finished_entry": 23,
+          "finished_work": 24
+        },
+        {
+          "id": "grape_family",
+          "flavor": "grape",
+          "format": "family",
+          "volume_ml": 2000,
+          "fill_device": "GrapeFill",
+          "fill_rate_ml_s": 220,
+          "fill_time_ms": 9091,
+          "closure_mode": "screw_large",
+          "closure_pr": 1,
+          "infeed_pr": 1,
+          "outfeed_pr": 4,
+          "home_point": 0,
+          "batches": 2,
+          "units_per_batch": 6,
+          "empty_entry": 1,
+          "empty_work": 2,
+          "rinse_entry": 3,
+          "rinse_work": 4,
+          "fill_entry": 29,
+          "fill_work": 30,
+          "closure_entry": 7,
+          "closure_work": 8,
+          "code_entry": 9,
+          "code_work": 10,
+          "finished_entry": 11,
+          "finished_work": 12
+        },
+        {
+          "id": "grape_can",
+          "flavor": "grape",
+          "format": "can",
+          "volume_ml": 330,
+          "fill_device": "GrapeFill",
+          "fill_rate_ml_s": 220,
+          "fill_time_ms": 1500,
+          "closure_mode": "seam_can",
+          "closure_pr": 2,
+          "infeed_pr": 2,
+          "outfeed_pr": 5,
+          "home_point": 0,
+          "batches": 2,
+          "units_per_batch": 6,
+          "empty_entry": 13,
+          "empty_work": 14,
+          "rinse_entry": 15,
+          "rinse_work": 16,
+          "fill_entry": 31,
+          "fill_work": 32,
+          "closure_entry": 19,
+          "closure_work": 20,
+          "code_entry": 21,
+          "code_work": 22,
+          "finished_entry": 23,
+          "finished_work": 24
+        }
+      ],
+      "recipe_lookup": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          5
+        ]
+      ],
+      "last_x_pr": -1,
+      "last_y_pr": -1,
+      "last_z_pr": -1,
+      "completed": 0
+    }
+  },
+  "inherited_process_stages": [
+    {
+      "stage": 1,
+      "name_zh": "初始化",
+      "stage_key": "system_initialization",
+      "frequency": "每配方一次；位于2×6生产循环前",
+      "point_route_fields": "无配方点位移动；显式触发X/Y1/Y2/Z各自PR0",
+      "actions_zh": "关闭三个灌装头、夹爪、供盖器、冲洗阀、CIP阀/排水阀及Relay 0x0008–0x000E；四定位电机PR0；轮询完成；保存last_*_pr=0；读坐标并更新UI；报警检查；缓存运行状态；稳定1秒。",
+      "success_zh": "四轴完成位=1，报警寄存器0x2203均为0",
+      "waits_zh": "四轴完成轮询20ms/4000ms；显式等待1000ms",
+      "failure_codes_zh": "HOME_TIMEOUT；X_ALARM/Y_ALARM/Y_ALARM_Y2/Z_ALARM",
+      "notes_zh": "预置PR0移动，不是硬件限位寻零。",
+      "source": "baseline:layered/L3_group/step_01_system_initialization.group.json"
+    },
+    {
+      "stage": 2,
+      "name_zh": "空瓶上料与夹取",
+      "stage_key": "empty_bottle_feeding",
+      "frequency": "每瓶一次；每配方12次",
+      "point_route_fields": "empty_entry → empty_work",
+      "actions_zh": "Relay推瓶输出0x0008开；Infeed PR=infeed_pr；完成后确认上料BottleSensor 0x0034；关推瓶；先入空瓶entry再work；Gripper线圈0x0000开；确认抓取0x0041。",
+      "success_zh": "上料传感器=1且抓取传感器=1",
+      "waits_zh": "Infeed20ms/4000ms；上料100ms/5000ms；抓取50ms/3000ms；每次move四轴20ms/4000ms",
+      "failure_codes_zh": "EMPTY_FEED_TIMEOUT；BOTTLE_SENSOR_TIMEOUT；PICK_TIMEOUT；MOTION_TIMEOUT",
+      "notes_zh": "夹爪在此夹住瓶子，直到阶段10松夹。",
+      "source": "baseline:layered/L3_group/step_02_empty_bottle_feeding.group.json"
+    },
+    {
+      "stage": 3,
+      "name_zh": "瓶位确认",
+      "stage_key": "bottle_position_detection",
+      "frequency": "每瓶一次；每配方12次",
+      "point_route_fields": "保持empty_work，不新增移动",
+      "actions_zh": "确认ContainerSensor FC04 0x0001；逐路确认BottleSensor 0x0034–0x0037并缓存；读取累计产量FlowMeter0x0020；UI BottleState=all ready。",
+      "success_zh": "ContainerSensor及四路状态均为1",
+      "waits_zh": "容器20ms/2000ms；四路瓶位各50ms/3000ms",
+      "failure_codes_zh": "NO_CONTAINER；POS1_TIMEOUT/POS2_TIMEOUT/POS3_TIMEOUT/POS4_TIMEOUT",
+      "notes_zh": "四路信号，不是四个需要搬运到的工位。",
+      "source": "baseline:layered/L3_group/step_03_bottle_position_detection.group.json"
+    },
+    {
+      "stage": 4,
+      "name_zh": "瓶内冲洗",
+      "stage_key": "in_bottle_rinsing",
+      "frequency": "每瓶一次；每配方12次",
+      "point_route_fields": "empty_entry → rinse_entry → rinse_work → rinse_entry",
+      "actions_zh": "抬升到空瓶entry；转冲洗entry再下降work；冲洗阀0x0012开5s后关；压力检查0x0010>=0.2MPa；消毒阀CIP0x0013开3s后关；排水阀CIP0x0014开3s后关；UI WashState=done；抬升至rinse_entry。",
+      "success_zh": "实际开阀时长分别>=5000/3000/3000ms；压力>=0.2MPa；保持夹持且位于冲洗work",
+      "waits_zh": "显式等待5000+3000+3000ms；移动完成轮询20ms/4000ms",
+      "failure_codes_zh": "RINSE_PRESSURE_LOW；MOTION_TIMEOUT；模拟模型另检RINSE_DURATION/RINSE_SEQUENCE/PROCESS_POSITION",
+      "notes_zh": "这些时长/阈值是已有模拟案例工程输入，不是由250mL容积推导或物理标定。",
+      "source": "baseline:layered/L3_group/step_04_in_bottle_rinsing.group.json"
+    },
+    {
+      "stage": 5,
+      "name_zh": "灌装定位",
+      "stage_key": "filling_positioning",
+      "frequency": "每瓶一次；每配方12次",
+      "point_route_fields": "fill_entry → fill_work；口味决定fill点位",
+      "actions_zh": "先到选定口味灌装entry再work；BottleSensor0x0042–0x0045逐路检查到位。",
+      "success_zh": "瓶已完成冲洗；四路灌装位置状态=1；选择配方对应灌装头",
+      "waits_zh": "四路各50ms/3000ms；移动20ms/4000ms",
+      "failure_codes_zh": "FILL1_POS_TIMEOUT/FILL2_POS_TIMEOUT/FILL3_POS_TIMEOUT/FILL4_POS_TIMEOUT；MOTION_TIMEOUT",
+      "notes_zh": "三口味分别OrangeFill/AppleFill/GrapeFill，按配方运行一个灌装头。",
+      "source": "baseline:layered/L3_group/step_05_filling_positioning.group.json"
+    },
+    {
+      "stage": 6,
+      "name_zh": "定量灌装",
+      "stage_key": "filling",
+      "frequency": "每瓶一次；每配方12次",
+      "point_route_fields": "保持fill_work",
+      "actions_zh": "清FlowMeter0x0001；给fill_device写容量0x0010及灌装时间0x0011；开灌装头线圈0x0000；等待完成；检查FlowMeter0x0000>=volume_ml；确认液位0x0038；关灌装头；4次PressureSensor0x0012>=0.1MPa；缓存流量及头部0x0012实灌量；更新UI。",
+      "success_zh": "配方容量250mL；灌装时长橙1250/苹果1389/葡萄1137ms；累计量>=250；液位=1；4次压力>=0.1MPa",
+      "waits_zh": "灌装完成20ms/20000ms；液位50ms/8000ms；4次压力检查无额外等待",
+      "failure_codes_zh": "FILL_TIMEOUT；FLOW_NOT_REACHED；LEVEL_TIMEOUT；FILL_PRESSURE_LOW；COMM_OFFLINE",
+      "notes_zh": "已保存旧动作name包含“500ml”，但compareValue实际为配方250；表格应以字段值为准，不能复述过时name。",
+      "source": "baseline:layered/L3_group/step_06_filling.group.json"
+    },
+    {
+      "stage": 7,
+      "name_zh": "液位复检",
+      "stage_key": "level_recheck",
+      "frequency": "每瓶一次；每配方12次",
+      "point_route_fields": "保持fill_work，无独立质检点位",
+      "actions_zh": "独立轮询LevelSensor0x0038/39/3A/3B并缓存lv1–lv4；CheckState=qualified。",
+      "success_zh": "四路液位均为1，模拟器记录4路已检查才允许封口",
+      "waits_zh": "每路50ms/3000ms",
+      "failure_codes_zh": "RECHECK1_FAIL/RECHECK2_FAIL/RECHECK3_FAIL/RECHECK4_FAIL；模型另检LEVEL_NOT_VERIFIED",
+      "notes_zh": "属于在线液位质检；无视觉、称重、泄漏测试、坏品分拣或独立质检搬运。",
+      "source": "baseline:layered/L3_group/step_07_level_recheck.group.json"
+    },
+    {
+      "stage": 8,
+      "name_zh": "供盖与封口",
+      "stage_key": "capping",
+      "frequency": "每瓶一次；每配方12次",
+      "point_route_fields": "fill_entry → closure_entry → closure_work → closure_entry",
+      "actions_zh": "抬升离开灌装；去封口entry/work；CapFeeder开；Closure按closure_pr触发；等待完成；Relay0x000B封口输出开3s；读Torque0x0030>=2.0N·m；关封口输出；BottleSensor0x0046盖到位；缓存扭矩；CapFeeder关；抬升。",
+      "success_zh": "闭合状态、四路液位通过、供盖器开启；封口保持>=3000ms且扭矩>=2.0N·m；盖到位=1",
+      "waits_zh": "Closure20ms/5000ms；封口显式3000ms；盖到位50ms/3000ms",
+      "failure_codes_zh": "CLOSURE_TIMEOUT；TORQUE_LOW；CAP_TIMEOUT；MOTION_TIMEOUT；模型另检CAPPING_DURATION/CLOSURE_SEQUENCE/CLOSURE_MODE",
+      "notes_zh": "250mL使用closure_pr=3，closure_mode=screw_small是配方描述；真实机构校准未建模。",
+      "source": "baseline:layered/L3_group/step_08_capping.group.json"
+    },
+    {
+      "stage": 9,
+      "name_zh": "喷码与贴标",
+      "stage_key": "coding_labeling",
+      "frequency": "每瓶一次；每配方12次",
+      "point_route_fields": "code_entry → code_work → code_entry",
+      "actions_zh": "进喷码entry/work；Relay0x000C喷码开/关；0x000D贴标开/关；BottleSensor0x0047完成确认；UI CodeState=done；抬升。",
+      "success_zh": "瓶已封口且扭矩检查通过；喷码先于贴标；完成位=1",
+      "waits_zh": "无显式脉冲timer；每次模拟请求5ms使开/关脉冲约5ms；完成确认50ms/3000ms",
+      "failure_codes_zh": "CODE_POS_TIMEOUT；MOTION_TIMEOUT；模型另检LABEL_SEQUENCE/LABEL_DURATION",
+      "notes_zh": "没有码内容、标签版式或条码视觉检验参数；不能声称完整包装作业。",
+      "source": "baseline:layered/L3_group/step_09_coding_labeling.group.json"
+    },
+    {
+      "stage": 10,
+      "name_zh": "成品放置与出料",
+      "stage_key": "finished_product_discharge",
+      "frequency": "每瓶一次；每配方12次",
+      "point_route_fields": "finished_entry → finished_work → finished_entry",
+      "actions_zh": "进入成品entry/work；Gripper关以松夹；Relay推瓶0x0008开；Outfeed PR=outfeed_pr；完成并确认BottleSensor0x0040；缓存累计产量；关推瓶；抬升；completed加1并更新UI。",
+      "success_zh": "成品已灌装、封口、液位复检、喷码与贴标；松夹后出料完成位与传感器=1",
+      "waits_zh": "Outfeed20ms/4000ms；出料传感器100ms/5000ms；移动20ms/4000ms",
+      "failure_codes_zh": "OUTFEED_TIMEOUT；OUT_SENSOR_TIMEOUT；MOTION_TIMEOUT；模型另检UNFINISHED_RELEASE/UNLABELLED_RELEASE/UNLABELLED_OUTPUT",
+      "notes_zh": "仅成品放置/出料；没有装箱、封箱、码垛、包装机或包装点位。",
+      "source": "baseline:layered/L3_group/step_10_finished_product_discharge.group.json"
+    },
+    {
+      "stage": 11,
+      "name_zh": "CIP清洗",
+      "stage_key": "cip_cleaning_sanitizing",
+      "frequency": "每配方一次；完成全部12瓶后",
+      "point_route_fields": "不新增生产点位移动；保持最后finished_entry",
+      "actions_zh": "CIP0x0013开，Relay泵0x000E开；循环120s；压力0x0010>=0.3MPa；CIP排水0x0014开30s后关；停泵；冲洗阀0x0012开20s后关；关CIP0x0013；UI CIPState=done。",
+      "success_zh": "全部12瓶已出料且无持瓶；循环>=120000ms、排水>=30000ms、清水>=20000ms；压力>=0.3MPa；停泵后清水",
+      "waits_zh": "显式120000+30000+20000ms",
+      "failure_codes_zh": "CIP_PRESSURE_LOW；模型另检CIP_SEQUENCE/CIP_DURATION/CIP_INCOMPLETE",
+      "notes_zh": "模拟清洗顺序和时长检查，不是卫生效果或食品安全验证。",
+      "source": "baseline:layered/L3_group/step_11_cip_cleaning_sanitizing.group.json"
+    },
+    {
+      "stage": 12,
+      "name_zh": "回原点与待机",
+      "stage_key": "homing_standby",
+      "frequency": "每配方一次；CIP完成后",
+      "point_route_fields": "显式触发X/Y1/Y2/Z各自PR0",
+      "actions_zh": "重复复位所有输出；四轴显式PR0并等待完成；记录last_*_pr=0；刷新位置UI；四轴报警检查；SystemState=standby。",
+      "success_zh": "CIP完成；定位四轴PR0；无待完成动作、无持瓶且所有输出关闭；报警=0",
+      "waits_zh": "四轴20ms/4000ms；无额外稳定timer",
+      "failure_codes_zh": "HOME_TIMEOUT；X_ALARM/Y_ALARM/Y_ALARM_Y2/Z_ALARM；模型另检FINAL_STATE/HOME_POSITION",
+      "notes_zh": "与初始化一样，PR0不受“点号未变化则跳过”优化影响。",
+      "source": "baseline:layered/L3_group/step_12_homing_standby.group.json"
+    }
+  ],
+  "movement_contract": {
+    "production_point_range_declared": [
+      0,
+      100
+    ],
+    "point_count_before": 33,
+    "motor_pr_range": [
+      0,
+      15
+    ],
+    "trigger_register": "0x6002",
+    "trigger_value": "16 + pr_number",
+    "motion_poll": "FC04 register0 expected 0001; 20ms retry, 4000ms deadline",
+    "position_readback": "FC03 0x602C length2 registers; uint32/int big endian in model",
+    "ui_mapping": {
+      "centerX": "X_position",
+      "centerY": "Y1_position",
+      "centerZ": "Z_position"
+    },
+    "axis_issue_order": [
+      "X",
+      "Y1",
+      "Y2",
+      "Z"
+    ],
+    "no_change_policy": "Ordinary move triggers only changed logical axis; Y changes trigger both Y1 and Y2. All four are still polled and all four positions read. Init/standby explicitly trigger PR0."
+  },
+  "frozen_dependencies": "All remaining baseline L1/L2/L3 files and device_registry.json are trusted and immutable; only the size bound in run_recipe may be extended. Existing group bodies implement all twelve stages.",
+  "allowed_changes": [
+    "append new production points and recipes",
+    "extend recipe_lookup",
+    "replace run_recipe.args[1].max from 1 to 2",
+    "create three L4 entrances"
+  ],
+  "limits": [
+    "No physical coordinate inference from volume.",
+    "No packaging/boxing station in the inherited flow.",
+    "Two batches and six bottles are fixed L3 loops; matching recipe metadata does not drive them.",
+    "Units such as MPa and N m are labels in original action names, not independently calibrated measurements."
+  ],
+  "sources": [
+    "examples/beverage_full/example4",
+    "examples/beverage_nl_extension/prompt.txt",
+    "examples/beverage_nl_extension/context.json",
+    "scripts/build_beverage_full.py",
+    "scripts/simulate_beverage_full.py"
+  ]
+}

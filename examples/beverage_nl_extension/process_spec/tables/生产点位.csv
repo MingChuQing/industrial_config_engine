@@ -1,0 +1,50 @@
+﻿点位ID,点位名,X PR,Y1 PR,Y2 PR,Z PR,来源类型,被哪些配方字段使用,来源
+0,Commissioned home PR0,0,0,0,0,保留基线,orange_family:home_point; orange_can:home_point; apple_family:home_point; apple_can:home_point; grape_family:home_point; grape_can:home_point; orange_small:home_point; apple_small:home_point; grape_small:home_point,candidate:system_variables.json
+1,orange family empty entry,1,1,1,1,保留基线,orange_family:empty_entry; apple_family:empty_entry; grape_family:empty_entry,candidate:system_variables.json
+2,orange family empty work,1,1,1,2,保留基线,orange_family:empty_work; apple_family:empty_work; grape_family:empty_work,candidate:system_variables.json
+3,orange family rinse entry,13,1,1,1,保留基线,orange_family:rinse_entry; apple_family:rinse_entry; grape_family:rinse_entry,candidate:system_variables.json
+4,orange family rinse work,13,1,1,2,保留基线,orange_family:rinse_work; apple_family:rinse_work; grape_family:rinse_work,candidate:system_variables.json
+5,orange family fill entry,4,10,10,1,保留基线,orange_family:fill_entry,candidate:system_variables.json
+6,orange family fill work,4,10,10,2,保留基线,orange_family:fill_work,candidate:system_variables.json
+7,orange family closure entry,7,4,4,1,保留基线,orange_family:closure_entry; apple_family:closure_entry; grape_family:closure_entry,candidate:system_variables.json
+8,orange family closure work,7,4,4,2,保留基线,orange_family:closure_work; apple_family:closure_work; grape_family:closure_work,candidate:system_variables.json
+9,orange family code entry,14,1,1,1,保留基线,orange_family:code_entry; apple_family:code_entry; grape_family:code_entry,candidate:system_variables.json
+10,orange family code work,14,1,1,2,保留基线,orange_family:code_work; apple_family:code_work; grape_family:code_work,candidate:system_variables.json
+11,orange family finished entry,10,7,7,1,保留基线,orange_family:finished_entry; apple_family:finished_entry; grape_family:finished_entry,candidate:system_variables.json
+12,orange family finished work,10,7,7,2,保留基线,orange_family:finished_work; apple_family:finished_work; grape_family:finished_work,candidate:system_variables.json
+13,orange can empty entry,2,2,2,1,保留基线,orange_can:empty_entry; apple_can:empty_entry; grape_can:empty_entry,candidate:system_variables.json
+14,orange can empty work,2,2,2,3,保留基线,orange_can:empty_work; apple_can:empty_work; grape_can:empty_work,candidate:system_variables.json
+15,orange can rinse entry,13,2,2,1,保留基线,orange_can:rinse_entry; apple_can:rinse_entry; grape_can:rinse_entry,candidate:system_variables.json
+16,orange can rinse work,13,2,2,3,保留基线,orange_can:rinse_work; apple_can:rinse_work; grape_can:rinse_work,candidate:system_variables.json
+17,orange can fill entry,4,11,11,1,保留基线,orange_can:fill_entry,candidate:system_variables.json
+18,orange can fill work,4,11,11,3,保留基线,orange_can:fill_work,candidate:system_variables.json
+19,orange can closure entry,8,5,5,1,保留基线,orange_can:closure_entry; apple_can:closure_entry; grape_can:closure_entry,candidate:system_variables.json
+20,orange can closure work,8,5,5,3,保留基线,orange_can:closure_work; apple_can:closure_work; grape_can:closure_work,candidate:system_variables.json
+21,orange can code entry,14,2,2,1,保留基线,orange_can:code_entry; apple_can:code_entry; grape_can:code_entry,candidate:system_variables.json
+22,orange can code work,14,2,2,3,保留基线,orange_can:code_work; apple_can:code_work; grape_can:code_work,candidate:system_variables.json
+23,orange can finished entry,11,8,8,1,保留基线,orange_can:finished_entry; apple_can:finished_entry; grape_can:finished_entry,candidate:system_variables.json
+24,orange can finished work,11,8,8,3,保留基线,orange_can:finished_work; apple_can:finished_work; grape_can:finished_work,candidate:system_variables.json
+25,apple family fill entry,5,10,10,1,保留基线,apple_family:fill_entry,candidate:system_variables.json
+26,apple family fill work,5,10,10,2,保留基线,apple_family:fill_work,candidate:system_variables.json
+27,apple can fill entry,5,11,11,1,保留基线,apple_can:fill_entry,candidate:system_variables.json
+28,apple can fill work,5,11,11,3,保留基线,apple_can:fill_work,candidate:system_variables.json
+29,grape family fill entry,6,10,10,1,保留基线,grape_family:fill_entry,candidate:system_variables.json
+30,grape family fill work,6,10,10,2,保留基线,grape_family:fill_work,candidate:system_variables.json
+31,grape can fill entry,6,11,11,1,保留基线,grape_can:fill_entry,candidate:system_variables.json
+32,grape can fill work,6,11,11,3,保留基线,grape_can:fill_work,candidate:system_variables.json
+33,small empty entry,3,3,3,1,新增250mL,orange_small:empty_entry; apple_small:empty_entry; grape_small:empty_entry,candidate:system_variables.json
+34,small empty work,3,3,3,4,新增250mL,orange_small:empty_work; apple_small:empty_work; grape_small:empty_work,candidate:system_variables.json
+35,small rinse entry,13,3,3,1,新增250mL,orange_small:rinse_entry; apple_small:rinse_entry; grape_small:rinse_entry,candidate:system_variables.json
+36,small rinse work,13,3,3,4,新增250mL,orange_small:rinse_work; apple_small:rinse_work; grape_small:rinse_work,candidate:system_variables.json
+37,orange small fill entry,4,12,12,1,新增250mL,orange_small:fill_entry,candidate:system_variables.json
+38,orange small fill work,4,12,12,4,新增250mL,orange_small:fill_work,candidate:system_variables.json
+39,small closure entry,9,6,6,1,新增250mL,orange_small:closure_entry; apple_small:closure_entry; grape_small:closure_entry,candidate:system_variables.json
+40,small closure work,9,6,6,4,新增250mL,orange_small:closure_work; apple_small:closure_work; grape_small:closure_work,candidate:system_variables.json
+41,small code entry,14,3,3,1,新增250mL,orange_small:code_entry; apple_small:code_entry; grape_small:code_entry,candidate:system_variables.json
+42,small code work,14,3,3,4,新增250mL,orange_small:code_work; apple_small:code_work; grape_small:code_work,candidate:system_variables.json
+43,small finished entry,12,9,9,1,新增250mL,orange_small:finished_entry; apple_small:finished_entry; grape_small:finished_entry,candidate:system_variables.json
+44,small finished work,12,9,9,4,新增250mL,orange_small:finished_work; apple_small:finished_work; grape_small:finished_work,candidate:system_variables.json
+45,apple small fill entry,5,12,12,1,新增250mL,apple_small:fill_entry,candidate:system_variables.json
+46,apple small fill work,5,12,12,4,新增250mL,apple_small:fill_work,candidate:system_variables.json
+47,grape small fill entry,6,12,12,1,新增250mL,grape_small:fill_entry,candidate:system_variables.json
+48,grape small fill work,6,12,12,4,新增250mL,grape_small:fill_work,candidate:system_variables.json

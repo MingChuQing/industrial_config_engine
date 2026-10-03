@@ -1,0 +1,109 @@
+﻿配方,路线字段,生产点位ID,生产点位名,X PR,Y1 PR,Y2 PR,Z PR,工位选择,来源
+orange_family,empty_entry,1,orange family empty entry,1,1,1,1,共享工位,candidate:system_variables.json
+orange_family,empty_work,2,orange family empty work,1,1,1,2,共享工位,candidate:system_variables.json
+orange_family,rinse_entry,3,orange family rinse entry,13,1,1,1,共享工位,candidate:system_variables.json
+orange_family,rinse_work,4,orange family rinse work,13,1,1,2,共享工位,candidate:system_variables.json
+orange_family,fill_entry,5,orange family fill entry,4,10,10,1,OrangeFill,candidate:system_variables.json
+orange_family,fill_work,6,orange family fill work,4,10,10,2,OrangeFill,candidate:system_variables.json
+orange_family,closure_entry,7,orange family closure entry,7,4,4,1,共享工位,candidate:system_variables.json
+orange_family,closure_work,8,orange family closure work,7,4,4,2,共享工位,candidate:system_variables.json
+orange_family,code_entry,9,orange family code entry,14,1,1,1,共享工位,candidate:system_variables.json
+orange_family,code_work,10,orange family code work,14,1,1,2,共享工位,candidate:system_variables.json
+orange_family,finished_entry,11,orange family finished entry,10,7,7,1,共享工位,candidate:system_variables.json
+orange_family,finished_work,12,orange family finished work,10,7,7,2,共享工位,candidate:system_variables.json
+orange_can,empty_entry,13,orange can empty entry,2,2,2,1,共享工位,candidate:system_variables.json
+orange_can,empty_work,14,orange can empty work,2,2,2,3,共享工位,candidate:system_variables.json
+orange_can,rinse_entry,15,orange can rinse entry,13,2,2,1,共享工位,candidate:system_variables.json
+orange_can,rinse_work,16,orange can rinse work,13,2,2,3,共享工位,candidate:system_variables.json
+orange_can,fill_entry,17,orange can fill entry,4,11,11,1,OrangeFill,candidate:system_variables.json
+orange_can,fill_work,18,orange can fill work,4,11,11,3,OrangeFill,candidate:system_variables.json
+orange_can,closure_entry,19,orange can closure entry,8,5,5,1,共享工位,candidate:system_variables.json
+orange_can,closure_work,20,orange can closure work,8,5,5,3,共享工位,candidate:system_variables.json
+orange_can,code_entry,21,orange can code entry,14,2,2,1,共享工位,candidate:system_variables.json
+orange_can,code_work,22,orange can code work,14,2,2,3,共享工位,candidate:system_variables.json
+orange_can,finished_entry,23,orange can finished entry,11,8,8,1,共享工位,candidate:system_variables.json
+orange_can,finished_work,24,orange can finished work,11,8,8,3,共享工位,candidate:system_variables.json
+apple_family,empty_entry,1,orange family empty entry,1,1,1,1,共享工位,candidate:system_variables.json
+apple_family,empty_work,2,orange family empty work,1,1,1,2,共享工位,candidate:system_variables.json
+apple_family,rinse_entry,3,orange family rinse entry,13,1,1,1,共享工位,candidate:system_variables.json
+apple_family,rinse_work,4,orange family rinse work,13,1,1,2,共享工位,candidate:system_variables.json
+apple_family,fill_entry,25,apple family fill entry,5,10,10,1,AppleFill,candidate:system_variables.json
+apple_family,fill_work,26,apple family fill work,5,10,10,2,AppleFill,candidate:system_variables.json
+apple_family,closure_entry,7,orange family closure entry,7,4,4,1,共享工位,candidate:system_variables.json
+apple_family,closure_work,8,orange family closure work,7,4,4,2,共享工位,candidate:system_variables.json
+apple_family,code_entry,9,orange family code entry,14,1,1,1,共享工位,candidate:system_variables.json
+apple_family,code_work,10,orange family code work,14,1,1,2,共享工位,candidate:system_variables.json
+apple_family,finished_entry,11,orange family finished entry,10,7,7,1,共享工位,candidate:system_variables.json
+apple_family,finished_work,12,orange family finished work,10,7,7,2,共享工位,candidate:system_variables.json
+apple_can,empty_entry,13,orange can empty entry,2,2,2,1,共享工位,candidate:system_variables.json
+apple_can,empty_work,14,orange can empty work,2,2,2,3,共享工位,candidate:system_variables.json
+apple_can,rinse_entry,15,orange can rinse entry,13,2,2,1,共享工位,candidate:system_variables.json
+apple_can,rinse_work,16,orange can rinse work,13,2,2,3,共享工位,candidate:system_variables.json
+apple_can,fill_entry,27,apple can fill entry,5,11,11,1,AppleFill,candidate:system_variables.json
+apple_can,fill_work,28,apple can fill work,5,11,11,3,AppleFill,candidate:system_variables.json
+apple_can,closure_entry,19,orange can closure entry,8,5,5,1,共享工位,candidate:system_variables.json
+apple_can,closure_work,20,orange can closure work,8,5,5,3,共享工位,candidate:system_variables.json
+apple_can,code_entry,21,orange can code entry,14,2,2,1,共享工位,candidate:system_variables.json
+apple_can,code_work,22,orange can code work,14,2,2,3,共享工位,candidate:system_variables.json
+apple_can,finished_entry,23,orange can finished entry,11,8,8,1,共享工位,candidate:system_variables.json
+apple_can,finished_work,24,orange can finished work,11,8,8,3,共享工位,candidate:system_variables.json
+grape_family,empty_entry,1,orange family empty entry,1,1,1,1,共享工位,candidate:system_variables.json
+grape_family,empty_work,2,orange family empty work,1,1,1,2,共享工位,candidate:system_variables.json
+grape_family,rinse_entry,3,orange family rinse entry,13,1,1,1,共享工位,candidate:system_variables.json
+grape_family,rinse_work,4,orange family rinse work,13,1,1,2,共享工位,candidate:system_variables.json
+grape_family,fill_entry,29,grape family fill entry,6,10,10,1,GrapeFill,candidate:system_variables.json
+grape_family,fill_work,30,grape family fill work,6,10,10,2,GrapeFill,candidate:system_variables.json
+grape_family,closure_entry,7,orange family closure entry,7,4,4,1,共享工位,candidate:system_variables.json
+grape_family,closure_work,8,orange family closure work,7,4,4,2,共享工位,candidate:system_variables.json
+grape_family,code_entry,9,orange family code entry,14,1,1,1,共享工位,candidate:system_variables.json
+grape_family,code_work,10,orange family code work,14,1,1,2,共享工位,candidate:system_variables.json
+grape_family,finished_entry,11,orange family finished entry,10,7,7,1,共享工位,candidate:system_variables.json
+grape_family,finished_work,12,orange family finished work,10,7,7,2,共享工位,candidate:system_variables.json
+grape_can,empty_entry,13,orange can empty entry,2,2,2,1,共享工位,candidate:system_variables.json
+grape_can,empty_work,14,orange can empty work,2,2,2,3,共享工位,candidate:system_variables.json
+grape_can,rinse_entry,15,orange can rinse entry,13,2,2,1,共享工位,candidate:system_variables.json
+grape_can,rinse_work,16,orange can rinse work,13,2,2,3,共享工位,candidate:system_variables.json
+grape_can,fill_entry,31,grape can fill entry,6,11,11,1,GrapeFill,candidate:system_variables.json
+grape_can,fill_work,32,grape can fill work,6,11,11,3,GrapeFill,candidate:system_variables.json
+grape_can,closure_entry,19,orange can closure entry,8,5,5,1,共享工位,candidate:system_variables.json
+grape_can,closure_work,20,orange can closure work,8,5,5,3,共享工位,candidate:system_variables.json
+grape_can,code_entry,21,orange can code entry,14,2,2,1,共享工位,candidate:system_variables.json
+grape_can,code_work,22,orange can code work,14,2,2,3,共享工位,candidate:system_variables.json
+grape_can,finished_entry,23,orange can finished entry,11,8,8,1,共享工位,candidate:system_variables.json
+grape_can,finished_work,24,orange can finished work,11,8,8,3,共享工位,candidate:system_variables.json
+orange_small,empty_entry,33,small empty entry,3,3,3,1,共享工位,candidate:system_variables.json
+orange_small,empty_work,34,small empty work,3,3,3,4,共享工位,candidate:system_variables.json
+orange_small,rinse_entry,35,small rinse entry,13,3,3,1,共享工位,candidate:system_variables.json
+orange_small,rinse_work,36,small rinse work,13,3,3,4,共享工位,candidate:system_variables.json
+orange_small,fill_entry,37,orange small fill entry,4,12,12,1,OrangeFill,candidate:system_variables.json
+orange_small,fill_work,38,orange small fill work,4,12,12,4,OrangeFill,candidate:system_variables.json
+orange_small,closure_entry,39,small closure entry,9,6,6,1,共享工位,candidate:system_variables.json
+orange_small,closure_work,40,small closure work,9,6,6,4,共享工位,candidate:system_variables.json
+orange_small,code_entry,41,small code entry,14,3,3,1,共享工位,candidate:system_variables.json
+orange_small,code_work,42,small code work,14,3,3,4,共享工位,candidate:system_variables.json
+orange_small,finished_entry,43,small finished entry,12,9,9,1,共享工位,candidate:system_variables.json
+orange_small,finished_work,44,small finished work,12,9,9,4,共享工位,candidate:system_variables.json
+apple_small,empty_entry,33,small empty entry,3,3,3,1,共享工位,candidate:system_variables.json
+apple_small,empty_work,34,small empty work,3,3,3,4,共享工位,candidate:system_variables.json
+apple_small,rinse_entry,35,small rinse entry,13,3,3,1,共享工位,candidate:system_variables.json
+apple_small,rinse_work,36,small rinse work,13,3,3,4,共享工位,candidate:system_variables.json
+apple_small,fill_entry,45,apple small fill entry,5,12,12,1,AppleFill,candidate:system_variables.json
+apple_small,fill_work,46,apple small fill work,5,12,12,4,AppleFill,candidate:system_variables.json
+apple_small,closure_entry,39,small closure entry,9,6,6,1,共享工位,candidate:system_variables.json
+apple_small,closure_work,40,small closure work,9,6,6,4,共享工位,candidate:system_variables.json
+apple_small,code_entry,41,small code entry,14,3,3,1,共享工位,candidate:system_variables.json
+apple_small,code_work,42,small code work,14,3,3,4,共享工位,candidate:system_variables.json
+apple_small,finished_entry,43,small finished entry,12,9,9,1,共享工位,candidate:system_variables.json
+apple_small,finished_work,44,small finished work,12,9,9,4,共享工位,candidate:system_variables.json
+grape_small,empty_entry,33,small empty entry,3,3,3,1,共享工位,candidate:system_variables.json
+grape_small,empty_work,34,small empty work,3,3,3,4,共享工位,candidate:system_variables.json
+grape_small,rinse_entry,35,small rinse entry,13,3,3,1,共享工位,candidate:system_variables.json
+grape_small,rinse_work,36,small rinse work,13,3,3,4,共享工位,candidate:system_variables.json
+grape_small,fill_entry,47,grape small fill entry,6,12,12,1,GrapeFill,candidate:system_variables.json
+grape_small,fill_work,48,grape small fill work,6,12,12,4,GrapeFill,candidate:system_variables.json
+grape_small,closure_entry,39,small closure entry,9,6,6,1,共享工位,candidate:system_variables.json
+grape_small,closure_work,40,small closure work,9,6,6,4,共享工位,candidate:system_variables.json
+grape_small,code_entry,41,small code entry,14,3,3,1,共享工位,candidate:system_variables.json
+grape_small,code_work,42,small code work,14,3,3,4,共享工位,candidate:system_variables.json
+grape_small,finished_entry,43,small finished entry,12,9,9,1,共享工位,candidate:system_variables.json
+grape_small,finished_work,44,small finished work,12,9,9,4,共享工位,candidate:system_variables.json

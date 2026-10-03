@@ -118,6 +118,8 @@ python scripts/verify_beverage_nl_extension.py
 
 首次原始输出未经配置修正：9项编辑涉及5个文件，净增228行；三个新入口分别调用 [0,2]、[1,2]、[2,2]。这不是历史 DeepSeek T1–T3 的输出，也不是生成成功率实验。预置点位、设备与流量由输入提供，模型复用已有工序并实例化这些数据。软件模拟不能替代实际设备标定与部署审核。
 
+完整十二阶段、取瓶到成品的路线、设备参数、检查条件及单体/四层对比集中在[工艺补充材料](examples/beverage_nl_extension/process_spec/README.txt)和[Excel 工作簿](examples/beverage_nl_extension/process_spec/process_spec.xlsx)。这些材料由冻结配置事后整理，未作为上述首次生成的输入；配套机器 JSON 保留完整固定依赖。运行 `python scripts/verify_beverage_process_spec.py` 可检查源、JSON、CSV、XLSX 一致性并重放原输出；加 `--no-replay` 只检查材料，不调用模型。既有11种故障仅施加于老配方索引0。
+
 ## 📖 Introduction
 
 Industrial Config Engine is an industrial automation configuration engine based on a four-layer architecture (L1-L4) for defining, loading, and executing configuration and control logic for industrial equipment. All configuration is in JSON format and supports version control and hot reloading.

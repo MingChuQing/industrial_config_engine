@@ -1,0 +1,10 @@
+﻿配方,口味,规格,容量mL,流量mL/s,灌装时间ms,批数,每批数量,总数量,总容量mL,封盖模式,入料PR,封盖PR,出料PR,来源
+orange_family,orange,family,2000,200,10000,2,6,12,24000,screw_large,1,1,4,example4保留
+orange_can,orange,can,330,200,1650,2,6,12,3960,seam_can,2,2,5,example4保留
+apple_family,apple,family,2000,180,11112,2,6,12,24000,screw_large,1,1,4,example4保留
+apple_can,apple,can,330,180,1834,2,6,12,3960,seam_can,2,2,5,example4保留
+grape_family,grape,family,2000,220,9091,2,6,12,24000,screw_large,1,1,4,example4保留
+grape_can,grape,can,330,220,1500,2,6,12,3960,seam_can,2,2,5,example4保留
+orange_small,orange,small,250,200,1250,2,6,12,3000,screw_small,3,3,6,raw_response追加
+apple_small,apple,small,250,180,1389,2,6,12,3000,screw_small,3,3,6,raw_response追加
+grape_small,grape,small,250,220,1137,2,6,12,3000,screw_small,3,3,6,raw_response追加
