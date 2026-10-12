@@ -1,7 +1,9 @@
 
 # Industrial Config Engine
 
-论文与复现实验快照：标签 **icdm2026-review-revision-20261003**。对应修订稿源码和配图见 [docs/paper-revision-20261003/](docs/paper-revision-20261003/)。这是打标签时的评审修订稿快照（7 页），尚待压缩至 Teen Track 要求的 5 页；不是已完成提交的 camera-ready 版本。
+最终提交论文（5 页）：[2026362685.pdf](docs/2026362685.pdf)，IEEE ICDM 2026 Teen Research Track，论文 ID **S30293**。
+
+论文与复现实验快照：标签 **icdm2026-review-revision-20261003**。对应修订稿源码和配图见 [docs/paper-revision-20261003/](docs/paper-revision-20261003/)。这是打标签时的评审修订稿快照（7 页）；最终 camera-ready 版本见上方 PDF 链接。
 
 ## 一条命令重现配置缺陷、检查结果和修正
 
