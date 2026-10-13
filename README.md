@@ -3,6 +3,8 @@
 
 最终提交论文（5 页）：[2026362685.pdf](docs/2026362685.pdf)，IEEE ICDM 2026 Teen Research Track，论文 ID **S30293**。
 
+[HTML 全文阅读版](https://mingchuqing.github.io/industrial_config_engine/)支持手机单栏排版、章节导航、图表放大、代码复制和深浅色切换，保留最终稿全文、6 张表、2 幅图、3 段配置示例与参考文献。原始 PDF 可在阅读页下载。
+
 论文与复现实验快照：标签 **icdm2026-review-revision-20261003**。对应修订稿源码和配图见 [docs/paper-revision-20261003/](docs/paper-revision-20261003/)。这是打标签时的评审修订稿快照（7 页）；最终 camera-ready 版本见上方 PDF 链接。
 
 ## 一条命令重现配置缺陷、检查结果和修正
